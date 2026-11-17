@@ -1,0 +1,20 @@
+# Render.com blueprint: New + > Blueprint, pick your GitHub repo, and it sets everything up. See DEPLOY.md.
+services:
+  - type: web
+    name: oshi-push
+    runtime: node
+    plan: free            # free sleeps when idle and forgets unfinished matches when it restarts; see DEPLOY.md
+    buildCommand: npm ci --include=dev && npm run build
+    startCommand: node server.js
+    healthCheckPath: /healthz
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      - key: MATCH_TTL_HOURS
+        value: 48
+    # To keep unfinished matches across restarts, use a paid plan, uncomment this and the FLATFILE_DIR line:
+    # disk:
+    #   name: matches
+    #   mountPath: /var/data
+    #   sizeGB: 1
+    # (and add under envVars:  - key: FLATFILE_DIR   value: /var/data)

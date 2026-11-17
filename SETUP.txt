@@ -1,0 +1,60 @@
+OSHI PUSH - SETUP
+
+FIRST TIME
+1. Unzip this folder somewhere (for example C:\\Users\\you\\OshiPushOnlineV1).
+2. Open PowerShell in the folder and run:  npm install
+3. Put your card art (PNG files named like the cards, e.g. "Eat a Spider.png") in  public\\art\\
+4. Load your cards (see below), then run:  npm start
+5. Open http://localhost:8000
+
+LOAD YOUR CARDS (this is the step that fills the library and deck builder)
+1. In your Google Sheet, click the Cards tab (the one with ID, Name, Type, cost, effects...).
+2. File > Download > Comma-separated values (.csv)   (this saves only the tab you have open)
+3. Save the file in the project folder and name it  cards.csv   (replace the sample if one is there)
+4. In PowerShell run:  npm run cards
+   It prints how many cards it found by type. Run it again whenever the sheet changes.
+5. Restart the game:  npm start   and hard-refresh the browser (Ctrl+Shift+R)
+
+PAGES
+  http://localhost:8000/             play a match (create a match, send the invite link)
+  http://localhost:8000/decks.html   deck builder
+  http://localhost:8000/cards.html   card library
+
+IF PORT 8000 IS BUSY
+  Stop the old server (Ctrl+C in its window), or run:  $env:PORT=8001; npm start
+
+ART NOT SHOWING FOR SOME CARDS
+  npm run cards  now checks public\art and matches files to cards ignoring case, punctuation and curly quotes.
+  It prints how many cards have art and writes art-report.txt listing every card with no art file, a likely
+  filename for each, and art files no card uses. Fix by renaming the file to the card name, or add a line to
+  art-overrides.json (see art-overrides.example.json), then run  npm run cards  and  npm start  again.
+
+WHICH SETS ARE IMPORTED
+  Only Gen 1 cards are imported. The importer prints which sets it left out.
+  When Gen 2 or Gen 3 is ready, either edit  DEFAULT_SETS  at the top of scripts\import-cards.js, or run once:
+     npm run cards -- --all-sets
+     npm run cards -- "--sets=Gen 1,Gen 2,Gen 3"
+  Then run  npm start  again. (Saved decks that use removed cards will show as incomplete.)
+
+SANDBOX (test every card)
+  On the start screen click "Create sandbox (test every card)". It makes a test match where you control both players,
+  both get a random deck automatically, and a "Sandbox tools" panel appears above the board. With it you can:
+    - give either player any persona (with an Upgrade) and put it on any platform, including both on the same platform
+    - add any card to a hand, or all Actions / all Content / all Upgrades at once, or clear a hand
+    - put Content on a platform for either player, set Bits, Subs and popularity, clear the board
+    - jump to any phase (for example straight to the clash) and give the turn to either player
+    - "View and play as" Player 0 or 1 to play that player's cards
+  Hand limits are not enforced in a sandbox. Normal matches ignore all of these tools.
+
+CARD EFFECTS THAT NEED A CHOICE
+  Action cards that make a player pick a card or platform (Hype, Potion, Bear With Me...) are written by hand in
+  card-effects.js (keys are exact card names). npm run cards uses those instead of parsing the card text.
+  To change one, edit card-effects.js, run  npm run cards  and restart.
+  Quick check of the main rules:  node tests/smoke.test.js
+
+PUTTING IT ONLINE
+  See DEPLOY.md for step-by-step instructions (GitHub + Render, or Docker anywhere).
+  Short version:  npm run optimize-art   (makes small copies of the art in public\art-web, about 10 MB)
+                  then put the project on GitHub and deploy it; render.yaml and the Dockerfile are included.
+  The full-size art in public\art is never uploaded (.gitignore keeps it out).
+  Quick check of everything:  npm test

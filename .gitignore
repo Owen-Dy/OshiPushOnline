@@ -1,0 +1,12 @@
+node_modules/
+# Your full-size card art is far too big to host. The game uses the small copies in public/art-web
+# (made by `npm run optimize-art`), which DO get committed.
+public/art/
+# Built from src/ when the site is deployed
+public/bundle.js
+public/library.js
+public/decks.js
+# Saved matches / local settings
+data/
+.env
+*.log

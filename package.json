@@ -1,0 +1,28 @@
+{
+  "name": "oshi-push",
+  "version": "0.2.0",
+  "type": "module",
+  "scripts": {
+    "cards": "node scripts/import-cards.js",
+    "build": "esbuild src/client.js --bundle --minify --outfile=public/bundle.js && esbuild src/library.js --bundle --minify --outfile=public/library.js && esbuild src/decks.js --bundle --minify --outfile=public/decks.js",
+    "start": "npm run build && node server.js",
+    "start:prod": "node server.js",
+    "optimize-art": "node scripts/optimize-art.js",
+    "test": "node tests/smoke.test.js && node tests/actions.test.js && node tests/content-cards.test.mjs && node tests/upgrades.test.mjs && node tests/platforms.test.mjs && node tests/two-cards.test.mjs && node tests/bot.test.mjs 5",
+    "test:bot-server": "node tests/bot-server.test.mjs"
+  },
+  "dependencies": {
+    "boardgame.io": "^0.50.2",
+    "koa-compress": "^5.1.1",
+    "koa-send": "^5.0.1",
+    "koa-static": "^5.0.0",
+    "node-persist": "^4.0.4"
+  },
+  "devDependencies": {
+    "esbuild": "^0.21.0",
+    "sharp": "^0.33.5"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
