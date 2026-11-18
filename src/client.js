@@ -42,6 +42,7 @@ if (!matchID) {
     if (!bot.ok) alert(`The match was created, but the bot could not join: ${await bot.text()}`);
     location.search = `?match=${id}&player=0`;
   };
+  if (params.get('dev') === '1') $('createSandbox').hidden = false; // the sandbox button only shows at /?dev=1
   $('createSandbox').onclick = async () => {
     const res = await fetch('/games/oshi-push/create', {
       method: 'POST',
