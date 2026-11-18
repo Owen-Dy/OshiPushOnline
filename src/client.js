@@ -421,5 +421,14 @@ function startGame() {
     else if (b.dataset.sb === 'clearboard') dbg('dbgClearBoard');
   });
 
-  client.subscribe((s) => { render(s); sandboxStep(s); updateBotBox(); });
+  // The clash panel now sits at the bottom, next to the Pass buttons: bring it into view when it changes to a new step.
+  let lastClashKey = '';
+  const focusClash = (s) => {
+    if (!s) return; // no game state yet (still connecting)
+    const key = s.ctx.gameover ? 'over' : s.ctx.phase;
+    if (key === lastClashKey) return;
+    lastClashKey = key;
+    if ($('clash').innerHTML.trim()) $('clash').scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  };
+  client.subscribe((s) => { render(s); sandboxStep(s); updateBotBox(); focusClash(s); });
 }
