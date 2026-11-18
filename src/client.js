@@ -7,9 +7,13 @@ import { validateDeck } from '../deckRules.js';
 const $ = (id) => document.getElementById(id);
 const esc = (s = '') => String(s).replace(/[&<>"]/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
 const portrait = (window.__portrait = new Set()); // platform art files that are portrait; shown rotated to landscape
-const CARD_BACK = 'art/card-back.svg';
+const CARD_BACK = 'art/card-back.webp'; // put your own at public/art-web/card-back.webp
+const CARD_BACK_FALLBACK = 'art/card-back.svg'; // used until that file exists
 const url = (p) => p.split('/').map(encodeURIComponent).join('/'); // handles spaces and ' ! , in names
-const img = (src, cls = '') => `<img class="${cls}" src="${url(src)}" alt="" onerror="this.style.visibility='hidden'">`;
+const img = (src, cls = '') => {
+  const fail = src === CARD_BACK ? `this.onerror=null;this.src='${CARD_BACK_FALLBACK}'` : "this.style.visibility='hidden'";
+  return `<img class="${cls}" src="${url(src)}" alt="" onerror="${fail}">`;
+};
 const pile = (n) => `<div class="pile" title="Deck">${img(CARD_BACK)}<span class="count">${n}</span></div>`;
 const params = new URLSearchParams(location.search);
 const matchID = params.get('match');
