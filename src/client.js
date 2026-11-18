@@ -226,13 +226,17 @@ function startGame() {
         const per = activePersona(pid);
         return `<div class="tile persona" title="${esc(per ? per.name : 'Persona')}${per && per.text ? ' - ' + esc(per.text) : ''}"><div class="artbox">${per ? img(per.art) : ''}</div><span>${esc(per ? per.name : 'Persona')}</span></div>`;
       };
-      const side = (pid, label) =>
-        `<div class="side"><div class="lbl">${label} · ${sum(pid)} inf</div><div class="stack">${G.personaLocations[pid] === i ? persona(pid) : ''}<div class="tiles">${tiles(pid)}</div></div></div>`;
+      const tot = { [playerID]: sum(playerID), [other]: sum(other) };
+      const side = (pid, label) => {
+        const rival = pid === playerID ? other : playerID;
+        const state = tot[pid] > tot[rival] ? 'ahead' : tot[pid] < tot[rival] ? 'behind' : 'tie'; // who is winning this clash right now
+        return `<div class="side"><div class="infrow"><span class="lbl">${label}</span><span class="infbig ${state}" title="Influence on this platform: the higher total wins the clash"><b>${tot[pid]}</b><small>INF</small></span></div><div class="stack">${G.personaLocations[pid] === i ? persona(pid) : ''}<div class="tiles">${tiles(pid)}</div></div></div>`;
+      };
       return `<section class="plat${i === curPlat ? ' now' : ''}">
         ${side(other, 'Opponent')}
         <div class="mid">
           ${!p.card ? '<p class="meta">Empty slot: no platform here yet</p>' : ''}
-          ${p.card ? `<div class="platart" title="${esc(p.card.text)}"><img class="${portrait.has(p.card.art) ? 'rot' : ''}" src="${url(p.card.art)}" data-art="${esc(p.card.art)}" alt="" onload="if(this.naturalHeight>this.naturalWidth){window.__portrait.add(this.dataset.art);this.classList.add('rot')}" onerror="this.style.visibility='hidden'"></div>` : ''}
+          ${p.card ? `<div class="platart"><img class="${portrait.has(p.card.art) ? 'rot' : ''}" src="${url(p.card.art)}" data-art="${esc(p.card.art)}" alt="" onload="if(this.naturalHeight>this.naturalWidth){window.__portrait.add(this.dataset.art);this.classList.add('rot')}" onerror="this.style.visibility='hidden'"></div>` : ''}
           <h3>${esc(p.name)}${p.type ? ' · ' + esc(p.type) : ''}</h3>
           ${p.card && p.card.text ? `<p class="meta platrule">${esc(p.card.text)}</p>` : ''}
           <p class="meta">Capture at ${p.threshold} pop · ${p.subValue.toLocaleString()} subs</p>

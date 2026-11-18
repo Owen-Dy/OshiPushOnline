@@ -18,7 +18,15 @@
   .plat { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:12px; }
   .plat p { margin:4px 0; }
   .plat { display:flex; flex-direction:column; }
-  .lbl { color:var(--dim); font-size:12px; margin-bottom:4px; }
+  .lbl { color:var(--text); font-size:15px; font-weight:600; }
+  /* Influence decides the clash, so it is the biggest thing on each side of a platform */
+  .infrow { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px; }
+  .infbig { display:inline-flex; align-items:baseline; gap:6px; padding:2px 16px 4px; border-radius:14px; background:#14111f; border:3px solid var(--line); transition:box-shadow .2s, border-color .2s; }
+  .infbig b { font-size:clamp(38px, 4.2vw, 56px); line-height:1; font-weight:800; font-variant-numeric:tabular-nums; }
+  .infbig small { font-size:13px; font-weight:700; letter-spacing:.12em; }
+  .infbig.ahead { color:#4ade80; border-color:#4ade80; box-shadow:0 0 16px rgba(74,222,128,.5); }
+  .infbig.behind { color:#f87171; border-color:#f87171; }
+  .infbig.tie { color:#fcd34d; border-color:#fcd34d; }
   .plat.now { border-color:var(--pink); box-shadow:0 0 0 2px var(--pink); }
   .tiles { display:flex; flex-wrap:wrap; gap:4px; }
   .tile span { display:block; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
