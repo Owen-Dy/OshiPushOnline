@@ -1,6 +1,6 @@
 // Deck builder: 1 Persona + 5 Platforms + 40 main deck cards (max 4 copies, each matching the persona's type or color). Decks are saved in this browser.
 import { CARDS } from '../cards.js';
-import { RULES, validateDeck, randomDeck, fitsPersona, platformFits } from '../deckRules.js';
+import { RULES, validateDeck, randomDeck, fitsPersona, platformFits, personaOnly, copyLimit } from '../deckRules.js';
 
 const $ = (id) => document.getElementById(id);
 const esc = (s = '') => String(s).replace(/[&<>"]/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
@@ -19,7 +19,7 @@ const countName = (ids, name) => ids.filter((id) => byId.get(id)?.name === name)
 const countId = (id) => (deck.persona === id ? 1 : 0) + deck.platforms.filter((x) => x === id).length + deck.main.filter((x) => x === id).length;
 
 // Can this card go in the deck for the chosen persona? (Persona and Platform cards are always listed.)
-const mayAdd = (c) => c.type === 'Persona' || !deck.persona || (c.type === 'Platform' ? platformFits(c, byId.get(deck.persona)) : fitsPersona(c, byId.get(deck.persona))); // a "deck only" Platform fits only its own deck
+const mayAdd = (c) => c.type === 'Persona' ? !deck.persona || c.id === deck.persona : !deck.persona || (c.type === 'Platform' ? platformFits(c, byId.get(deck.persona)) : fitsPersona(c, byId.get(deck.persona))); // a "deck only" Platform fits only its own deck
 let shownPersona;
 // ---- pool ----
 const unique = (k) => [...new Set(CARDS.map((c) => c[k]).filter(Boolean))].sort();
@@ -49,7 +49,10 @@ function badges() {
 function add(id) {
   const c = byId.get(id);
   if (!c) return;
-  if (c.type === 'Persona') deck.persona = id;
+  if (c.type === 'Persona') {
+    if (deck.persona && deck.persona !== id) return say(`Your deck already has ${byId.get(deck.persona).name}. Press Remove next to the Persona first to choose a different one.`);
+    deck.persona = id;
+  }
   else if (c.type === 'Platform') {
     if (!mayAdd(c)) return say(`${c.name} can only be used in a deck with ${(c.effects.find((fx) => fx.type === 'deckOnly') || {}).persona || (c.effects.find((fx) => fx.type === 'deckOnly') || {}).affiliation}.`);
     if (deck.platforms.length >= RULES.PLATFORMS) return say(`Platform slots are full (${RULES.PLATFORMS}).`);
@@ -57,9 +60,10 @@ function add(id) {
     deck.platforms.push(id);
   } else {
     if (!mayAdd(c) && c.type === 'Upgrade') return say(`${c.name} is an Upgrade for ${c.name.split(',')[0]} and can only be used with that persona.`);
+    if (personaOnly(c, byId.get(deck.persona))) return say(`${c.name} can only be used in a deck with ${c.playOnly.persona}.`);
     if (!mayAdd(c)) { const per = byId.get(deck.persona); return say(`${c.name} is not ${per.name}'s type (${per.genre || '-'}) or color (${per.style || '-'}).`); }
     if (deck.main.length >= RULES.MAIN) return say(`Main deck is full (${RULES.MAIN}).`);
-    if (countName(deck.main, c.name) >= RULES.MAX_COPIES) return say(`Max ${RULES.MAX_COPIES} copies of ${c.name}.`);
+    if (countName(deck.main, c.name) >= copyLimit(c)) return say(`Max ${copyLimit(c)} cop${copyLimit(c) === 1 ? 'y' : 'ies'} of ${c.name}.`);
     deck.main.push(id);
   }
   say('');
