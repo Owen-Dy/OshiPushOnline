@@ -15,6 +15,7 @@ import serve from 'koa-static';
 import send from 'koa-send';
 import compress from 'koa-compress';
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { OshiPush } from './game.js';
 import { startBot, hasBot, botCount, stopBotsFor, stopOldBots } from './bot.js';
@@ -119,6 +120,13 @@ app.use(async (ctx, next) => {
   return next();
 });
 
+// ---------- art check: open /art-status on your site to see whether the card art made it onto the server ----------
+const artCount = (dir) => { try { return fs.readdirSync(dir).length; } catch { return 0; } };
+app.use(async (ctx, next) => {
+  if (ctx.path !== '/art-status') return next();
+  ctx.body = { artWebFiles: artCount(ART_WEB), fullSizeFiles: artCount(ART), cardBack: fs.existsSync(path.join(ART_WEB, 'card-back.svg')) };
+});
+
 // ---------- the pages themselves ----------
 // no-cache = the browser checks for a newer version each time, so a new deploy shows up right away.
 app.use(serve(PUBLIC, { setHeaders: (res) => res.setHeader('Cache-Control', 'no-cache') }));
@@ -142,6 +150,8 @@ server.run(PORT, () => {
   console.log(`Oshi Push running on port ${PORT} (http://localhost:${PORT})`);
   console.log(process.env.FLATFILE_DIR ? `Saving matches to ${process.env.FLATFILE_DIR}` : 'Matches are kept in memory (they are lost when the server restarts).');
   if (publicUrls.length) console.log('Also allowed:', publicUrls.join(', '));
+  const nArt = artCount(ART_WEB);
+  console.log(nArt ? `Card art: ${nArt} files in public/art-web.` : 'WARNING: public/art-web is missing or empty, so cards will have no pictures. Run `npm run optimize-art` and commit public/art-web (see DEPLOY.md).');
   cleanUp();
   setInterval(cleanUp, 3600 * 1000).unref();
 });
