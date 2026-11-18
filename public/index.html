@@ -53,7 +53,7 @@
   #handrow { flex-wrap:nowrap; }
   #handrow::before { content:''; flex:none; width:48px; } /* same width as the deck pile on the right, so the hand sits exactly in the middle */
   #opp { justify-content:center; align-items:center; }
-  .card { background:#2b2542; color:var(--text); border:1px solid var(--line); width:112px; padding:7px; text-align:left; display:flex; flex-direction:column; gap:3px; font-weight:400; font-size:13px; line-height:1.25; }
+  .card { background:#2b2542; color:var(--text); border:1px solid var(--line); width:var(--cardw); padding:6px; text-align:left; display:flex; flex-direction:column; gap:3px; font-weight:400; font-size:13px; line-height:1.25; }
   #passall.on { background:#7dd3fc; }
   #choice { background:var(--panel); border:2px solid #fcd34d; border-radius:8px; padding:10px 14px; margin-bottom:12px; }
   #choice h2 { margin:0 0 4px; font-size:16px; color:#fcd34d; }
@@ -69,7 +69,11 @@
   .sbrow input[type=number] { width:90px; }
   body.sandbox #hand { max-height:380px; overflow:auto; }
   .platrule { margin:2px 0 6px; font-size:12px; white-space:pre-line; }
-  .cardwrap { display:flex; flex-direction:column; gap:4px; width:112px; }
+  /* Hand cards: the whole card face at a readable size (scales with the screen) */
+  :root { --cardw: clamp(150px, 14vw, 215px); }
+  .cardwrap { display:flex; flex-direction:column; gap:4px; width:var(--cardw); }
+  .card .artbox { height:auto; aspect-ratio:5/7; background:none; }
+  .card .artbox img { object-fit:contain; }
   .ability { font-size:11px; padding:3px 6px; background:#7dd3fc; }
   .tile .ability { width:100%; margin-top:2px; }
   .tile .stars { color:#fcd34d; font-weight:600; }
