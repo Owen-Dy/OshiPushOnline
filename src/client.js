@@ -240,9 +240,9 @@ function startGame() {
     }).join('');
 
     const cardBtn = (c, attr, on, enabled, extra = '') =>
-      `<button class="card${on ? ' on' : ''}${extra}" ${attr}="${esc(c.id)}" title="${esc(c.text)}" ${enabled ? '' : 'disabled'}>
+      `<button class="card${on ? ' on' : ''}${extra}" ${attr}="${esc(c.id)}" ${enabled ? '' : 'disabled'}>
         <div class="artbox">${img(c.art)}</div>
-        <b>${esc(c.name)}</b><span>${c.type}</span><span>Cost ${c.xCost ? 'X' : playCost(G, playerID, c, myLoc)}${playCost(G, playerID, c, myLoc) !== c.cost ? ` (was ${c.cost})` : ''} · Inf ${c.inf}</span><small class="txt">${esc(c.text)}</small></button>`;
+        <b>${esc(c.name)}</b><span>${c.type}</span><span>Cost ${c.xCost ? 'X' : playCost(G, playerID, c, myLoc)}${playCost(G, playerID, c, myLoc) !== c.cost ? ` (was ${c.cost})` : ''} · Inf ${c.inf}</span>${c.text ? `<small class="txt">${esc(c.text)}</small>` : ''}</button>`;
     $('hand').innerHTML = me.hand.map((c) => {
       const ab = fxOf(c, 'discardAbility')[0]; // "Discard: ..." (uses your turn; the card goes to your Trash)
       const abOK = ab && myTurn && canDiscardAbility(G, phase, playerID, c);
