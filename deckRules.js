@@ -1,6 +1,6 @@
 // Deck rules shared by the deck builder, the client and the game server.
 // A deck is { name, persona: cardId, platforms: [cardId x5], main: [cardId x40] } (46 cards in total).
-export const RULES = { MAIN: 40, PLATFORMS: 5, MAX_COPIES: 4, MAX_PLATFORM_COPIES: 1 };
+export const RULES = { MAIN: 40, PLATFORMS: 5, MAX_COPIES: 3, MAX_PLATFORM_COPIES: 1 };
 
 // Names are compared ignoring case, punctuation and word order ("Pippa Pipkin" = "Pipkin Pippa").
 export const nameKey = (s = '') => s.toLowerCase().split(/\W+/).filter(Boolean).sort().join(' ');
