@@ -51,7 +51,15 @@ function add(id) {
   if (!c) return;
   if (c.type === 'Persona') {
     if (deck.persona && deck.persona !== id) return say(`Your deck already has ${byId.get(deck.persona).name}. Press Remove next to the Persona first to choose a different one.`);
+    const changed = deck.persona !== id;
     deck.persona = id;
+    if (changed) { // choosing a persona clears out cards that persona cannot use
+      const per = byId.get(id), gone = [];
+      deck.main = deck.main.filter((cid) => { const k = byId.get(cid); const ok = k && fitsPersona(k, per); if (!ok && k) gone.push(k.name); return ok; });
+      deck.platforms = deck.platforms.filter((cid) => { const k = byId.get(cid); const ok = k && platformFits(k, per); if (!ok && k) gone.push(k.name); return ok; });
+      renderDeck();
+      return say(gone.length ? `Removed ${gone.length} card${gone.length > 1 ? 's' : ''} ${per.name} cannot use: ${[...new Set(gone)].join(', ')}.` : '');
+    }
   }
   else if (c.type === 'Platform') {
     if (!mayAdd(c)) return say(`${c.name} can only be used in a deck with ${(c.effects.find((fx) => fx.type === 'deckOnly') || {}).persona || (c.effects.find((fx) => fx.type === 'deckOnly') || {}).affiliation}.`);
