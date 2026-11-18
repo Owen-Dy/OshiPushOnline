@@ -1,5 +1,6 @@
 // Deck builder: 1 Persona + 5 Platforms + 40 main deck cards (max 4 copies, each matching the persona's type or color). Decks are saved in this browser.
 import { CARDS } from '../cards.js';
+import { importDeckList } from '../deckImport.js';
 import { RULES, validateDeck, randomDeck, fitsPersona, platformFits, personaOnly, copyLimit } from '../deckRules.js';
 
 const $ = (id) => document.getElementById(id);
@@ -116,6 +117,19 @@ $('random').onclick = () => {
   deck = { ...randomDeck(CARDS, shuffle, deck.persona || undefined), name: $('name').value.trim() || 'Random deck' };
   say('Filled with a random legal deck. Edit it, then Save.'); renderDeck();
 };
+$('doimport').onclick = () => {
+  const text = $('importtext').value;
+  if (!text.trim()) { $('importmsg').innerHTML = '<li>Paste a deck list first.</li>'; return; }
+  if ((deck.persona || deck.platforms.length || deck.main.length) && !confirm('Importing replaces the deck you are editing. Continue? (Save it first if you want to keep it.)')) return;
+  const { deck: imported, problems, total } = importDeckList(text, CARDS);
+  deck = imported;
+  shownPersona = undefined; // refresh the pool for the new persona
+  renderDeck();
+  say(`Imported ${total} card${total === 1 ? '' : 's'}. Check the list below, rename the deck and press Save deck.`);
+  $('importmsg').innerHTML = problems.map((p) => `<li>${esc(p)}</li>`).join('');
+  $('importbox').open = problems.length > 0;
+};
+$('clearimport').onclick = () => { $('importtext').value = ''; $('importmsg').innerHTML = ''; };
 $('saved').onchange = (e) => { if (e.target.value !== '') { deck = JSON.parse(JSON.stringify(saved[Number(e.target.value)])); say(''); renderDeck(); } };
 $('name').oninput = (e) => { deck.name = e.target.value; };
 

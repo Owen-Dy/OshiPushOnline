@@ -54,6 +54,11 @@
   <aside class="deck">
     <div class="tools"><select id="saved"></select><button id="new">New</button><button id="delete">Delete</button><button id="random">Random deck</button></div>
     <div class="tools"><input id="name" placeholder="Deck name"><button id="save">Save deck</button></div>
+    <details id="importbox"><summary>Import a deck list</summary>
+      <textarea id="importtext" rows="8" style="width:100%;box-sizing:border-box" placeholder="Paste a deck list exported from another deck site, for example:&#10;Persona:&#10;1x Tenma Maemi - OP01/PHC-037 - Pon&#10;Main Deck:&#10;3x FAQ YU - OPKS/PHC-048 - Starter"></textarea>
+      <div class="tools"><button id="doimport">Import</button><button id="clearimport">Clear</button></div>
+      <ul id="importmsg"></ul>
+    </details>
     <div id="msg"></div>
     <div id="counts"></div>
     <ul id="problems"></ul>
