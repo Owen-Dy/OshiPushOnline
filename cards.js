@@ -1083,7 +1083,7 @@ export const CARDS = [
     "inf": 8,
     "gems": 0,
     "text": "Play only if your Persona is Rinkou Ashelia.\r\n-\r\nClash Reward: If you have at least 5 more ⭐ than your opponents at this Platform, draw 2 cards.",
-    "art": "art/gen1/Feet A Holy Deep Dive.png",
+    "art": "art/gen1/Feet- A Holy Deep Dive.png",
     "class": "Yabai",
     "style": "⬛︎ Green",
     "genre": "✏️ Creatives",
