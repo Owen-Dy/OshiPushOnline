@@ -1,6 +1,7 @@
 // Makes the card art small enough to host online.  Run:  npm run optimize-art
 //
-// Your full-size art stays in public/art (it is never uploaded). This script reads the art that your cards actually
+// Your full-size art stays in public/art (it is never uploaded). Keep one folder per generation: public/art/gen1, gen2, ...
+// and the small versions are written to the same layout in public/art-web/gen1, gen2, ... This script reads the art that your cards actually
 // use (from cards.js), shrinks each image to ART_WIDTH pixels wide, and writes it as WebP into public/art-web/.
 // The server (server.js) sends art-web/<name>.webp whenever the browser asks for art/<name>.png, so the game and
 // cards.js do not change. Without art-web (for example while developing) it falls back to public/art.
@@ -24,11 +25,19 @@ const CARD_BACK = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 350"
 if (!fs.existsSync(SRC)) { console.error(`No ${SRC} folder: put your card art there first.`); process.exit(1); }
 fs.mkdirSync(OUT, { recursive: true });
 
-const files = [...new Set(CARDS.filter((c) => c.art).map((c) => decodeURIComponent(c.art.replace(/^art\//, ''))))].sort();
+// Art paths in cards.js look like art/gen1/Name.png (or art/Name.png in the old flat layout).
+const files = [...new Set(CARDS.filter((c) => c.art).map((c) => c.art.replace(/^art\//, '').split('/').map(decodeURIComponent).join('/')))].sort();
+const walk = (dir, rel = '') => fs.existsSync(dir) ? fs.readdirSync(dir, { withFileTypes: true }).flatMap((d) => d.isDirectory() ? walk(path.join(dir, d.name), rel + d.name + '/') : [rel + d.name]) : [];
 let done = 0, skipped = 0, missing = 0, before = 0, after = 0;
+const perFolder = {};
 for (const name of files) {
-  const src = path.join(SRC, name), dest = path.join(OUT, name.replace(/\.(png|jpe?g)$/i, '') + '.webp');
+  let srcName = name;
+  if (!fs.existsSync(path.join(SRC, srcName)) && name.includes('/')) srcName = path.posix.basename(name); // still in the old flat folder
+  const src = path.join(SRC, srcName), dest = path.join(OUT, name.replace(/\.(png|jpe?g)$/i, '') + '.webp');
   if (!fs.existsSync(src)) { missing++; console.log('missing art file:', name); continue; }
+  fs.mkdirSync(path.dirname(dest), { recursive: true });
+  const folder = name.includes('/') ? name.split('/')[0] : '(flat)';
+  perFolder[folder] = (perFolder[folder] || 0) + 1;
   const s = fs.statSync(src);
   before += s.size;
   if (fs.existsSync(dest) && fs.statSync(dest).mtimeMs >= s.mtimeMs) { skipped++; after += fs.statSync(dest).size; continue; }
@@ -41,4 +50,5 @@ if (back) fs.copyFileSync(back, path.join(OUT, 'card-back.svg')); else fs.writeF
 const mb = (n) => (n / 1e6).toFixed(1) + ' MB';
 console.log(`${files.length} art files used by cards: ${done} converted, ${skipped} unchanged, ${missing} missing.`);
 console.log(`Size: ${mb(before)} -> ${mb(after)} in public/art-web (${files.length ? Math.round((after / before) * 100) : 0}% of the original).`);
-console.log(`Art in public/art that no card uses is simply not included (${Math.max(0, fs.readdirSync(SRC).length - files.length)} files).`);
+console.log('By folder:', Object.entries(perFolder).map(([k, v]) => `${k} ${v}`).join(', ') || 'none');
+console.log(`Art in public/art that no card uses is simply not included (${Math.max(0, walk(SRC).length - files.length)} files).`);

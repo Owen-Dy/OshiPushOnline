@@ -107,24 +107,35 @@ app.use(compress({ threshold: 1024, filter: (type) => /text|javascript|json|svg/
 // ---------- card art ----------
 // The page asks for art/<Name>.png. Send the small WebP version when we have one, otherwise the original file.
 const SEVEN_DAYS = 7 * 24 * 3600 * 1000;
+const artFolders = (root) => { try { return fs.readdirSync(root, { withFileTypes: true }).filter((d) => d.isDirectory()).map((d) => d.name); } catch { return []; } };
 app.use(async (ctx, next) => {
   if ((ctx.method !== 'GET' && ctx.method !== 'HEAD') || !ctx.path.startsWith('/art/')) return next();
   let name;
   try { name = decodeURIComponent(ctx.path.slice('/art/'.length)); } catch { return next(); }
-  if (!name || name !== path.basename(name) || name.includes('\0') || name.includes('\\')) return next(); // no sneaking out of the folder
-  const attempts = [[name.replace(/\.(png|jpe?g)$/i, '.webp'), ART_WEB], [name, ART_WEB], [name, ART]];
-  for (const [file, root] of attempts) {
-    try { await send(ctx, file, { root, maxage: SEVEN_DAYS }); return; }
-    catch (e) { if (e.status !== 404 && e.code !== 'ENOENT' && e.code !== 'ENAMETOOLONG') throw e; }
+  // Art lives in one folder per generation (art/gen1/Name.png), so one folder level is allowed. Nothing may climb out.
+  const parts = name.split('/');
+  if (!name || parts.length > 2 || parts.some((p) => !p || p === '.' || p === '..') || name.includes('\0') || name.includes('\\')) return next();
+  const webp = (f) => f.replace(/\.(png|jpe?g)$/i, '.webp');
+  const file = parts[parts.length - 1];
+  const attempts = [[webp(name), ART_WEB], [name, ART_WEB], [name, ART]];
+  if (parts.length === 1) { // old flat link (art/Name.png): look in each generation folder too, so older cards.js files keep working
+    for (const root of [ART_WEB, ART]) for (const d of artFolders(root)) attempts.push([root === ART_WEB ? webp(`${d}/${file}`) : `${d}/${file}`, root], [`${d}/${file}`, root]);
+  } else { // a generation folder that does not have it: try the old flat folder
+    attempts.push([webp(file), ART_WEB], [file, ART_WEB], [file, ART]);
+  }
+  for (const [f, root] of attempts) {
+    try { await send(ctx, f, { root, maxage: SEVEN_DAYS }); return; }
+    catch (e) { if (e.status !== 404 && e.code !== 'ENOENT' && e.code !== 'ENAMETOOLONG' && e.code !== 'ENOTDIR') throw e; }
   }
   return next();
 });
 
 // ---------- art check: open /art-status on your site to see whether the card art made it onto the server ----------
-const artCount = (dir) => { try { return fs.readdirSync(dir).length; } catch { return 0; } };
+const artCount = (dir) => { try { return fs.readdirSync(dir, { withFileTypes: true }).reduce((n, d) => n + (d.isDirectory() ? artCount(path.join(dir, d.name)) : 1), 0); } catch { return 0; } };
+const perFolder = (root) => Object.fromEntries([['(top level)', (() => { try { return fs.readdirSync(root, { withFileTypes: true }).filter((d) => d.isFile()).length; } catch { return 0; } })()], ...artFolders(root).map((d) => [d, artCount(path.join(root, d))])]);
 app.use(async (ctx, next) => {
   if (ctx.path !== '/art-status') return next();
-  ctx.body = { artWebFiles: artCount(ART_WEB), fullSizeFiles: artCount(ART), cardBack: fs.existsSync(path.join(ART_WEB, 'card-back.svg')) };
+  ctx.body = { artWebFiles: artCount(ART_WEB), artWebByFolder: perFolder(ART_WEB), fullSizeFiles: artCount(ART), cardBack: fs.existsSync(path.join(ART_WEB, 'card-back.svg')) };
 });
 
 // ---------- the pages themselves ----------

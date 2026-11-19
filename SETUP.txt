@@ -3,7 +3,9 @@ OSHI PUSH - SETUP
 FIRST TIME
 1. Unzip this folder somewhere (for example C:\\Users\\you\\OshiPushOnlineV1).
 2. Open PowerShell in the folder and run:  npm install
-3. Put your card art (PNG files named like the cards, e.g. "Eat a Spider.png") in  public\\art\\
+3. Put your card art (PNG files named like the cards, e.g. "Eat a Spider.png") in one folder per generation:
+   public\\art\\gen1\\ for Gen 1, public\\art\\gen2\\ for Gen 2, and so on.
+   (Art loose in public\\art still works. To tidy it into gen1 run:  npm run organize-art)
 4. Load your cards (see below), then run:  npm start
 5. Open http://localhost:8000
 
@@ -31,7 +33,7 @@ ART NOT SHOWING FOR SOME CARDS
 
 WHICH SETS ARE IMPORTED
   Only Gen 1 cards are imported. The importer prints which sets it left out.
-  When Gen 2 or Gen 3 is ready, either edit  DEFAULT_SETS  at the top of scripts\import-cards.js, or run once:
+  When Gen 2 or Gen 3 is ready, put its art in public\\art\\gen2 (or gen3), then either edit  DEFAULT_SETS  at the top of scripts\import-cards.js, or run once:
      npm run cards -- --all-sets
      npm run cards -- "--sets=Gen 1,Gen 2,Gen 3"
   Then run  npm start  again. (Saved decks that use removed cards will show as incomplete.)

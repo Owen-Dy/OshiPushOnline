@@ -63,6 +63,8 @@ const ALIAS = {
 };
 // Sheet headers that are emoji: cost, gems, influence, platform capture threshold, platform subscriber value.
 const EMOJI = { '🟡': 'cost', '💎': 'gems', '⭐': 'inf', '🌠': 'threshold', '👥': 'subValue' };
+// Art is kept in one folder per generation: public/art/gen1, public/art/gen2, ... ("Gen 1 Promo" is still gen1).
+const genFolder = (set) => { const m = /gen\s*(\d+)/i.exec(set || ''); return m ? `gen${m[1]}` : ''; };
 const norm = (s) => s.toLowerCase().replace(/[^a-z0-9]/g, '');
 const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
@@ -214,7 +216,8 @@ body.forEach((r, n) => {
   let art = get('art');
   if (!art) art = `${name.replace(/[<>:"/\\|?*]/g, '')}.${ext}`;
   else if (!/\.\w+$/.test(art)) art += `.${ext}`;
-  if (!art.includes('/')) art = `art/${art}`;
+  const folder = genFolder(get('set'));
+  if (!art.includes('/')) art = `art/${folder ? folder + '/' : ''}${art}`; // e.g. art/gen2/Card Name.png
 
   const extra = {};
   head.forEach((h, i) => { if (!used.has(i) && h.trim() && (r[i] ?? '').trim() !== '') extra[h.trim()] = r[i].trim(); });
@@ -222,6 +225,7 @@ body.forEach((r, n) => {
   const card = { id, name, type, cost: /^x$/i.test(get('cost')) ? 0 : num('cost'), inf: num('inf'), gems: num('gems'), text: get('text'), art };
   if (/^x$/i.test(get('cost'))) card.xCost = true; // a cost of X: the player chooses how many Bits to spend when playing it
   card._explicit = Boolean(get('art')); // art path came from the sheet (removed before saving)
+  card._folder = folder; // which generation's art folder to look in (removed before saving)
   for (const k of ['class', 'style', 'genre', 'set', 'tags', 'flavour', 'source']) if (get(k)) card[k] = get(k);
   if (get('threshold')) { card.threshold = num('threshold'); card.subValue = num('subValue'); }
   if (Object.keys(extra).length) card.extra = extra;
@@ -256,9 +260,17 @@ const artDir = path.join(root, 'public', 'art');
 const normKey = (t) => t.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]/g, '');
 let overrides = {};
 try { overrides = JSON.parse(fs.readFileSync(path.join(root, 'art-overrides.json'), 'utf8')); } catch { /* optional file */ }
-const artFiles = fs.existsSync(artDir) ? fs.readdirSync(artDir).filter((f) => /\.(png|jpe?g|webp|gif|svg)$/i.test(f)) : null;
-const fileByKey = new Map();
-for (const f of artFiles || []) { const k = normKey(f.replace(/\.[^.]+$/, '')); if (!fileByKey.has(k)) fileByKey.set(k, f); }
+const isArt = (f) => /\.(png|jpe?g|webp|gif|svg)$/i.test(f);
+const folders = fs.existsSync(artDir) ? ['', ...fs.readdirSync(artDir, { withFileTypes: true }).filter((d) => d.isDirectory()).map((d) => d.name)] : null;
+// Every art file as a path relative to public/art, e.g. "gen1/Eat a Spider.png" (or "Eat a Spider.png" in the old flat layout).
+const artFiles = folders ? folders.flatMap((fo) => fs.readdirSync(path.join(artDir, fo), { withFileTypes: true }).filter((d) => d.isFile() && isArt(d.name)).map((d) => (fo ? `${fo}/${d.name}` : d.name))) : null;
+const artSet = new Set(artFiles || []);
+const fileByKey = new Map(); // "folder|normalised name" -> relative path
+for (const rel of artFiles || []) {
+  const fo = path.posix.dirname(rel) === '.' ? '' : path.posix.dirname(rel);
+  const k = `${fo}|${normKey(path.posix.basename(rel).replace(/\.[^.]+$/, ''))}`;
+  if (!fileByKey.has(k)) fileByKey.set(k, rel);
+}
 const lev = (a, b) => {
   const d = Array.from({ length: a.length + 1 }, (_, i) => [i, ...Array(b.length).fill(0)]);
   for (let j = 1; j <= b.length; j++) d[0][j] = j;
@@ -268,12 +280,18 @@ const lev = (a, b) => {
 };
 const missingArt = [], usedFiles = new Set();
 for (const c of cards) {
+  const folder = c._folder || '';
+  delete c._folder;
   const explicitOk = c._explicit && fs.existsSync(path.join(root, 'public', c.art));
   delete c._explicit;
   if (!artFiles) continue;
-  if (explicitOk) { c.hasArt = true; usedFiles.add(path.basename(c.art)); continue; }
-  const hit = overrides[c.name] ?? overrides[c.id] ?? fileByKey.get(normKey(c.name)) ?? fileByKey.get(normKey(c.id));
-  if (hit) { c.art = hit.includes('/') ? hit : `art/${hit}`; c.hasArt = true; usedFiles.add(path.basename(c.art)); }
+  if (explicitOk) { c.hasArt = true; usedFiles.add(c.art.replace(/^art\//, '')); continue; }
+  // A card looks in its own generation's folder first, then in the old flat public/art folder.
+  const find = (key) => fileByKey.get(`${folder}|${key}`) ?? fileByKey.get(`|${key}`);
+  const ov = overrides[c.name] ?? overrides[c.id];
+  const fromOverride = ov === undefined ? undefined : [ov.replace(/^art\//, ''), folder ? `${folder}/${ov}` : ov].find((r) => artSet.has(r));
+  const hit = fromOverride ?? find(normKey(c.name)) ?? find(normKey(c.id));
+  if (hit) { c.art = `art/${hit}`; c.hasArt = true; usedFiles.add(hit); }
   else { c.hasArt = false; missingArt.push(c); }
 }
 fs.writeFileSync(
@@ -286,14 +304,15 @@ console.log(`Columns used: ${Object.keys(col).join(', ')}${used.size < head.leng
 if (!artFiles) {
   console.log('Art: no public/art folder found, so art paths were not checked.');
 } else {
-  console.log(`Art: ${cards.length - missingArt.length} of ${cards.length} cards matched a file in public/art.`);
+  console.log(`Art: ${cards.length - missingArt.length} of ${cards.length} cards matched a file in public/art (each generation's art goes in its own folder, e.g. public/art/gen2/).`);
   const unused = artFiles.filter((f) => !usedFiles.has(f));
   const lines = missingArt.map((c) => {
-    const k = normKey(c.name);
+    const k = normKey(c.name), fo = genFolder(c.set);
     const near = [...fileByKey.entries()]
-      .map(([fk, f]) => ({ f, score: fk.length >= 4 && k.length >= 4 && (fk.includes(k) || k.includes(fk)) ? 0 : lev(k, fk) }))
+      .filter(([key]) => key.startsWith(`${fo}|`) || key.startsWith('|'))
+      .map(([key, f]) => { const fk = key.split('|')[1]; return { f, score: fk.length >= 4 && k.length >= 4 && (fk.includes(k) || k.includes(fk)) ? 0 : lev(k, fk) }; })
       .filter((x) => x.score <= Math.max(2, Math.floor(k.length / 6))).sort((a, b) => a.score - b.score).slice(0, 2).map((x) => x.f);
-    return `${c.name} [${c.type}]${near.length ? `  -> maybe: ${near.join(' | ')}` : ''}`;
+    return `${c.name} [${c.type}${fo ? ', ' + fo : ''}]${near.length ? `  -> maybe: ${near.join(' | ')}` : ''}`;
   });
   fs.writeFileSync(path.join(root, 'art-report.txt'),
     `Cards with no art file (${missingArt.length}):\n${lines.join('\n')}\n\nArt files not used by any card (${unused.length}):\n${unused.join('\n')}\n\n` +

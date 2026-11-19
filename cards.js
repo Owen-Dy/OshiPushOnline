@@ -8,7 +8,7 @@ export const CARDS = [
     "inf": 4,
     "gems": 3,
     "text": "Clash Reward: Gain 1 💎.",
-    "art": "art/Pipkin Pippa.jpg",
+    "art": "art/gen1/Pipkin Pippa.png",
     "style": "◆︎ Red",
     "genre": "💬 Zatsudan",
     "set": "Gen 1",
@@ -20,8 +20,7 @@ export const CARDS = [
         "amount": 1
       }
     ],
-    "clashRewardText": "Gain 1 💎.",
-    "hasArt": true
+    "clashRewardText": "Gain 1 💎."
   },
   {
     "id": "op01-002",
@@ -30,8 +29,8 @@ export const CARDS = [
     "cost": 3,
     "inf": 6,
     "gems": 4,
-    "text": "Clash Reward: Gain 2 💎.\n\nDiscard: Your Persona gains +2 ⭐ this clash.",
-    "art": "art/Pipkin Pippa, Filippa.png",
+    "text": "Clash Reward: Gain 2 💎.\r\n\r\nDiscard: Your Persona gains +2 ⭐ this clash.",
+    "art": "art/gen1/Pipkin Pippa, Filippa.png",
     "class": "Sugoi",
     "style": "◆︎ Red",
     "genre": "💬 Zatsudan",
@@ -45,7 +44,6 @@ export const CARDS = [
       }
     ],
     "clashRewardText": "Gain 2 💎.",
-    "hasArt": true,
     "effects": [
       {
         "type": "discardAbility",
@@ -67,8 +65,8 @@ export const CARDS = [
     "cost": 7,
     "inf": 9,
     "gems": 5,
-    "text": "Pipkin Pippa gains +2 ⭐ for each Platform where you have a Content card.\n\nClash Reward: Gain 3 💎.\n\nDiscard: Your Persona gains +2 ⭐ this clash.",
-    "art": "art/Pipkin Pippa, Shipkin Shippa.png",
+    "text": "Pipkin Pippa gains +2 ⭐ for each Platform where you have a Content card.\r\n\r\nClash Reward: Gain 3 💎.\r\n\r\nDiscard: Your Persona gains +2 ⭐ this clash.",
+    "art": "art/gen1/Pipkin Pippa, Shipkin Shippa.png",
     "class": "Yabai",
     "style": "◆︎ Red",
     "genre": "💬 Zatsudan",
@@ -88,7 +86,6 @@ export const CARDS = [
         "amount": 2
       }
     ],
-    "hasArt": true,
     "effects": [
       {
         "type": "discardAbility",
@@ -110,8 +107,8 @@ export const CARDS = [
     "cost": 7,
     "inf": 6,
     "gems": 0,
-    "text": "Play only if your Persona is Pippa Pipkin.\n-\nWhen you play a Content card at this Platform (including this one): Delete an opposing Content card on this Platform with less ⭐ than the Content card you just played.",
-    "art": "art/Eat a Spider.png",
+    "text": "Play only if your Persona is Pippa Pipkin.\r\n-\r\nWhen you play a Content card at this Platform (including this one): Delete an opposing Content card on this Platform with less ⭐ than the Content card you just played.",
+    "art": "art/gen1/Eat a Spider.png",
     "class": "Yabai",
     "style": "⬤︎ Purple",
     "genre": "💬 Zatsudan",
@@ -121,7 +118,6 @@ export const CARDS = [
     "playOnly": {
       "persona": "Pippa Pipkin"
     },
-    "hasArt": true,
     "effects": [
       {
         "type": "onPlay",
@@ -152,8 +148,8 @@ export const CARDS = [
     "cost": 1,
     "inf": 0,
     "gems": 0,
-    "text": "Play only if your Persona is Pipkin Pippa and only during a clash.\n-\nSet an opposing Persona's ⭐ to 0 this clash. All opponents can't play Actions this clash.",
-    "art": "art/Chew on Cables.png",
+    "text": "Play only if your Persona is Pipkin Pippa and only during a clash.\r\n-\r\nSet an opposing Persona's ⭐ to 0 this clash. All opponents can't play Actions this clash.",
+    "art": "art/gen1/Chew on Cables.png",
     "class": "Yabai",
     "style": "⬤︎ Purple",
     "genre": "💬 Zatsudan",
@@ -174,8 +170,7 @@ export const CARDS = [
         "type": "actionLock",
         "target": "opponent"
       }
-    ],
-    "hasArt": true
+    ]
   },
   {
     "id": "op01-006",
@@ -185,7 +180,7 @@ export const CARDS = [
     "inf": 0,
     "gems": 0,
     "text": "Your Persona gains +7 ⭐ this round. If your Persona is Pipkin Pippa, you may also move her to any Platform.",
-    "art": "art/PIPIPIPIPI.png",
+    "art": "art/gen1/PIPIPIPIPI.png",
     "class": "Yabai",
     "style": "◆︎ Red",
     "genre": "🎮 Poggers",
@@ -205,8 +200,7 @@ export const CARDS = [
         },
         "prompt": "PIPIPIPIPI: you may move Pipkin Pippa to another platform"
       }
-    ],
-    "hasArt": true
+    ]
   },
   {
     "id": "op01-007",
@@ -216,7 +210,7 @@ export const CARDS = [
     "inf": 3,
     "gems": 3,
     "text": "While you have 0 💎: Utatane Nasa gains +3 ⭐.",
-    "art": "art/Utatane Nasa.png",
+    "art": "art/gen1/Utatane Nasa.png",
     "style": "⬤︎ Purple",
     "genre": "💬 Zatsudan",
     "set": "Gen 1",
@@ -229,8 +223,7 @@ export const CARDS = [
         },
         "amount": 3
       }
-    ],
-    "hasArt": true
+    ]
   },
   {
     "id": "op01-008",
@@ -239,8 +232,8 @@ export const CARDS = [
     "cost": 3,
     "inf": 5,
     "gems": 4,
-    "text": "While you have 0 💎: Utatane Nasa gains +4 ⭐.\n\nActivate: Spend 2 💎, Draw 1 card.\n\nDiscard: Move your Persona to this Platform. Use only during a clash.",
-    "art": "art/Utatane Nasa, Seiso Sleepy Dragon.png",
+    "text": "While you have 0 💎: Utatane Nasa gains +4 ⭐.\r\n\r\nActivate: Spend 2 💎, Draw 1 card.\r\n\r\nDiscard: Move your Persona to this Platform. Use only during a clash.",
+    "art": "art/gen1/Utatane Nasa, Seiso Sleepy Dragon.png",
     "class": "Sugoi",
     "style": "⬤︎ Purple",
     "genre": "💬 Zatsudan",
@@ -255,7 +248,6 @@ export const CARDS = [
         "amount": 4
       }
     ],
-    "hasArt": true,
     "effects": [
       {
         "type": "discardAbility",
@@ -288,8 +280,8 @@ export const CARDS = [
     "cost": 6,
     "inf": 6,
     "gems": 6,
-    "text": "While you have 0 💎: Utatane Nasa gains +5 ⭐.\n\nActivate: Spend 3 💎, Draw 2 cards.\n\nDiscard: Move your Persona to this Platform. Use only during a clash.",
-    "art": "art/Utatane Nasa, Kawaii Nasajira.png",
+    "text": "While you have 0 💎: Utatane Nasa gains +5 ⭐.\r\n\r\nActivate: Spend 3 💎, Draw 2 cards.\r\n\r\nDiscard: Move your Persona to this Platform. Use only during a clash.",
+    "art": "art/gen1/Utatane Nasa, Kawaii Nasajira.png",
     "class": "Yabai",
     "style": "⬤︎ Purple",
     "genre": "💬 Zatsudan",
@@ -304,7 +296,6 @@ export const CARDS = [
         "amount": 5
       }
     ],
-    "hasArt": true,
     "effects": [
       {
         "type": "discardAbility",
@@ -338,7 +329,7 @@ export const CARDS = [
     "inf": 6,
     "gems": 0,
     "text": "Play only if your Persona is Utatane Nasa.",
-    "art": "art/Stargazing.png",
+    "art": "art/gen1/Stargazing.png",
     "class": "Yabai",
     "style": "◆︎ Red",
     "genre": "💬 Zatsudan",
@@ -347,8 +338,7 @@ export const CARDS = [
     "source": "Artwork (Retail)",
     "playOnly": {
       "persona": "Utatane Nasa"
-    },
-    "hasArt": true
+    }
   },
   {
     "id": "op01-011",
@@ -357,8 +347,8 @@ export const CARDS = [
     "cost": 0,
     "inf": 0,
     "gems": 0,
-    "text": "Play only if your Persona is Utatane Nasa.\n-\nFor this round, your Persona gains: \"Clash Reward: Look at the top 3 cards of your deck. You may play 1 Content card you find there to any Platform (paying its 🟡 normally). Put the other cards back on top of your deck in any order.\"",
-    "art": "art/I_ll Crush You!.png",
+    "text": "Play only if your Persona is Utatane Nasa.\r\n-\r\nFor this round, your Persona gains: \"Clash Reward: Look at the top 3 cards of your deck. You may play 1 Content card you find there to any Platform (paying its 🟡 normally). Put the other cards back on top of your deck in any order.\"",
+    "art": "art/gen1/I'll Crush You!.png",
     "class": "Yabai",
     "style": "◆︎ Red",
     "genre": "💬 Zatsudan",
@@ -368,7 +358,6 @@ export const CARDS = [
     "playOnly": {
       "persona": "Utatane Nasa"
     },
-    "hasArt": true,
     "effects": [
       {
         "type": "personaReward",
@@ -389,15 +378,14 @@ export const CARDS = [
     "cost": 6,
     "inf": 8,
     "gems": 0,
-    "text": "When Played: Choose an opposing Content card on this Platform to lose -4 ⭐ this round.\n\nAt the start of the Refresh Phase: If your Persona is Utatane Nasa, you may return this card to your hand.",
-    "art": "art/Dragon Deez.png",
+    "text": "When Played: Choose an opposing Content card on this Platform to lose -4 ⭐ this round.\r\n\r\nAt the start of the Refresh Phase: If your Persona is Utatane Nasa, you may return this card to your hand.",
+    "art": "art/gen1/Dragon Deez.png",
     "class": "Yabai",
     "style": "⬤︎ Purple",
     "genre": "❤️ Experience",
     "set": "Gen 1",
     "flavour": "Sakana Deez Nuts!",
     "source": "Artwork (Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "pickCard",
@@ -425,7 +413,7 @@ export const CARDS = [
     "inf": 3,
     "gems": 3,
     "text": "The first time you play an Action card each round: Hakushika Iori gains +2 ⭐ this round.",
-    "art": "art/Hakushika Iori.png",
+    "art": "art/gen1/Hakushika Iori.png",
     "style": "⬛︎ Green",
     "genre": "🎮 Poggers",
     "set": "Gen 1",
@@ -436,8 +424,7 @@ export const CARDS = [
         "play": "Action",
         "amount": 2
       }
-    ],
-    "hasArt": true
+    ]
   },
   {
     "id": "op01-014",
@@ -446,8 +433,8 @@ export const CARDS = [
     "cost": 2,
     "inf": 4,
     "gems": 4,
-    "text": "The first time you play an Action card each round: Hakushika Iori gains +3 ⭐ this round.\n\nDiscard: Gain 1 💎.",
-    "art": "art/Hakushika Iori, Perfect Disguise.png",
+    "text": "The first time you play an Action card each round: Hakushika Iori gains +3 ⭐ this round.\r\n\r\nDiscard: Gain 1 💎.",
+    "art": "art/gen1/Hakushika Iori, Perfect Disguise.png",
     "class": "Sugoi",
     "style": "⬛︎ Green",
     "genre": "🎮 Poggers",
@@ -460,7 +447,6 @@ export const CARDS = [
         "amount": 3
       }
     ],
-    "hasArt": true,
     "effects": [
       {
         "type": "discardAbility",
@@ -481,8 +467,8 @@ export const CARDS = [
     "cost": 6,
     "inf": 5,
     "gems": 5,
-    "text": "The first time you play an Action card each round: Hakushika Iori gains +4 ⭐ this round and you draw 1 card.\n\nDiscard: Gain 1 💎.",
-    "art": "art/Hakushika Iori, Secret Agent.png",
+    "text": "The first time you play an Action card each round: Hakushika Iori gains +4 ⭐ this round and you draw 1 card.\r\n\r\nDiscard: Gain 1 💎.",
+    "art": "art/gen1/Hakushika Iori, Secret Agent.png",
     "class": "Yabai",
     "style": "⬛︎ Green",
     "genre": "🎮 Poggers",
@@ -496,7 +482,6 @@ export const CARDS = [
         "draw": 1
       }
     ],
-    "hasArt": true,
     "effects": [
       {
         "type": "discardAbility",
@@ -517,8 +502,8 @@ export const CARDS = [
     "cost": 3,
     "inf": 5,
     "gems": 0,
-    "text": "Play only if your Persona is Hakushika Iori.\n-\nWhen you play an Action card during a clash at this Platform: Delete 1 opposing Content card on this Platform with 5 ⭐ or less.",
-    "art": "art/Japanese Lesson.png",
+    "text": "Play only if your Persona is Hakushika Iori.\r\n-\r\nWhen you play an Action card during a clash at this Platform: Delete 1 opposing Content card on this Platform with 5 ⭐ or less.",
+    "art": "art/gen1/Japanese Lesson.png",
     "class": "Yabai",
     "style": "⬤︎ Purple",
     "genre": "🎮 Poggers",
@@ -528,7 +513,6 @@ export const CARDS = [
     "playOnly": {
       "persona": "Hakushika Iori"
     },
-    "hasArt": true,
     "effects": [
       {
         "type": "onPlay",
@@ -560,7 +544,7 @@ export const CARDS = [
     "inf": 0,
     "gems": 0,
     "text": "Reveal the top 4 cards of your deck. Draw 1 Action card from among them and put the rest on the bottom of your deck. If your Persona is Hakushika Iori, draw 2 Action cards from among them instead.",
-    "art": "art/Killer Hands.png",
+    "art": "art/gen1/Killer Hands.png",
     "class": "Yabai",
     "style": "⬛︎ Green",
     "genre": "🎮 Poggers",
@@ -578,8 +562,7 @@ export const CARDS = [
         },
         "prompt": "Killer Hands: draw an Action card from the revealed cards (the rest go to the bottom of your deck)"
       }
-    ],
-    "hasArt": true
+    ]
   },
   {
     "id": "op01-018",
@@ -588,8 +571,8 @@ export const CARDS = [
     "cost": 1,
     "inf": 0,
     "gems": 0,
-    "text": "Play only if your Persona is Hakushika Iori and only during a clash.\n-\nYou may play this card from your Trash (paying its 🟡). If you do, put it on the bottom of your deck after resolving it.\n\nYour Persona gains +3 ⭐ this clash.",
-    "art": "art/Scary Story Writing.png",
+    "text": "Play only if your Persona is Hakushika Iori and only during a clash.\r\n-\r\nYou may play this card from your Trash (paying its 🟡). If you do, put it on the bottom of your deck after resolving it.\r\n\r\nYour Persona gains +3 ⭐ this clash.",
+    "art": "art/gen1/Scary Story Writing.png",
     "class": "Yabai",
     "style": "⬛︎ Green",
     "genre": "✏️ Creatives",
@@ -600,7 +583,6 @@ export const CARDS = [
       "persona": "Hakushika Iori",
       "timing": "clash"
     },
-    "hasArt": true,
     "effects": [
       {
         "type": "playFromTrash"
@@ -620,7 +602,7 @@ export const CARDS = [
     "inf": 4,
     "gems": 3,
     "text": "While you have at least 1 Content card on this Platform with 🟡3 or less: Shisui Michiru gains +1 ⭐.",
-    "art": "art/Shisui Michiru.png",
+    "art": "art/gen1/Shisui Michiru.png",
     "style": "⬤︎ Purple",
     "genre": "🎮 Poggers",
     "set": "Gen 1",
@@ -634,8 +616,7 @@ export const CARDS = [
         },
         "amount": 1
       }
-    ],
-    "hasArt": true
+    ]
   },
   {
     "id": "op01-020",
@@ -644,8 +625,8 @@ export const CARDS = [
     "cost": 4,
     "inf": 4,
     "gems": 5,
-    "text": "While you have at least 1 Content card on this Platform with cost 3 or less: Shisui Michiru gains +4 ⭐.\n\nDiscard: Move your Persona to this Platform. Use only during a clash.",
-    "art": "art/Shisui Michiru, Da Michi.png",
+    "text": "While you have at least 1 Content card on this Platform with cost 3 or less: Shisui Michiru gains +4 ⭐.\r\n\r\nDiscard: Move your Persona to this Platform. Use only during a clash.",
+    "art": "art/gen1/Shisui Michiru, Da Michi.png",
     "class": "Sugoi",
     "style": "⬤︎ Purple",
     "genre": "🎮 Poggers",
@@ -661,7 +642,6 @@ export const CARDS = [
         "amount": 4
       }
     ],
-    "hasArt": true,
     "effects": [
       {
         "type": "discardAbility",
@@ -681,8 +661,8 @@ export const CARDS = [
     "cost": 8,
     "inf": 7,
     "gems": 6,
-    "text": "While you have at least 1 Content card on this Platform with cost 3 or less: Shisui Michiru gains +5 ⭐.\n\nActivate: Delete 1 Content card with cost 5 or more on this Platform.\n\nDiscard: Move your Persona to this Platform. Use only during a clash.",
-    "art": "art/Shisui Michiru, Witch Half Cat.png",
+    "text": "While you have at least 1 Content card on this Platform with cost 3 or less: Shisui Michiru gains +5 ⭐.\r\n\r\nActivate: Delete 1 Content card with cost 5 or more on this Platform.\r\n\r\nDiscard: Move your Persona to this Platform. Use only during a clash.",
+    "art": "art/gen1/Shisui Michiru, Witch Half Cat.png",
     "class": "Yabai",
     "style": "⬤︎ Purple",
     "genre": "🎮 Poggers",
@@ -698,7 +678,6 @@ export const CARDS = [
         "amount": 5
       }
     ],
-    "hasArt": true,
     "effects": [
       {
         "type": "discardAbility",
@@ -737,8 +716,8 @@ export const CARDS = [
     "cost": 4,
     "inf": 7,
     "gems": 0,
-    "text": "Play only if your Persona is Shisui Michiru.\n-\nThis card gains +3 ⭐ for each of your other Content cards with 🟡3 or less on this Platform.",
-    "art": "art/Witch Mommy Energy.png",
+    "text": "Play only if your Persona is Shisui Michiru.\r\n-\r\nThis card gains +3 ⭐ for each of your other Content cards with 🟡3 or less on this Platform.",
+    "art": "art/gen1/Witch Mommy Energy.png",
     "class": "Yabai",
     "style": "◆︎ Red",
     "genre": "🎮 Poggers",
@@ -748,7 +727,6 @@ export const CARDS = [
     "playOnly": {
       "persona": "Shisui Michiru"
     },
-    "hasArt": true,
     "effects": [
       {
         "type": "selfStars",
@@ -765,8 +743,8 @@ export const CARDS = [
     "cost": 2,
     "inf": 0,
     "gems": 0,
-    "text": "Play only during a clash.\n-\nMove 1 Persona or Content card from this Platform to another Platform. Then, if your Persona is Shisui Michiru, you may move another Persona or Content card from that Platform to this Platform.",
-    "art": "art/Potion.png",
+    "text": "Play only during a clash.\r\n-\r\nMove 1 Persona or Content card from this Platform to another Platform. Then, if your Persona is Shisui Michiru, you may move another Persona or Content card from that Platform to this Platform.",
+    "art": "art/gen1/Potion.png",
     "class": "Yabai",
     "style": "⬤︎ Purple",
     "genre": "💬 Zatsudan",
@@ -782,8 +760,7 @@ export const CARDS = [
         "bonusPersona": "Shisui Michiru",
         "prompt": "Potion: choose a Persona or Content card on this platform to move"
       }
-    ],
-    "hasArt": true
+    ]
   },
   {
     "id": "op01-024",
@@ -792,8 +769,8 @@ export const CARDS = [
     "cost": 5,
     "inf": 0,
     "gems": 0,
-    "text": "Play only if your Persona is Shisui Michiru and only during the Content phase.\n-\nPlay any number of Content cards from your Trash with a combined 🟡 of 5 or less for free.",
-    "art": "art/LVL 2 Naked Club.png",
+    "text": "Play only if your Persona is Shisui Michiru and only during the Content phase.\r\n-\r\nPlay any number of Content cards from your Trash with a combined 🟡 of 5 or less for free.",
+    "art": "art/gen1/LVL 2 Naked Club.png",
     "class": "Yabai",
     "style": "⬛︎ Green",
     "genre": "🎮 Poggers",
@@ -810,8 +787,7 @@ export const CARDS = [
         "maxTotal": 5,
         "prompt": "LVL 2 Naked Club: play Content cards from your Trash for free (combined 🟡 of 5 or less)"
       }
-    ],
-    "hasArt": true
+    ]
   },
   {
     "id": "op01-025",
@@ -821,7 +797,7 @@ export const CARDS = [
     "inf": 4,
     "gems": 3,
     "text": "While you have exactly 1 Content card on this Platform: Fujikura Uruka gains +1 ⭐.",
-    "art": "art/Fujikura Uruka.jpg",
+    "art": "art/gen1/Fujikura Uruka.png",
     "style": "◆︎ Red",
     "genre": "✏️ Creatives",
     "set": "Gen 1",
@@ -834,8 +810,7 @@ export const CARDS = [
         },
         "amount": 1
       }
-    ],
-    "hasArt": true
+    ]
   },
   {
     "id": "op01-026",
@@ -844,8 +819,8 @@ export const CARDS = [
     "cost": 3,
     "inf": 5,
     "gems": 4,
-    "text": "While you have exactly 1 Content card on this Platform: Fujikura Uruka gains +4 ⭐.\n\nDiscard: Your Persona gains +2 ⭐ this clash.",
-    "art": "art/Fujikura Uruka, Urufu.png",
+    "text": "While you have exactly 1 Content card on this Platform: Fujikura Uruka gains +4 ⭐.\r\n\r\nDiscard: Your Persona gains +2 ⭐ this clash.",
+    "art": "art/gen1/Fujikura Uruka, Urufu.png",
     "class": "Sugoi",
     "style": "◆︎ Red",
     "genre": "✏️ Creatives",
@@ -860,7 +835,6 @@ export const CARDS = [
         "amount": 4
       }
     ],
-    "hasArt": true,
     "effects": [
       {
         "type": "discardAbility",
@@ -882,8 +856,8 @@ export const CARDS = [
     "cost": 7,
     "inf": 6,
     "gems": 6,
-    "text": "While you have exactly 1 Content card on this Platform: Fujikura Uruka gains +5 ⭐.\n\nActivate, delete 1 of your Content cards on any Platform: Draw 2 cards.\n\nDiscard: Your Persona gains +2 ⭐ this clash.",
-    "art": "art/Fujikura Uruka, Gomi Kuma.png",
+    "text": "While you have exactly 1 Content card on this Platform: Fujikura Uruka gains +5 ⭐.\r\n\r\nActivate, delete 1 of your Content cards on any Platform: Draw 2 cards.\r\n\r\nDiscard: Your Persona gains +2 ⭐ this clash.",
+    "art": "art/gen1/Fujikura Uruka, Gomi Kuma.png",
     "class": "Yabai",
     "style": "◆︎ Red",
     "genre": "✏️ Creatives",
@@ -898,7 +872,6 @@ export const CARDS = [
         "amount": 5
       }
     ],
-    "hasArt": true,
     "effects": [
       {
         "type": "discardAbility",
@@ -939,8 +912,8 @@ export const CARDS = [
     "cost": 5,
     "inf": 8,
     "gems": 0,
-    "text": "Play only if your Persona is Fujikura Uruka.\n-\nAll other Content cards on this Platform each lose -3 ⭐.",
-    "art": "art/The Cringe Song.png",
+    "text": "Play only if your Persona is Fujikura Uruka.\r\n-\r\nAll other Content cards on this Platform each lose -3 ⭐.",
+    "art": "art/gen1/The Cringe Song.png",
     "class": "Yabai",
     "style": "⬤︎ Purple",
     "genre": "✏️ Creatives",
@@ -950,7 +923,6 @@ export const CARDS = [
     "playOnly": {
       "persona": "Fujikura Uruka"
     },
-    "hasArt": true,
     "effects": [
       {
         "type": "aura",
@@ -966,8 +938,8 @@ export const CARDS = [
     "cost": 2,
     "inf": 0,
     "gems": 0,
-    "text": "Play only if your Persona is Fujikura Uruka and only during a clash.\n-\nEach player chooses 1 Content card on this Platform. Delete all other Content cards on this Platform.",
-    "art": "art/Bear With Me.png",
+    "text": "Play only if your Persona is Fujikura Uruka and only during a clash.\r\n-\r\nEach player chooses 1 Content card on this Platform. Delete all other Content cards on this Platform.",
+    "art": "art/gen1/Bear With Me.png",
     "class": "Yabai",
     "style": "⬤︎ Purple",
     "genre": "✏️ Creatives",
@@ -983,8 +955,7 @@ export const CARDS = [
         "type": "bearWithMe",
         "prompt": "Bear With Me: choose 1 Content card on this platform to keep (all others are deleted)"
       }
-    ],
-    "hasArt": true
+    ]
   },
   {
     "id": "op01-030",
@@ -994,7 +965,7 @@ export const CARDS = [
     "inf": 0,
     "gems": 0,
     "text": "Gain 2 💎. Then, if your Persona is Fujikura Uruka, the next Content card you play this round costs 1 💎 less.",
-    "art": "art/Freeze Spit.png",
+    "art": "art/gen1/Freeze Spit.png",
     "class": "Yabai",
     "style": "⬛︎ Green",
     "genre": "✏️ Creatives",
@@ -1014,8 +985,7 @@ export const CARDS = [
           "persona": "Fujikura Uruka"
         }
       }
-    ],
-    "hasArt": true
+    ]
   },
   {
     "id": "op01-031",
@@ -1025,7 +995,7 @@ export const CARDS = [
     "inf": 3,
     "gems": 3,
     "text": "The first time you play a Content card each round: Rinkou Ashelia gains +2 ⭐ this round.",
-    "art": "art/Rinkou Ashelia.jpg",
+    "art": "art/gen1/Rinkou Ashelia.png",
     "style": "⬤︎ Purple",
     "genre": "✏️ Creatives",
     "set": "Gen 1",
@@ -1036,8 +1006,7 @@ export const CARDS = [
         "play": "Content",
         "amount": 2
       }
-    ],
-    "hasArt": true
+    ]
   },
   {
     "id": "op01-032",
@@ -1046,8 +1015,8 @@ export const CARDS = [
     "cost": 3,
     "inf": 6,
     "gems": 4,
-    "text": "The first time you play a Content card each round: Rinkou Ashelia gains +3 ⭐ this round.\n\nDiscard: Move your Persona to this Platform. Use only during a clash.",
-    "art": "art/Rinkou Ashelia, Lia.png",
+    "text": "The first time you play a Content card each round: Rinkou Ashelia gains +3 ⭐ this round.\r\n\r\nDiscard: Move your Persona to this Platform. Use only during a clash.",
+    "art": "art/gen1/Rinkou Ashelia, Lia.png",
     "class": "Sugoi",
     "style": "⬤︎ Purple",
     "genre": "✏️ Creatives",
@@ -1060,7 +1029,6 @@ export const CARDS = [
         "amount": 3
       }
     ],
-    "hasArt": true,
     "effects": [
       {
         "type": "discardAbility",
@@ -1080,8 +1048,8 @@ export const CARDS = [
     "cost": 7,
     "inf": 7,
     "gems": 5,
-    "text": "The first time you play a Content card each round: Rinkou Ashelia gains +4 ⭐ this round and you draw 1 card.\n\nDiscard: Move your Persona to this Platform. Use only during a clash.",
-    "art": "art/Rinkou Ashelia, Cheerful Virus.png",
+    "text": "The first time you play a Content card each round: Rinkou Ashelia gains +4 ⭐ this round and you draw 1 card.\r\n\r\nDiscard: Move your Persona to this Platform. Use only during a clash.",
+    "art": "art/gen1/Rinkou Ashelia, Cheerful Virus.png",
     "class": "Yabai",
     "style": "⬤︎ Purple",
     "genre": "✏️ Creatives",
@@ -1095,7 +1063,6 @@ export const CARDS = [
         "draw": 1
       }
     ],
-    "hasArt": true,
     "effects": [
       {
         "type": "discardAbility",
@@ -1115,8 +1082,8 @@ export const CARDS = [
     "cost": 5,
     "inf": 8,
     "gems": 0,
-    "text": "Play only if your Persona is Rinkou Ashelia.\n-\nClash Reward: If you have at least 5 more ⭐ than your opponents at this Platform, draw 2 cards.",
-    "art": "art/Feet- A Holy Deep Dive.png",
+    "text": "Play only if your Persona is Rinkou Ashelia.\r\n-\r\nClash Reward: If you have at least 5 more ⭐ than your opponents at this Platform, draw 2 cards.",
+    "art": "art/gen1/Feet A Holy Deep Dive.png",
     "class": "Yabai",
     "style": "⬛︎ Green",
     "genre": "✏️ Creatives",
@@ -1126,7 +1093,6 @@ export const CARDS = [
     "playOnly": {
       "persona": "Rinkou Ashelia"
     },
-    "hasArt": true,
     "effects": [
       {
         "type": "clashReward",
@@ -1151,8 +1117,8 @@ export const CARDS = [
     "cost": 1,
     "inf": 0,
     "gems": 0,
-    "text": "Play only if your Persona is Rinkou Ashelia and only during a clash.\n-\nDouble the printed ⭐ on 1 Content card this clash.",
-    "art": "art/Brother Lover.png",
+    "text": "Play only if your Persona is Rinkou Ashelia and only during a clash.\r\n-\r\nDouble the printed ⭐ on 1 Content card this clash.",
+    "art": "art/gen1/Brother Lover.png",
     "class": "Yabai",
     "style": "◆︎ Red",
     "genre": "✏️ Creatives",
@@ -1175,8 +1141,7 @@ export const CARDS = [
           "do": "double"
         }
       }
-    ],
-    "hasArt": true
+    ]
   },
   {
     "id": "op01-036",
@@ -1186,7 +1151,7 @@ export const CARDS = [
     "inf": 0,
     "gems": 0,
     "text": "Return up to 1 Content card from your Trash to your hand. If your Persona is Rinkou Ashelia, return up to 2 Content cards instead.",
-    "art": "art/Internet Historian.png",
+    "art": "art/gen1/Internet Historian.png",
     "class": "Yabai",
     "style": "◆︎ Red",
     "genre": "✏️ Creatives",
@@ -1203,8 +1168,7 @@ export const CARDS = [
         },
         "prompt": "Internet Historian: return Content cards from your Trash to your hand"
       }
-    ],
-    "hasArt": true
+    ]
   },
   {
     "id": "op01-037",
@@ -1214,7 +1178,7 @@ export const CARDS = [
     "inf": 4,
     "gems": 3,
     "text": "Clash Reward: Draw 1 card.",
-    "art": "art/Tenma Maemi.png",
+    "art": "art/gen1/Tenma Maemi.png",
     "style": "⬛︎ Green",
     "genre": "❤️ Experience",
     "set": "Gen 1",
@@ -1226,8 +1190,7 @@ export const CARDS = [
         "amount": 1
       }
     ],
-    "clashRewardText": "Draw 1 card.",
-    "hasArt": true
+    "clashRewardText": "Draw 1 card."
   },
   {
     "id": "op01-038",
@@ -1236,8 +1199,8 @@ export const CARDS = [
     "cost": 3,
     "inf": 6,
     "gems": 4,
-    "text": "Clash Reward: Draw 1 card.\n\nDiscard: Gain 1 💎.",
-    "art": "art/Tenma Maemi, Mii-chan.png",
+    "text": "Clash Reward: Draw 1 card.\r\n\r\nDiscard: Gain 1 💎.",
+    "art": "art/gen1/Tenma Maemi, Mii-chan.png",
     "class": "Sugoi",
     "style": "⬛︎ Green",
     "genre": "❤️ Experience",
@@ -1251,7 +1214,6 @@ export const CARDS = [
       }
     ],
     "clashRewardText": "Draw 1 card.",
-    "hasArt": true,
     "effects": [
       {
         "type": "discardAbility",
@@ -1272,8 +1234,8 @@ export const CARDS = [
     "cost": 8,
     "inf": 7,
     "gems": 6,
-    "text": "While you have 5 or more cards in your hand: Tenma Maemi gains +4 ⭐.\n\nClash Reward: Draw 2 cards.\n\nDiscard: Gain 1 💎.",
-    "art": "art/Tenma Maemi, 30ma.png",
+    "text": "While you have 5 or more cards in your hand: Tenma Maemi gains +4 ⭐.\r\n\r\nClash Reward: Draw 2 cards.\r\n\r\nDiscard: Gain 1 💎.",
+    "art": "art/gen1/Tenma Maemi, 30ma.png",
     "class": "Yabai",
     "style": "⬛︎ Green",
     "genre": "❤️ Experience",
@@ -1296,7 +1258,6 @@ export const CARDS = [
         "amount": 4
       }
     ],
-    "hasArt": true,
     "effects": [
       {
         "type": "discardAbility",
@@ -1317,8 +1278,8 @@ export const CARDS = [
     "cost": 5,
     "inf": 7,
     "gems": 0,
-    "text": "Play only if your Persona is Tenma Maemi.\n-\nThis card gains +1 ⭐ for each card in your hand.",
-    "art": "art/Cabbage Voice Pack.png",
+    "text": "Play only if your Persona is Tenma Maemi.\r\n-\r\nThis card gains +1 ⭐ for each card in your hand.",
+    "art": "art/gen1/Cabbage Voice Pack.png",
     "class": "Yabai",
     "style": "◆︎ Red",
     "genre": "❤️ Experience",
@@ -1328,7 +1289,6 @@ export const CARDS = [
     "playOnly": {
       "persona": "Tenma Maemi"
     },
-    "hasArt": true,
     "effects": [
       {
         "type": "selfStars",
@@ -1344,8 +1304,8 @@ export const CARDS = [
     "cost": 2,
     "inf": 0,
     "gems": 0,
-    "text": "Play only if your Persona is Tenma Maemi.\n-\nDelete 1 Content card with 🟡 less than the number of cards in your hand.",
-    "art": "art/Yell at Fish.png",
+    "text": "Play only if your Persona is Tenma Maemi.\r\n-\r\nDelete 1 Content card with 🟡 less than the number of cards in your hand.",
+    "art": "art/gen1/Yell at Fish.png",
     "class": "Yabai",
     "style": "⬤︎ Purple",
     "genre": "❤️ Experience",
@@ -1368,8 +1328,7 @@ export const CARDS = [
           "do": "delete"
         }
       }
-    ],
-    "hasArt": true
+    ]
   },
   {
     "id": "op01-042",
@@ -1378,8 +1337,8 @@ export const CARDS = [
     "cost": 3,
     "inf": 0,
     "gems": 0,
-    "text": "Play only during a clash.\n-\nYour Persona gains +8 ⭐ this clash. If your Persona is Tenma Maemi, this costs 1 💎 less to play.",
-    "art": "art/SSD Support Funds.png",
+    "text": "Play only during a clash.\r\n-\r\nYour Persona gains +8 ⭐ this clash. If your Persona is Tenma Maemi, this costs 1 💎 less to play.",
+    "art": "art/gen1/SSD Support Funds.png",
     "class": "Yabai",
     "style": "⬛︎ Green",
     "genre": "🎮 Poggers",
@@ -1402,8 +1361,7 @@ export const CARDS = [
           "persona": "Tenma Maemi"
         }
       }
-    ],
-    "hasArt": true
+    ]
   },
   {
     "id": "op01-043",
@@ -1412,8 +1370,8 @@ export const CARDS = [
     "cost": 6,
     "inf": 7,
     "gems": 5,
-    "text": "Clash Reward: Gain 3 💎.\n\nDiscard: Your Persona gains +2 ⭐ this clash.",
-    "art": "art/Pipkin Pippa, Yabbit.png",
+    "text": "Clash Reward: Gain 3 💎.\r\n\r\nDiscard: Your Persona gains +2 ⭐ this clash.",
+    "art": "art/gen1/Pipkin Pippa, Yabbit.png",
     "class": "Yabai",
     "style": "◆︎ Red",
     "genre": "💬 Zatsudan",
@@ -1427,7 +1385,6 @@ export const CARDS = [
       }
     ],
     "clashRewardText": "Gain 3 💎.",
-    "hasArt": true,
     "effects": [
       {
         "type": "discardAbility",
@@ -1449,14 +1406,13 @@ export const CARDS = [
     "cost": 7,
     "inf": 7,
     "gems": 5,
-    "text": "Clash Reward Draw 2 cards, then discard 1 card.\n\nDiscard: Gain 1💎.",
-    "art": "art/Tenma Maemi, Mrs. Worldwide.png",
+    "text": "Clash Reward Draw 2 cards, then discard 1 card.\r\n\r\nDiscard: Gain 1💎.",
+    "art": "art/gen1/Tenma Maemi, Mrs. Worldwide.png",
     "class": "Yabai",
     "style": "⬛︎ Green",
     "genre": "❤️ Experience",
     "set": "Gen 1",
     "source": "Play tests, Kickstarter, Pre-Debut Beta Deck, Photo (Debut)",
-    "hasArt": true,
     "effects": [
       {
         "type": "clashReward",
@@ -1493,8 +1449,8 @@ export const CARDS = [
     "cost": 6,
     "inf": 10,
     "gems": 0,
-    "text": "Play only if Your Persona is Pipkin Pippa.\n-\nClash Reward You may play 1 Content card with 🟡3 or less on Pipkin Pippa's Platform for free.",
-    "art": "art/Pippa The Rippa.png",
+    "text": "Play only if Your Persona is Pipkin Pippa.\r\n-\r\nClash Reward You may play 1 Content card with 🟡3 or less on Pipkin Pippa's Platform for free.",
+    "art": "art/gen1/Pippa The Rippa.png",
     "class": "Yabai",
     "style": "◆︎ Red",
     "genre": "🎮 Poggers",
@@ -1504,7 +1460,6 @@ export const CARDS = [
     "playOnly": {
       "persona": "Pipkin Pippa"
     },
-    "hasArt": true,
     "effects": [
       {
         "type": "clashReward",
@@ -1527,7 +1482,7 @@ export const CARDS = [
     "inf": 0,
     "gems": 0,
     "text": "Delete 1 opposing Content card with 6 ⭐ or less.",
-    "art": "art/Vomit Drawer.png",
+    "art": "art/gen1/Vomit Drawer.png",
     "class": "Yabai",
     "style": "⬤︎ Purple",
     "genre": "💬 Zatsudan",
@@ -1546,8 +1501,7 @@ export const CARDS = [
           "do": "delete"
         }
       }
-    ],
-    "hasArt": true
+    ]
   },
   {
     "id": "op01-047",
@@ -1557,14 +1511,13 @@ export const CARDS = [
     "inf": 2,
     "gems": 0,
     "text": "When you play another Content card on this Platform: You may move this card to another Platform.",
-    "art": "art/Depressed Single Divorced Fathers.png",
+    "art": "art/gen1/Depressed Single Divorced Fathers.png",
     "class": "Yabai",
     "style": "⬤︎ Purple",
     "genre": "❤️ Experience",
     "set": "Gen 1",
     "flavour": "I want to make them worse.",
     "source": "Play tests, Pre-Debut Beta Deck, Photo (Debut)",
-    "hasArt": true,
     "effects": [
       {
         "type": "onPlay",
@@ -1587,8 +1540,8 @@ export const CARDS = [
     "cost": 2,
     "inf": 0,
     "gems": 0,
-    "text": "Play only if your Persona is Tenma Maemi.\n-\n1 Persona or Content card of your choice gains ⭐ equal to the number of cards in your hand this round.",
-    "art": "art/FAQ YU.png",
+    "text": "Play only if your Persona is Tenma Maemi.\r\n-\r\n1 Persona or Content card of your choice gains ⭐ equal to the number of cards in your hand this round.",
+    "art": "art/gen1/FAQ YU.png",
     "class": "Yabai",
     "style": "⬛︎ Green",
     "genre": "✏️ Creatives",
@@ -1612,8 +1565,7 @@ export const CARDS = [
           "amountFrom": "hand"
         }
       }
-    ],
-    "hasArt": true
+    ]
   },
   {
     "id": "op01-049",
@@ -1623,14 +1575,13 @@ export const CARDS = [
     "inf": 0,
     "gems": 0,
     "text": "",
-    "art": "art/Click Clock.png",
+    "art": "art/gen1/Click Clock.png",
     "class": "Basic",
     "set": "Gen 1",
-    "tags": "Independent\nNetworking",
+    "tags": "Independent\r\nNetworking",
     "source": "Play tests, TTS (3 Dec @ 6:00pm), Pre-Debut Beta Deck",
     "threshold": 3,
-    "subValue": 400000,
-    "hasArt": true
+    "subValue": 400000
   },
   {
     "id": "op01-050",
@@ -1640,14 +1591,13 @@ export const CARDS = [
     "inf": 0,
     "gems": 0,
     "text": "Clash Reward: Draw 1 card.",
-    "art": "art/SwiftChat.png",
+    "art": "art/gen1/SwiftChat.png",
     "class": "Basic",
     "set": "Gen 1",
     "tags": "Networking",
     "source": "TTS (3 Dec @ 6:00pm), Debut artwork",
     "threshold": 2,
     "subValue": 300000,
-    "hasArt": true,
     "effects": [
       {
         "type": "platformReward",
@@ -1670,14 +1620,13 @@ export const CARDS = [
     "inf": 0,
     "gems": 0,
     "text": "Clash Reward: You may play 1 Content card with 🟡1 or less from your hand to another Platform for free.",
-    "art": "art/Chirpper.png",
+    "art": "art/gen1/Chirpper.png",
     "class": "Sugoi",
     "set": "Gen 1",
     "tags": "Networking",
     "source": "TTS (3 Dec @ 6:00pm), Debut artwork",
     "threshold": 4,
     "subValue": 600000,
-    "hasArt": true,
     "effects": [
       {
         "type": "platformReward",
@@ -1700,14 +1649,13 @@ export const CARDS = [
     "inf": 0,
     "gems": 0,
     "text": "Clash Reward: Return 1 Content card from your Trash to your hand.",
-    "art": "art/Sudden Clips.png",
+    "art": "art/gen1/Sudden Clips.png",
     "class": "Basic",
     "set": "Gen 1",
     "tags": "Image Sharing",
     "source": "Play tests, TTS (3 Dec @ 6:00pm), Pre-Debut Beta Deck",
     "threshold": 2,
     "subValue": 300000,
-    "hasArt": true,
     "effects": [
       {
         "type": "platformReward",
@@ -1731,14 +1679,13 @@ export const CARDS = [
     "inf": 0,
     "gems": 0,
     "text": "Clash Reward: You may move 1 of your Content cards from this Platform to another Platform.",
-    "art": "art/Sketch Book.png",
+    "art": "art/gen1/Sketch Book.png",
     "class": "Sugoi",
     "set": "Gen 1",
     "tags": "Image Sharing",
     "source": "Patreon TTS preview, Play tests (pre-artwork), Photo (Retail)",
     "threshold": 3,
     "subValue": 500000,
-    "hasArt": true,
     "effects": [
       {
         "type": "platformReward",
@@ -1759,14 +1706,13 @@ export const CARDS = [
     "inf": 0,
     "gems": 0,
     "text": "Clash Reward: Gain 1 💎.",
-    "art": "art/Yappers.png",
+    "art": "art/gen1/Yappers.png",
     "class": "Basic",
     "set": "Gen 1",
     "tags": "Podcasting",
     "source": "Play tests, TTS (3 Dec @ 6:00pm), Pre-Debut Beta Deck",
     "threshold": 4,
     "subValue": 600000,
-    "hasArt": true,
     "effects": [
       {
         "type": "platformReward",
@@ -1789,14 +1735,13 @@ export const CARDS = [
     "inf": 0,
     "gems": 0,
     "text": "Clash Reward: You may move 1 of your 🌠 from another Platform to this Platform without triggering its Clash Reward.",
-    "art": "art/Convulsive Movement.png",
+    "art": "art/gen1/Convulsive Movement.png",
     "class": "Sugoi",
     "set": "Gen 1",
     "tags": "Streaming",
     "source": "Play tests, Artwork (Debut), Photo (Retail)",
     "threshold": 3,
     "subValue": 500000,
-    "hasArt": true,
     "effects": [
       {
         "type": "platformReward",
@@ -1820,14 +1765,13 @@ export const CARDS = [
     "inf": 0,
     "gems": 0,
     "text": "",
-    "art": "art/Gamble Punch.png",
+    "art": "art/gen1/Gamble Punch.png",
     "class": "Basic",
     "set": "Gen 1",
-    "tags": "Independent\nStreaming",
+    "tags": "Independent\r\nStreaming",
     "source": "Play tests, Pre-Debut Beta Deck",
     "threshold": 2,
-    "subValue": 300000,
-    "hasArt": true
+    "subValue": 300000
   },
   {
     "id": "op01-057",
@@ -1837,14 +1781,13 @@ export const CARDS = [
     "inf": 0,
     "gems": 0,
     "text": "Clash Reward: Copy the Clash Reward of another Platform in play.",
-    "art": "art/Bobby Bobby.png",
+    "art": "art/gen1/Bobby Bobby.png",
     "class": "Sugoi",
     "set": "Gen 1",
     "tags": "Streaming",
     "source": "Play tests, Photo (Retail, Debut)",
     "threshold": 3,
     "subValue": 400000,
-    "hasArt": true,
     "effects": [
       {
         "type": "platformReward",
@@ -1865,14 +1808,13 @@ export const CARDS = [
     "inf": 0,
     "gems": 0,
     "text": "Clash Reward: You may delete 1 Content card with 🟡2 or less in play.",
-    "art": "art/Historical Lion.png",
+    "art": "art/gen1/Historical Lion.png",
     "class": "Sugoi",
     "set": "Gen 1",
     "tags": "Podcasting",
     "source": "Play tests, Pre-Debut Beta Deck, Artwork (Debut), Photo (Retail)",
     "threshold": 3,
     "subValue": 400000,
-    "hasArt": true,
     "effects": [
       {
         "type": "platformReward",
@@ -1903,14 +1845,13 @@ export const CARDS = [
     "inf": 0,
     "gems": 0,
     "text": "",
-    "art": "art/Phase Weekly.png",
+    "art": "art/gen1/Phase Weekly.png",
     "class": "Basic",
     "set": "Gen 1",
-    "tags": "Independent\nPodcasting",
+    "tags": "Independent\r\nPodcasting",
     "source": "Play tests, TTS (3 Dec @ 6:00pm), Rules, Pre-Debut Beta Deck, Artwork (Debut)",
     "threshold": 4,
-    "subValue": 600000,
-    "hasArt": true
+    "subValue": 600000
   },
   {
     "id": "op01-060",
@@ -1920,14 +1861,13 @@ export const CARDS = [
     "inf": 0,
     "gems": 0,
     "text": "",
-    "art": "art/RapidTele.png",
+    "art": "art/gen1/RapidTele.png",
     "class": "Basic",
     "set": "Gen 1",
-    "tags": "Independent\nImage Sharing",
+    "tags": "Independent\r\nImage Sharing",
     "source": "Play tests, TTS (3 Dec @ 6:00pm), Pre-Debut Beta Deck, Photo (Retail)",
     "threshold": 3,
-    "subValue": 500000,
-    "hasArt": true
+    "subValue": 500000
   },
   {
     "id": "op01-061",
@@ -1937,14 +1877,13 @@ export const CARDS = [
     "inf": 0,
     "gems": 0,
     "text": "",
-    "art": "art/Heartbreaker Hotline.png",
+    "art": "art/gen1/Heartbreaker Hotline.png",
     "class": "Basic",
     "set": "Gen 1",
-    "tags": "Independent\nVideo",
+    "tags": "Independent\r\nVideo",
     "source": "Play tests (pre-artwork), Rules, Pre-Debut Beta Deck",
     "threshold": 1,
-    "subValue": 200000,
-    "hasArt": true
+    "subValue": 200000
   },
   {
     "id": "op01-062",
@@ -1954,14 +1893,13 @@ export const CARDS = [
     "inf": 0,
     "gems": 0,
     "text": "Clash Reward: You may play 1 Content card with 🟡2 or less on this Platform for free.",
-    "art": "art/Soul Exciting!.png",
+    "art": "art/gen1/Soul Exciting!.png",
     "class": "Basic",
     "set": "Gen 1",
     "tags": "Video",
     "source": "Play tests, TTS (3 Dec @ 6:00pm), Pre-Debut Beta Deck",
     "threshold": 3,
     "subValue": 400000,
-    "hasArt": true,
     "effects": [
       {
         "type": "platformReward",
@@ -1983,14 +1921,13 @@ export const CARDS = [
     "inf": 0,
     "gems": 0,
     "text": "",
-    "art": "art/Sad Girl Company.png",
+    "art": "art/gen1/Sad Girl Company.png",
     "class": "Basic",
     "set": "Gen 1",
-    "tags": "Independent\nVideo",
+    "tags": "Independent\r\nVideo",
     "source": "Play tests, TTS (3 Dec @ 6:00pm), Pre-Debut Beta Deck",
     "threshold": 3,
-    "subValue": 500000,
-    "hasArt": true
+    "subValue": 500000
   },
   {
     "id": "op01-064",
@@ -1999,15 +1936,14 @@ export const CARDS = [
     "cost": 0,
     "inf": 0,
     "gems": 0,
-    "text": "Pippa Pipkin's deck only.\n\nWhile you have at least 1 Content card on every Platform: Your Persona gains +5 ⭐ on this Platform.",
-    "art": "art/Pippa_s Quarters.png",
+    "text": "Pippa Pipkin's deck only.\r\n\r\nWhile you have at least 1 Content card on every Platform: Your Persona gains +5 ⭐ on this Platform.",
+    "art": "art/gen1/Pippa's Quarters.png",
     "class": "Yabai",
     "set": "Gen 1",
     "tags": "Phase Connect",
     "source": "Play tests (pre-artwork), Photo (Retail)",
     "threshold": 3,
     "subValue": 300000,
-    "hasArt": true,
     "effects": [
       {
         "type": "deckOnly",
@@ -2029,15 +1965,14 @@ export const CARDS = [
     "cost": 0,
     "inf": 0,
     "gems": 0,
-    "text": "Utatanae Nasa's deck only.\n\nWhen you play a Content card on this Platform: You may pay 2 💎 to draw 1 card.",
-    "art": "art/Nasa_s Dream.png",
+    "text": "Utatanae Nasa's deck only.\r\n\r\nWhen you play a Content card on this Platform: You may pay 2 💎 to draw 1 card.",
+    "art": "art/gen1/Nasa's Dream.png",
     "class": "Yabai",
     "set": "Gen 1",
     "tags": "Phase Connect",
     "source": "Photo (Retail)",
     "threshold": 3,
     "subValue": 500000,
-    "hasArt": true,
     "effects": [
       {
         "type": "deckOnly",
@@ -2071,15 +2006,14 @@ export const CARDS = [
     "cost": 0,
     "inf": 0,
     "gems": 0,
-    "text": "Hakushika Iori's deck only.\n\nThe first time you play an Action card while clashing at this Platform: Gain 1 💎.",
-    "art": "art/Iori_s Den.png",
+    "text": "Hakushika Iori's deck only.\r\n\r\nThe first time you play an Action card while clashing at this Platform: Gain 1 💎.",
+    "art": "art/gen1/Iori's Den.png",
     "class": "Yabai",
     "set": "Gen 1",
     "tags": "Phase Connect",
     "source": "Play tests (pre-artwork), Photo (Retail)",
     "threshold": 3,
     "subValue": 500000,
-    "hasArt": true,
     "effects": [
       {
         "type": "deckOnly",
@@ -2107,15 +2041,14 @@ export const CARDS = [
     "cost": 0,
     "inf": 0,
     "gems": 0,
-    "text": "Shisui Michiru's deck only.\n\nContent cards with 🟡5 or more can't be played on this Platform.",
-    "art": "art/Michiru_s Cabin.png",
+    "text": "Shisui Michiru's deck only.\r\n\r\nContent cards with 🟡5 or more can't be played on this Platform.",
+    "art": "art/gen1/Michiru's Cabin.png",
     "class": "Yabai",
     "set": "Gen 1",
     "tags": "Phase Connect",
     "source": "Photo (Retail)",
     "threshold": 3,
     "subValue": 500000,
-    "hasArt": true,
     "effects": [
       {
         "type": "deckOnly",
@@ -2134,15 +2067,14 @@ export const CARDS = [
     "cost": 0,
     "inf": 0,
     "gems": 0,
-    "text": "Fujikura Uruka's deck only.\n\nWhen you play a Content card on this Platform: Delete all of your other Content cards on this Platform.",
-    "art": "art/Uruka_s Lounge.png",
+    "text": "Fujikura Uruka's deck only.\r\n\r\nWhen you play a Content card on this Platform: Delete all of your other Content cards on this Platform.",
+    "art": "art/gen1/Uruka's Lounge.png",
     "class": "Yabai",
     "set": "Gen 1",
     "tags": "Phase Connect",
     "source": "TTS (3 Dec @ 6:00pm), Photo (Retail)",
     "threshold": 3,
     "subValue": 500000,
-    "hasArt": true,
     "effects": [
       {
         "type": "deckOnly",
@@ -2169,15 +2101,14 @@ export const CARDS = [
     "cost": 0,
     "inf": 0,
     "gems": 0,
-    "text": "Rinkou Ashelia's deck only.\n\nContent cards cost 🟡1 less to play on this Platform.",
-    "art": "art/Lia_s Network.png",
+    "text": "Rinkou Ashelia's deck only.\r\n\r\nContent cards cost 🟡1 less to play on this Platform.",
+    "art": "art/gen1/Lia's Network.png",
     "class": "Yabai",
     "set": "Gen 1",
     "tags": "Phase Connect",
     "source": "Photo (Retail)",
     "threshold": 3,
     "subValue": 500000,
-    "hasArt": true,
     "effects": [
       {
         "type": "deckOnly",
@@ -2196,15 +2127,14 @@ export const CARDS = [
     "cost": 0,
     "inf": 0,
     "gems": 0,
-    "text": "Tenma Maemi's deck only.\n\nWhen your Persona moves to this Platform: Draw 1 card.",
-    "art": "art/Tenma_s Basement.png",
+    "text": "Tenma Maemi's deck only.\r\n\r\nWhen your Persona moves to this Platform: Draw 1 card.",
+    "art": "art/gen1/Tenma's Basement.png",
     "class": "Yabai",
     "set": "Gen 1",
     "tags": "Phase Connect",
     "source": "TTS (3 Dec @ 6:00pm), Photo (Retail)",
     "threshold": 2,
     "subValue": 400000,
-    "hasArt": true,
     "effects": [
       {
         "type": "deckOnly",
@@ -2230,14 +2160,13 @@ export const CARDS = [
     "inf": 3,
     "gems": 0,
     "text": "Discard: Your Persona gains +2 ⭐ this clash.",
-    "art": "art/Game Flavor of the Week.png",
+    "art": "art/gen1/Game Flavor of the Week.png",
     "class": "Basic",
     "style": "◆︎ Red",
     "genre": "🎮 Poggers",
     "set": "Gen 1",
     "flavour": "Look, there's trash.",
     "source": "Play tests, TTS (3 Dec @ 6:00pm), Pre-Debut Beta Deck, Artwork (Debut, Retail), Photo (Retail, Debut)",
-    "hasArt": true,
     "effects": [
       {
         "type": "discardAbility",
@@ -2260,14 +2189,13 @@ export const CARDS = [
     "inf": 6,
     "gems": 0,
     "text": "",
-    "art": "art/POGCHAMP.png",
+    "art": "art/gen1/POGCHAMP.png",
     "class": "Basic",
     "style": "◆︎ Red",
     "genre": "🎮 Poggers",
     "set": "Gen 1",
     "flavour": "I'll even yassify myself.",
-    "source": "Play tests (pre-artwork), TTS (3 Dec @ 6:00pm), Artwork (Debut, Retail), Photo (Retail)",
-    "hasArt": true
+    "source": "Play tests (pre-artwork), TTS (3 Dec @ 6:00pm), Artwork (Debut, Retail), Photo (Retail)"
   },
   {
     "id": "op01-073",
@@ -2277,14 +2205,13 @@ export const CARDS = [
     "inf": 6,
     "gems": 0,
     "text": "While you are Dominating this Platform: This card gains +3 ⭐.",
-    "art": "art/Continued Gameplay.png",
+    "art": "art/gen1/Continued Gameplay.png",
     "class": "Basic",
     "style": "◆︎ Red",
     "genre": "🎮 Poggers",
     "set": "Gen 1",
     "flavour": "That rat has mad rizz.",
     "source": "Play tests, TTS (3 Dec @ 6:00pm), Pre-Debut Beta Deck, Photo (Pre-Debut Promo, Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "selfStars",
@@ -2303,14 +2230,13 @@ export const CARDS = [
     "inf": 7,
     "gems": 0,
     "text": "When you play an Action during a clash at this Platform: This card gains +3 ⭐ this clash.",
-    "art": "art/Closed Beta.png",
+    "art": "art/gen1/Closed Beta.png",
     "class": "Sugoi",
     "style": "◆︎ Red",
     "genre": "🎮 Poggers",
     "set": "Gen 1",
     "flavour": "My son cleans his bedroom every week.",
     "source": "Photo (Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "onPlay",
@@ -2334,14 +2260,13 @@ export const CARDS = [
     "inf": 8,
     "gems": 0,
     "text": "Clash Reward: If you are Dominating this Platform, gain 1 🌠 on another Platform.",
-    "art": "art/Long Game.png",
+    "art": "art/gen1/Long Game.png",
     "class": "Yabai",
     "style": "◆︎ Red",
     "genre": "🎮 Poggers",
     "set": "Gen 1",
     "flavour": "I want to go to Vancouver.",
     "source": "Play tests (pre-artwork), Photo (Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "clashReward",
@@ -2366,14 +2291,13 @@ export const CARDS = [
     "inf": 21,
     "gems": 0,
     "text": "",
-    "art": "art/Gaming Marathon.png",
+    "art": "art/gen1/Gaming Marathon.png",
     "class": "Sugoi",
     "style": "◆︎ Red",
     "genre": "🎮 Poggers",
     "set": "Gen 1",
     "flavour": "Nyaa..",
-    "source": "Photo (Con Exclusive 2025, Retail)",
-    "hasArt": true
+    "source": "Photo (Con Exclusive 2025, Retail)"
   },
   {
     "id": "op01-077",
@@ -2382,8 +2306,8 @@ export const CARDS = [
     "cost": 4,
     "inf": 0,
     "gems": 0,
-    "text": "Play only during a clash.\n-\nIf you are Dominating this Platform gain 1 🌠 on this Platform.",
-    "art": "art/Big Cheese.png",
+    "text": "Play only during a clash.\r\n-\r\nIf you are Dominating this Platform gain 1 🌠 on this Platform.",
+    "art": "art/gen1/Big Cheese.png",
     "class": "Sugoi",
     "style": "◆︎ Red",
     "genre": "🎮 Poggers",
@@ -2401,8 +2325,7 @@ export const CARDS = [
           "dominating": true
         }
       }
-    ],
-    "hasArt": true
+    ]
   },
   {
     "id": "op01-078",
@@ -2411,8 +2334,8 @@ export const CARDS = [
     "cost": 1,
     "inf": 0,
     "gems": 0,
-    "text": "Play only during a clash.\n-\nEach of your Content cards on this Platform gains +3 ⭐ this clash.",
-    "art": "art/Sweet Combo.png",
+    "text": "Play only during a clash.\r\n-\r\nEach of your Content cards on this Platform gains +3 ⭐ this clash.",
+    "art": "art/gen1/Sweet Combo.png",
     "class": "Basic",
     "style": "◆︎ Red",
     "genre": "🎮 Poggers",
@@ -2428,8 +2351,7 @@ export const CARDS = [
         "target": "self",
         "amount": 3
       }
-    ],
-    "hasArt": true
+    ]
   },
   {
     "id": "op01-079",
@@ -2439,14 +2361,13 @@ export const CARDS = [
     "inf": 4,
     "gems": 0,
     "text": "When Played, spend X 💎: Delete 1 opposing Content card on this Platform with 🟡X or less.",
-    "art": "art/Toxic Gaming.png",
+    "art": "art/gen1/Toxic Gaming.png",
     "class": "Yabai",
     "style": "⬤︎ Purple",
     "genre": "🎮 Poggers",
     "set": "Gen 1",
     "flavour": "I did my best to teabag despite there not being a crouch option.",
     "source": "TTS (3 Dec @ 6:00pm), Photo (Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "pickCard",
@@ -2472,14 +2393,13 @@ export const CARDS = [
     "inf": 5,
     "gems": 0,
     "text": "When Played: If you are Dominating this Platform, you may delete 1 Content card at this Platform with 🟡5 or more.",
-    "art": "art/Sweaty Gaming.png",
+    "art": "art/gen1/Sweaty Gaming.png",
     "class": "Basic",
     "style": "⬤︎ Purple",
     "genre": "🎮 Poggers",
     "set": "Gen 1",
     "flavour": "I'm gonna go crazy!!",
     "source": "TTS (3 Dec @ 6:00pm), Photo (Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "pickCard",
@@ -2507,7 +2427,7 @@ export const CARDS = [
     "inf": 7,
     "gems": 0,
     "text": "Discard: Move your Persona to this Platform. Use only during a clash.",
-    "art": "art/Spooky Town.png",
+    "art": "art/gen1/Spooky Town.png",
     "class": "Basic",
     "style": "⬤︎ Purple",
     "genre": "🎮 Poggers",
@@ -2517,7 +2437,6 @@ export const CARDS = [
     "playOnly": {
       "timing": "clash"
     },
-    "hasArt": true,
     "effects": [
       {
         "type": "discardAbility",
@@ -2538,14 +2457,13 @@ export const CARDS = [
     "inf": 8,
     "gems": 0,
     "text": "Players can't play Content cards with 🟡5 or more on this Platform.",
-    "art": "art/Puzzling Puzzle.png",
+    "art": "art/gen1/Puzzling Puzzle.png",
     "class": "Yabai",
     "style": "⬤︎ Purple",
     "genre": "🎮 Poggers",
     "set": "Gen 1",
     "flavour": "Why do much work when little work, work better?",
     "source": "Photo (Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "blockPlay",
@@ -2561,14 +2479,13 @@ export const CARDS = [
     "inf": 10,
     "gems": 0,
     "text": "When Played: If this on an Independent Platform, delete 1 opposing Content card on any Platform.",
-    "art": "art/Mahjong Tournament.png",
+    "art": "art/gen1/Mahjong Tournament.png",
     "class": "Sugoi",
     "style": "⬤︎ Purple",
     "genre": "🎮 Poggers",
     "set": "Gen 1",
     "flavour": "I'm gonna mahjong her world later at night!",
     "source": "Artwork (Debut, Retail), Photo (Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "pickCard",
@@ -2594,14 +2511,13 @@ export const CARDS = [
     "inf": 20,
     "gems": 0,
     "text": "Clash Reward: If you are Dominating this Platform, you may move this card to another Platform.",
-    "art": "art/Sus Gameplay.png",
+    "art": "art/gen1/Sus Gameplay.png",
     "class": "Yabai",
     "style": "⬤︎ Purple",
     "genre": "🎮 Poggers",
     "set": "Gen 1",
     "flavour": "Which one of you sons of [REDACTED] killed my wife?",
     "source": "Photo (Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "clashReward",
@@ -2627,7 +2543,7 @@ export const CARDS = [
     "inf": 0,
     "gems": 0,
     "text": "Delete 1 Content card with 🟡3 or less.",
-    "art": "art/Desk Slam.png",
+    "art": "art/gen1/Desk Slam.png",
     "class": "Basic",
     "style": "⬤︎ Purple",
     "genre": "🎮 Poggers",
@@ -2647,8 +2563,7 @@ export const CARDS = [
           "do": "delete"
         }
       }
-    ],
-    "hasArt": true
+    ]
   },
   {
     "id": "op01-086",
@@ -2657,8 +2572,8 @@ export const CARDS = [
     "cost": 4,
     "inf": 0,
     "gems": 0,
-    "text": "Play only during a clash.\n-\nDelete all Content on this Platform with 🟡5 or more.",
-    "art": "art/RIP.png",
+    "text": "Play only during a clash.\r\n-\r\nDelete all Content on this Platform with 🟡5 or more.",
+    "art": "art/gen1/RIP.png",
     "class": "Yabai",
     "style": "⬤︎ Purple",
     "genre": "🎮 Poggers",
@@ -2674,8 +2589,7 @@ export const CARDS = [
         "scope": "here",
         "costMin": 5
       }
-    ],
-    "hasArt": true
+    ]
   },
   {
     "id": "op01-087",
@@ -2685,14 +2599,13 @@ export const CARDS = [
     "inf": 3,
     "gems": 0,
     "text": "While you have another Poggers Content card in play: This card gets \"Kickback Gain 1 💎.\"",
-    "art": "art/Gold Farming.png",
+    "art": "art/gen1/Gold Farming.png",
     "class": "Basic",
     "style": "⬛︎ Green",
     "genre": "🎮 Poggers",
     "set": "Gen 1",
     "flavour": "I beat the #1 pvp guy on my server.",
     "source": "TTS (3 Dec @ 6:00pm), Photo (Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "kickback",
@@ -2711,14 +2624,13 @@ export const CARDS = [
     "inf": 5,
     "gems": 0,
     "text": "Discard: Gain 1 💎.",
-    "art": "art/Suck on Copium.png",
+    "art": "art/gen1/Suck on Copium.png",
     "class": "Basic",
     "style": "⬛︎ Green",
     "genre": "🎮 Poggers",
     "set": "Gen 1",
     "flavour": "I'm so straight. All I think about is kissing men.",
     "source": "TTS (3 Dec @ 6:00pm), Photo (Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "discardAbility",
@@ -2740,14 +2652,13 @@ export const CARDS = [
     "inf": 6,
     "gems": 0,
     "text": "When Played: Each opponent discards 1 card from their hand.",
-    "art": "art/Rage Game.png",
+    "art": "art/gen1/Rage Game.png",
     "class": "Basic",
     "style": "⬛︎ Green",
     "genre": "🎮 Poggers",
     "set": "Gen 1",
     "flavour": "I'm gonna drink 7 beers after this stream.",
     "source": "Play tests, Pre-Debut Beta Deck, Photo (Pre-Debut Promo, Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "discard",
@@ -2764,14 +2675,13 @@ export const CARDS = [
     "inf": 6,
     "gems": 0,
     "text": "When you play a Poggers Content card on this Platform (including this): Draw a card.",
-    "art": "art/Gamer Fluid.png",
+    "art": "art/gen1/Gamer Fluid.png",
     "class": "Yabai",
     "style": "⬛︎ Green",
     "genre": "🎮 Poggers",
     "set": "Gen 1",
     "flavour": "Imagine not using the gamer bottle.",
     "source": "Patreon TTS preview, Play tests (pre-artwork), Photo (Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "onPlay",
@@ -2797,14 +2707,13 @@ export const CARDS = [
     "inf": 10,
     "gems": 0,
     "text": "When Played: Each opponent discards 2 cards from their hand.",
-    "art": "art/Batsu Bracket.png",
+    "art": "art/gen1/Batsu Bracket.png",
     "class": "Basic",
     "style": "⬛︎ Green",
     "genre": "🎮 Poggers",
     "set": "Gen 1",
     "flavour": "People die when they are killed.",
     "source": "Artwork (Debut, Retail), Photo (Con Exclusive 2025, Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "discard",
@@ -2821,14 +2730,13 @@ export const CARDS = [
     "inf": 19,
     "gems": 0,
     "text": "While clashing at this Platform: Action cards cost you 3 less (to a minimum of 🟡1) to play.",
-    "art": "art/Speedrun.png",
+    "art": "art/gen1/Speedrun.png",
     "class": "Yabai",
     "style": "⬛︎ Green",
     "genre": "🎮 Poggers",
     "set": "Gen 1",
     "flavour": "Yippee!",
     "source": "Photo (Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "actionDiscount",
@@ -2844,8 +2752,8 @@ export const CARDS = [
     "cost": 3,
     "inf": 0,
     "gems": 0,
-    "text": "Play only during a clash.\n-\nYour Persona gains +3 ⭐ this clash, and each opponent discards 1 card from their hand.",
-    "art": "art/License for Winning.png",
+    "text": "Play only during a clash.\r\n-\r\nYour Persona gains +3 ⭐ this clash, and each opponent discards 1 card from their hand.",
+    "art": "art/gen1/License for Winning.png",
     "class": "Basic",
     "style": "⬛︎ Green",
     "genre": "🎮 Poggers",
@@ -2866,8 +2774,7 @@ export const CARDS = [
         "target": "opponent",
         "amount": 1
       }
-    ],
-    "hasArt": true
+    ]
   },
   {
     "id": "op01-094",
@@ -2876,8 +2783,8 @@ export const CARDS = [
     "cost": 4,
     "inf": 0,
     "gems": 0,
-    "text": "Play only during a clash.\n-\nYour Persona gains +10 ⭐ this clash, and if the current Platform is Independent, you gain 2 💎.",
-    "art": "art/Instant Replay.png",
+    "text": "Play only during a clash.\r\n-\r\nYour Persona gains +10 ⭐ this clash, and if the current Platform is Independent, you gain 2 💎.",
+    "art": "art/gen1/Instant Replay.png",
     "class": "Basic",
     "style": "⬛︎ Green",
     "genre": "🎮 Poggers",
@@ -2901,8 +2808,7 @@ export const CARDS = [
           "platformTag": "Independent"
         }
       }
-    ],
-    "hasArt": true
+    ]
   },
   {
     "id": "op01-095",
@@ -2912,14 +2818,13 @@ export const CARDS = [
     "inf": 2,
     "gems": 0,
     "text": "You may play this card on any Platform.",
-    "art": "art/Guerrilla Stream.png",
+    "art": "art/gen1/Guerrilla Stream.png",
     "class": "Basic",
     "style": "◆︎ Red",
     "genre": "💬 Zatsudan",
     "set": "Gen 1",
     "flavour": "The have [BlockGame] for monkies.",
     "source": "Play tests, Pre-Debut Beta Deck, Artwork (Debut, Retail), Photo (Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "playAnywhere"
@@ -2934,14 +2839,13 @@ export const CARDS = [
     "inf": 4,
     "gems": 0,
     "text": "While there is no opposing 🌠 on this Platform: This card gains +3 ⭐.",
-    "art": "art/You Laugh You Lose.png",
+    "art": "art/gen1/You Laugh You Lose.png",
     "class": "Sugoi",
     "style": "◆︎ Red",
     "genre": "💬 Zatsudan",
     "set": "Gen 1",
     "flavour": "Petite Homie",
     "source": "Play tests, Pre-Debut Beta Deck",
-    "hasArt": true,
     "effects": [
       {
         "type": "selfStars",
@@ -2960,14 +2864,13 @@ export const CARDS = [
     "inf": 4,
     "gems": 0,
     "text": "This card gains +3 ⭐ for each of the other Platforms where you have Zatsudan Content cards.",
-    "art": "art/Yapping.png",
+    "art": "art/gen1/Yapping.png",
     "class": "Sugoi",
     "style": "◆︎ Red",
     "genre": "💬 Zatsudan",
     "set": "Gen 1",
     "flavour": "I red pill my viewers.",
     "source": "Artwork (Debut), Photo (Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "selfStars",
@@ -2985,14 +2888,13 @@ export const CARDS = [
     "inf": 10,
     "gems": 0,
     "text": "Discard: Your Persona gains +2 ⭐ this clash.",
-    "art": "art/Moldy Bread.png",
+    "art": "art/gen1/Moldy Bread.png",
     "class": "Basic",
     "style": "◆︎ Red",
     "genre": "💬 Zatsudan",
     "set": "Gen 1",
     "flavour": "...getting food poisoning was not the plan.",
     "source": "Play tests, Pre-Debut Beta Deck, Photo (Pre-Debut Promo, Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "discardAbility",
@@ -3015,14 +2917,13 @@ export const CARDS = [
     "inf": 9,
     "gems": 0,
     "text": "Activate: Reveal the top card of your deck. For this round, this card gains ⭐ equal to the 🟡 of the revealed card, then return the revealed card face-down to the top of your deck.",
-    "art": "art/Burned Toast Tart.png",
+    "art": "art/gen1/Burned Toast Tart.png",
     "class": "Sugoi",
     "style": "◆︎ Red",
     "genre": "💬 Zatsudan",
     "set": "Gen 1",
     "flavour": "Bake for 9 to 10 minutes.",
     "source": "Photo (Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "activate",
@@ -3042,14 +2943,13 @@ export const CARDS = [
     "inf": 15,
     "gems": 0,
     "text": "While you have at least 1 Content card on every Platform: This card can't be deleted. (When the Platform this card is at is captured, this card stays in play and goes on the new Platform.)",
-    "art": "art/Rent Free.png",
+    "art": "art/gen1/Rent Free.png",
     "class": "Yabai",
     "style": "◆︎ Red",
     "genre": "💬 Zatsudan",
     "set": "Gen 1",
     "flavour": "You'll never get my money Taxma. I commit Taxma fraud.",
     "source": "Artwork (Debut), Photo (Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "undeletable"
@@ -3063,8 +2963,8 @@ export const CARDS = [
     "cost": 1,
     "inf": 0,
     "gems": 0,
-    "text": "Play only during a clash.\n-\nGive 1 of your Content cards +3 ⭐ this clash for each Platform where you have at least 1 Content card.",
-    "art": "art/Sound Alert Jumpscare.png",
+    "text": "Play only during a clash.\r\n-\r\nGive 1 of your Content cards +3 ⭐ this clash for each Platform where you have at least 1 Content card.",
+    "art": "art/gen1/Sound Alert Jumpscare.png",
     "class": "Basic",
     "style": "◆︎ Red",
     "genre": "💬 Zatsudan",
@@ -3087,8 +2987,7 @@ export const CARDS = [
           "amountPer": 3
         }
       }
-    ],
-    "hasArt": true
+    ]
   },
   {
     "id": "op01-102",
@@ -3097,8 +2996,8 @@ export const CARDS = [
     "cost": 4,
     "inf": 0,
     "gems": 0,
-    "text": "Play only during a clash.\n-\nMove 1 of your 🌠 from another Platform to this Platform.",
-    "art": "art/Gaslight.png",
+    "text": "Play only during a clash.\r\n-\r\nMove 1 of your 🌠 from another Platform to this Platform.",
+    "art": "art/gen1/Gaslight.png",
     "class": "Sugoi",
     "style": "◆︎ Red",
     "genre": "💬 Zatsudan",
@@ -3114,8 +3013,7 @@ export const CARDS = [
         "from": "other",
         "prompt": "Gaslight: move 1 of your 🌠 from which platform to this one?"
       }
-    ],
-    "hasArt": true
+    ]
   },
   {
     "id": "op01-103",
@@ -3125,7 +3023,7 @@ export const CARDS = [
     "inf": 2,
     "gems": 0,
     "text": "Discard: Move your Persona to this Platform. Use only during a clash.",
-    "art": "art/Debut Stream.png",
+    "art": "art/gen1/Debut Stream.png",
     "class": "Basic",
     "style": "⬤︎ Purple",
     "genre": "💬 Zatsudan",
@@ -3135,7 +3033,6 @@ export const CARDS = [
     "playOnly": {
       "timing": "clash"
     },
-    "hasArt": true,
     "effects": [
       {
         "type": "discardAbility",
@@ -3156,14 +3053,13 @@ export const CARDS = [
     "inf": 3,
     "gems": 0,
     "text": "When Played: Delete 1 opposing Content card on this Platform with ⭐ 5 or less.",
-    "art": "art/Edgelord Behavior.png",
+    "art": "art/gen1/Edgelord Behavior.png",
     "class": "Basic",
     "style": "⬤︎ Purple",
     "genre": "💬 Zatsudan",
     "set": "Gen 1",
     "flavour": "I would ever consider conceiving inside of my infertile womb is Estini-",
     "source": "Play tests (pre-artwork), Artwork (Retail - stream reveal, Debut, Retail - TTS deck builder), Photo (Con Exclusive 2025, Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "pickCard",
@@ -3187,14 +3083,13 @@ export const CARDS = [
     "inf": 5,
     "gems": 0,
     "text": "Activate Spend 3 💎: Your opponent moves 1 of their 🌠 from this Platform and selects another Platform to place it on.",
-    "art": "art/Disruption Stream.png",
+    "art": "art/gen1/Disruption Stream.png",
     "class": "Sugoi",
     "style": "⬤︎ Purple",
     "genre": "💬 Zatsudan",
     "set": "Gen 1",
     "flavour": "The only one you can [REDACTED] on is me, Dave",
     "source": "Photo (Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "activate",
@@ -3215,14 +3110,13 @@ export const CARDS = [
     "inf": 5,
     "gems": 0,
     "text": "You can play this card on any Platform.",
-    "art": "art/Drop In Call.png",
+    "art": "art/gen1/Drop In Call.png",
     "class": "Basic",
     "style": "⬤︎ Purple",
     "genre": "💬 Zatsudan",
     "set": "Gen 1",
     "flavour": "I'm a contrarian and I'm gonna say your statement sucks massive...",
     "source": "Play tests, Pre-Debut Beta Deck, Photo (Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "playAnywhere"
@@ -3237,14 +3131,13 @@ export const CARDS = [
     "inf": 10,
     "gems": 0,
     "text": "When Played: If this is on an Independent Platform, move 1 of your 🌠 from another Platform to this Platform.",
-    "art": "art/Big Head Moment.png",
+    "art": "art/gen1/Big Head Moment.png",
     "class": "Sugoi",
     "style": "⬤︎ Purple",
     "genre": "💬 Zatsudan",
     "set": "Gen 1",
     "flavour": "Don't touch. It's mine.",
     "source": "Artwork (Debut, Retail), Photo (Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "movePop",
@@ -3264,14 +3157,13 @@ export const CARDS = [
     "inf": 15,
     "gems": 0,
     "text": "When Played: Delete 1 opposing non-Zatsudan Content card in play.",
-    "art": "art/AD Break.png",
+    "art": "art/gen1/AD Break.png",
     "class": "Yabai",
     "style": "⬤︎ Purple",
     "genre": "💬 Zatsudan",
     "set": "Gen 1",
     "flavour": "Let's make toilet wine.",
     "source": "Artwork (Con Promo), Photo (Con Promo, Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "pickCard",
@@ -3294,8 +3186,8 @@ export const CARDS = [
     "cost": 3,
     "inf": 0,
     "gems": 0,
-    "text": "Play only during a clash.\n-\nMove 1 of your opponent's 🌠 from this Platform to another Platform.",
-    "art": "art/Controlling The Narrative.png",
+    "text": "Play only during a clash.\r\n-\r\nMove 1 of your opponent's 🌠 from this Platform to another Platform.",
+    "art": "art/gen1/Controlling The Narrative.png",
     "class": "Basic",
     "style": "⬤︎ Purple",
     "genre": "💬 Zatsudan",
@@ -3311,8 +3203,7 @@ export const CARDS = [
         "from": "here",
         "prompt": "Controlling The Narrative: move 1 of your opponent's 🌠 from this platform to which platform?"
       }
-    ],
-    "hasArt": true
+    ]
   },
   {
     "id": "op01-110",
@@ -3322,7 +3213,7 @@ export const CARDS = [
     "inf": 0,
     "gems": 0,
     "text": "Delete all non-Zatsudan Content cards in play.",
-    "art": "art/Ban Hammer.png",
+    "art": "art/gen1/Ban Hammer.png",
     "class": "Yabai",
     "style": "⬤︎ Purple",
     "genre": "💬 Zatsudan",
@@ -3335,8 +3226,7 @@ export const CARDS = [
         "scope": "all",
         "genreNot": "Zatsudan"
       }
-    ],
-    "hasArt": true
+    ]
   },
   {
     "id": "op01-111",
@@ -3346,14 +3236,13 @@ export const CARDS = [
     "inf": 4,
     "gems": 0,
     "text": "Kickback Gain 1 💎.",
-    "art": "art/Charity Event.png",
+    "art": "art/gen1/Charity Event.png",
     "class": "Basic",
     "style": "⬛︎ Green",
     "genre": "💬 Zatsudan",
     "set": "Gen 1",
     "flavour": "C-F-DC-F-V",
     "source": "Play tests, Pre-Debut Beta Deck, Photo (Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "kickback",
@@ -3369,14 +3258,13 @@ export const CARDS = [
     "inf": 4,
     "gems": 0,
     "text": "When Played: Draw 1 card.",
-    "art": "art/Marshmallows.png",
+    "art": "art/gen1/Marshmallows.png",
     "class": "Basic",
     "style": "⬛︎ Green",
     "genre": "💬 Zatsudan",
     "set": "Gen 1",
     "flavour": "Kind of surprising that people wants to marry people from Phase Connect.",
     "source": "Play tests, TTS (3 Dec @ 6:00pm), Pre-Debut Beta Deck, Photo (Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "draw",
@@ -3393,14 +3281,13 @@ export const CARDS = [
     "inf": 7,
     "gems": 0,
     "text": "Discard: Gain 1 💎.",
-    "art": "art/Fund Raiser.png",
+    "art": "art/gen1/Fund Raiser.png",
     "class": "Basic",
     "style": "⬛︎ Green",
     "genre": "💬 Zatsudan",
     "set": "Gen 1",
     "flavour": "My name is Jaxa.",
     "source": "Play tests, Pre-Debut Beta Deck, Photo (Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "discardAbility",
@@ -3422,14 +3309,13 @@ export const CARDS = [
     "inf": 5,
     "gems": 0,
     "text": "The 🟡 of Content cards your opponents play on this Platform is increased by 1.",
-    "art": "art/Math Stream.png",
+    "art": "art/gen1/Math Stream.png",
     "class": "Yabai",
     "style": "⬛︎ Green",
     "genre": "💬 Zatsudan",
     "set": "Gen 1",
     "flavour": "Why would you pay for an $8 item with a $100???",
     "source": "Artwork (Retail), Photo (Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "oppCostUp",
@@ -3445,14 +3331,13 @@ export const CARDS = [
     "inf": 10,
     "gems": 0,
     "text": "Activate: Gain 1 💎 for each Platform where you have at least 1 Content card.",
-    "art": "art/Donothon.png",
+    "art": "art/gen1/Donothon.png",
     "class": "Sugoi",
     "style": "⬛︎ Green",
     "genre": "💬 Zatsudan",
     "set": "Gen 1",
     "flavour": "Flame Thrower!",
     "source": "Play tests, Pre-Debut Beta Deck, Photo (Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "activate",
@@ -3472,15 +3357,14 @@ export const CARDS = [
     "cost": 10,
     "inf": 21,
     "gems": 0,
-    "text": "Content cards cost you 2 less to play on other Platforms.\n\nWhen Played: You may play Content cards on other Platforms as though your Persona were there this round.",
-    "art": "art/Clip Out of Context.png",
+    "text": "Content cards cost you 2 less to play on other Platforms.\r\n\r\nWhen Played: You may play Content cards on other Platforms as though your Persona were there this round.",
+    "art": "art/gen1/Clip Out of Context.png",
     "class": "Yabai",
     "style": "⬛︎ Green",
     "genre": "💬 Zatsudan",
     "set": "Gen 1",
     "flavour": "... In [blockgame].",
     "source": "Artwork (Gallery, Debut, Retail), Photo (Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "contentDiscountOther",
@@ -3499,7 +3383,7 @@ export const CARDS = [
     "inf": 0,
     "gems": 0,
     "text": "Draw 1 card for each Platform where you have at least 1 Content card.",
-    "art": "art/React Meta.png",
+    "art": "art/gen1/React Meta.png",
     "class": "Basic",
     "style": "⬛︎ Green",
     "genre": "💬 Zatsudan",
@@ -3513,8 +3397,7 @@ export const CARDS = [
         "amount": 1,
         "perContentPlatform": true
       }
-    ],
-    "hasArt": true
+    ]
   },
   {
     "id": "op01-118",
@@ -3523,8 +3406,8 @@ export const CARDS = [
     "cost": 3,
     "inf": 0,
     "gems": 0,
-    "text": "Play only during a clash.\n-\nPlay 1 Content card on this Platform (paying its 🟡 normally).",
-    "art": "art/Watchalong.png",
+    "text": "Play only during a clash.\r\n-\r\nPlay 1 Content card on this Platform (paying its 🟡 normally).",
+    "art": "art/gen1/Watchalong.png",
     "class": "Sugoi",
     "style": "⬛︎ Green",
     "genre": "💬 Zatsudan",
@@ -3539,8 +3422,7 @@ export const CARDS = [
         "type": "playHand",
         "prompt": "Watchalong: play a Content card from your hand on this platform (you pay its 🟡)"
       }
-    ],
-    "hasArt": true
+    ]
   },
   {
     "id": "op01-119",
@@ -3550,14 +3432,13 @@ export const CARDS = [
     "inf": 3,
     "gems": 0,
     "text": "While this card is on an Independent Platform: This card gains +3 ⭐.",
-    "art": "art/Birthday Special.png",
+    "art": "art/gen1/Birthday Special.png",
     "class": "Sugoi",
     "style": "◆︎ Red",
     "genre": "✏️ Creatives",
     "set": "Gen 1",
     "flavour": "I hope you got to [BuildABunny].",
     "source": "Play tests, Gallery, Pre-Debut Beta Deck, Photo (Pre-Debut Promo), Artwork (Pre-Debut Promo), Photo (Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "selfStars",
@@ -3576,14 +3457,13 @@ export const CARDS = [
     "inf": 6,
     "gems": 0,
     "text": "Discard: Your Persona gets +2 ⭐ this clash.",
-    "art": "art/Karaoke Night.png",
+    "art": "art/gen1/Karaoke Night.png",
     "class": "Basic",
     "style": "◆︎ Red",
     "genre": "✏️ Creatives",
     "set": "Gen 1",
     "flavour": "I've been delayed.",
     "source": "TTS (3 Dec @ 6:00pm), Photo (Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "discardAbility",
@@ -3606,14 +3486,13 @@ export const CARDS = [
     "inf": 5,
     "gems": 0,
     "text": "While this is your only Content card on this Platform: This card gains +5 ⭐.",
-    "art": "art/From Our Hearts.png",
+    "art": "art/gen1/From Our Hearts.png",
     "class": "Basic",
     "style": "◆︎ Red",
     "genre": "✏️ Creatives",
     "set": "Gen 1",
     "flavour": "Thank you for loving us too.",
     "source": "TTS (3 Dec @ 6:00pm), Photo (Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "selfStars",
@@ -3632,14 +3511,13 @@ export const CARDS = [
     "inf": 13,
     "gems": 0,
     "text": "When Played: Delete all of your other Content cards on this Platform.",
-    "art": "art/Let _em Cook.jpg",
+    "art": "art/gen1/Let 'em Cook.png",
     "class": "Sugoi",
     "style": "◆︎ Red",
     "genre": "✏️ Creatives",
     "set": "Gen 1",
     "flavour": "She might burn things down exactly but she will bring a disaster",
     "source": "Patreon TTS preview, Play tests, Pre-Debut Beta Deck, Artwork(Pre-Debut Promo), Photo (Pre-Debut Promo, Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "deleteContent",
@@ -3657,14 +3535,13 @@ export const CARDS = [
     "inf": 9,
     "gems": 0,
     "text": "Activate Spend X 💎: Play 1 Creatives Content card from your Trash with 🟡X for free.",
-    "art": "art/Cover Song.png",
+    "art": "art/gen1/Cover Song.png",
     "class": "Sugoi",
     "style": "◆︎ Red",
     "genre": "✏️ Creatives",
     "set": "Gen 1",
     "flavour": "I want to be your lover.",
     "source": "Artwork (Debut, Retail - TTS Deck Builder), Photo (Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "activate",
@@ -3686,14 +3563,13 @@ export const CARDS = [
     "inf": 16,
     "gems": 0,
     "text": "Clash Reward: Steal 1 🌠 from an opponent on this Platform.",
-    "art": "art/Masterpiece.png",
+    "art": "art/gen1/Masterpiece.png",
     "class": "Yabai",
     "style": "◆︎ Red",
     "genre": "✏️ Creatives",
     "set": "Gen 1",
     "flavour": "Yes.",
     "source": "Artwork (Retail), Photo (Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "clashReward",
@@ -3715,8 +3591,8 @@ export const CARDS = [
     "cost": 2,
     "inf": 0,
     "gems": 0,
-    "text": "Play only during a clash.\n-\nMove 1 of your Content cards to this Platform.",
-    "art": "art/My Time.png",
+    "text": "Play only during a clash.\r\n-\r\nMove 1 of your Content cards to this Platform.",
+    "art": "art/gen1/My Time.png",
     "class": "Basic",
     "style": "◆︎ Red",
     "genre": "✏️ Creatives",
@@ -3738,8 +3614,7 @@ export const CARDS = [
           "do": "moveHere"
         }
       }
-    ],
-    "hasArt": true
+    ]
   },
   {
     "id": "op01-126",
@@ -3748,8 +3623,8 @@ export const CARDS = [
     "cost": 1,
     "inf": 0,
     "gems": 0,
-    "text": "Play only during a clash.\n-\n1 Content card on this Platform gains +5 ⭐ this clash.",
-    "art": "art/Hype.png",
+    "text": "Play only during a clash.\r\n-\r\n1 Content card on this Platform gains +5 ⭐ this clash.",
+    "art": "art/gen1/Hype.png",
     "class": "Basic",
     "style": "◆︎ Red",
     "genre": "✏️ Creatives",
@@ -3772,8 +3647,7 @@ export const CARDS = [
           "amount": 5
         }
       }
-    ],
-    "hasArt": true
+    ]
   },
   {
     "id": "op01-127",
@@ -3783,14 +3657,13 @@ export const CARDS = [
     "inf": 3,
     "gems": 0,
     "text": "When Played: 1 opposing Content card on this Platform loses -2 ⭐ this round.",
-    "art": "art/ADpocalypse.png",
+    "art": "art/gen1/ADpocalypse.png",
     "class": "Basic",
     "style": "⬤︎ Purple",
     "genre": "✏️ Creatives",
     "set": "Gen 1",
     "flavour": "This is not about feet but about accountability.",
     "source": "TTS (3 Dec @ 6:00pm), Artwork (Debut, Retail), Photo (Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "pickCard",
@@ -3814,14 +3687,13 @@ export const CARDS = [
     "inf": 4,
     "gems": 0,
     "text": "Clash Reward: Draw 1 card, then discard 1 card.",
-    "art": "art/Original Song.png",
+    "art": "art/gen1/Original Song.png",
     "class": "Basic",
     "style": "⬤︎ Purple",
     "genre": "✏️ Creatives",
     "set": "Gen 1",
     "flavour": "肩の荷 (Kata no Ni)",
     "source": "Artwork (Debut, Retail), Photo (Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "clashReward",
@@ -3849,14 +3721,13 @@ export const CARDS = [
     "inf": 4,
     "gems": 0,
     "text": "Opposing Content cards on this Platform lose -2 ⭐.",
-    "art": "art/Dog Food Regret.png",
+    "art": "art/gen1/Dog Food Regret.png",
     "class": "Sugoi",
     "style": "⬤︎ Purple",
     "genre": "✏️ Creatives",
     "set": "Gen 1",
     "flavour": "Chunky, chunky dog food.",
     "source": "Artwork (Debut), Photo (Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "aura",
@@ -3873,7 +3744,7 @@ export const CARDS = [
     "inf": 9,
     "gems": 0,
     "text": "Discard: Move your Persona to this Platform. Use only during a clash.",
-    "art": "art/Background Dogs Barking.png",
+    "art": "art/gen1/Background Dogs Barking.png",
     "class": "Basic",
     "style": "⬤︎ Purple",
     "genre": "✏️ Creatives",
@@ -3883,7 +3754,6 @@ export const CARDS = [
     "playOnly": {
       "timing": "clash"
     },
-    "hasArt": true,
     "effects": [
       {
         "type": "discardAbility",
@@ -3904,14 +3774,13 @@ export const CARDS = [
     "inf": 9,
     "gems": 0,
     "text": "When Played: Reduce the ⭐ of 1 opposing Content card on this Platform to 0 this round.",
-    "art": "art/Campfire Guitar.png",
+    "art": "art/gen1/Campfire Guitar.png",
     "class": "Yabai",
     "style": "⬤︎ Purple",
     "genre": "✏️ Creatives",
     "set": "Gen 1",
     "flavour": "I eat like I'm a dog.",
     "source": "Photo (Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "pickCard",
@@ -3934,14 +3803,13 @@ export const CARDS = [
     "inf": 20,
     "gems": 0,
     "text": "Players can't play more than 1 Content card per round while this card is in play.",
-    "art": "art/Craft Show.png",
+    "art": "art/gen1/Craft Show.png",
     "class": "Yabai",
     "style": "⬤︎ Purple",
     "genre": "✏️ Creatives",
     "set": "Gen 1",
     "flavour": "I'll make sweets for you.",
     "source": "TTS (3 Dec @ 6:00pm), Photo (Con Exclusive 2025, Con Promo)",
-    "hasArt": true,
     "effects": [
       {
         "type": "oneContentPerRound"
@@ -3955,8 +3823,8 @@ export const CARDS = [
     "cost": 3,
     "inf": 0,
     "gems": 0,
-    "text": "Play only during a clash.\n-\nReduce the ⭐ of 1 opposing Content card on this Platform to 0 this clash.",
-    "art": "art/Diss Track.png",
+    "text": "Play only during a clash.\r\n-\r\nReduce the ⭐ of 1 opposing Content card on this Platform to 0 this clash.",
+    "art": "art/gen1/Diss Track.png",
     "class": "Sugoi",
     "style": "⬤︎ Purple",
     "genre": "✏️ Creatives",
@@ -3978,8 +3846,7 @@ export const CARDS = [
           "do": "zero"
         }
       }
-    ],
-    "hasArt": true
+    ]
   },
   {
     "id": "op01-134",
@@ -3988,8 +3855,8 @@ export const CARDS = [
     "cost": 0,
     "inf": 0,
     "gems": 0,
-    "text": "Play only during a clash.\n-\nFor each 💎 you spent to play this card, choose 1 opposing Content card on this Platform to lose -3 ⭐ this clash.",
-    "art": "art/No Show.png",
+    "text": "Play only during a clash.\r\n-\r\nFor each 💎 you spent to play this card, choose 1 opposing Content card on this Platform to lose -3 ⭐ this clash.",
+    "art": "art/gen1/No Show.png",
     "xCost": true,
     "class": "Yabai",
     "style": "⬤︎ Purple",
@@ -4005,8 +3872,7 @@ export const CARDS = [
         "type": "noShow",
         "prompt": "No Show: choose an opposing Content card to lose 3 ⭐ this clash"
       }
-    ],
-    "hasArt": true
+    ]
   },
   {
     "id": "op01-135",
@@ -4016,14 +3882,13 @@ export const CARDS = [
     "inf": 2,
     "gems": 0,
     "text": "Discard: Gain 1 💎.",
-    "art": "art/Anniversary Celebration.png",
+    "art": "art/gen1/Anniversary Celebration.png",
     "class": "Basic",
     "style": "⬛︎ Green",
     "genre": "✏️ Creatives",
     "set": "Gen 1",
     "flavour": "You can now punch every single generation-",
     "source": "Play tests, Pre-Debut Beta Deck, Photo (Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "discardAbility",
@@ -4045,14 +3910,13 @@ export const CARDS = [
     "inf": 4,
     "gems": 0,
     "text": "When Played: Return 1 card from your Trash to your hand.",
-    "art": "art/Encore Performance.png",
+    "art": "art/gen1/Encore Performance.png",
     "class": "Basic",
     "style": "⬛︎ Green",
     "genre": "✏️ Creatives",
     "set": "Gen 1",
     "flavour": "You know what, maybe I should warm up.",
     "source": "TTS (3 Dec @ 6:00pm), Artwork (Retail - gallery, Debut, Retail), Photo (Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "trashToHand",
@@ -4071,14 +3935,13 @@ export const CARDS = [
     "inf": 5,
     "gems": 0,
     "text": "Activate Spend 3 🟡: Look at the top 2 cards of your deck. Put 1 in your Trash and the other in your hand.",
-    "art": "art/Requested Song Stream.png",
+    "art": "art/gen1/Requested Song Stream.png",
     "class": "Basic",
     "style": "⬛︎ Green",
     "genre": "✏️ Creatives",
     "set": "Gen 1",
     "flavour": "Turtle Emoji",
     "source": "Photo (Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "activate",
@@ -4100,14 +3963,13 @@ export const CARDS = [
     "inf": 4,
     "gems": 0,
     "text": "When you play a Content card with 🟡4 or more on any Platform: Gain 1 💎.",
-    "art": "art/Christmas Special.png",
+    "art": "art/gen1/Christmas Special.png",
     "class": "Yabai",
     "style": "⬛︎ Green",
     "genre": "✏️ Creatives",
     "set": "Gen 1",
     "flavour": "Free cakes inside.",
     "source": "TTS (3 Dec @ 6:00pm), Artwork (Retail, Debut), Photo (Retail, Con Promo)",
-    "hasArt": true,
     "effects": [
       {
         "type": "onPlay",
@@ -4131,14 +3993,13 @@ export const CARDS = [
     "inf": 8,
     "gems": 0,
     "text": "Kickback Gain 2 💎.",
-    "art": "art/Royalty Song.png",
+    "art": "art/gen1/Royalty Song.png",
     "class": "Basic",
     "style": "⬛︎ Green",
     "genre": "✏️ Creatives",
     "set": "Gen 1",
     "flavour": "Welcome to Phase Connect.",
     "source": "Play tests, Pre-Debut Beta Deck, Photo (Pre-Debut Promo, Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "kickback",
@@ -4154,14 +4015,13 @@ export const CARDS = [
     "inf": 14,
     "gems": 0,
     "text": "Activate: Play 1 Action card from your Trash with 🟡3 or less for free.",
-    "art": "art/Halloween Special.png",
+    "art": "art/gen1/Halloween Special.png",
     "class": "Sugoi",
     "style": "⬛︎ Green",
     "genre": "✏️ Creatives",
     "set": "Gen 1",
     "flavour": "Nasa brother on my wall.",
     "source": "Artwork (Retail), Photo (Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "activate",
@@ -4182,8 +4042,8 @@ export const CARDS = [
     "cost": 1,
     "inf": 0,
     "gems": 0,
-    "text": "Play only during a clash.\n-\n1 of your Content cards on this Platform gains \"Clash Reward Gain 3 💎.\"",
-    "art": "art/Sponsorship.png",
+    "text": "Play only during a clash.\r\n-\r\n1 of your Content cards on this Platform gains \"Clash Reward Gain 3 💎.\"",
+    "art": "art/gen1/Sponsorship.png",
     "class": "Sugoi",
     "style": "⬛︎ Green",
     "genre": "✏️ Creatives",
@@ -4213,8 +4073,7 @@ export const CARDS = [
           "text": "Gain 3 💎."
         }
       }
-    ],
-    "hasArt": true
+    ]
   },
   {
     "id": "op01-142",
@@ -4224,7 +4083,7 @@ export const CARDS = [
     "inf": 0,
     "gems": 0,
     "text": "1 Content card of your choice gains +7 ⭐ this clash. Then, if it is on an Independent Platform, also draw 1 card.",
-    "art": "art/Embrace Scuff.png",
+    "art": "art/gen1/Embrace Scuff.png",
     "class": "Basic",
     "style": "⬛︎ Green",
     "genre": "✏️ Creatives",
@@ -4248,8 +4107,7 @@ export const CARDS = [
           }
         }
       }
-    ],
-    "hasArt": true
+    ]
   },
   {
     "id": "op01-143",
@@ -4259,14 +4117,13 @@ export const CARDS = [
     "inf": 2,
     "gems": 0,
     "text": "During a Clash at this Platform: If you are Dominating this Platform, opposing Content cards don't contrinbute any ⭐ on this Platform.",
-    "art": "art/Cinema Date.png",
+    "art": "art/gen1/Cinema Date.png",
     "class": "Yabai",
     "style": "◆︎ Red",
     "genre": "❤️ Experience",
     "set": "Gen 1",
     "flavour": "I usually just wear tombear clothes.",
     "source": "Play tests (pre-artwork), Artwork (Debut, Retail), Photo (Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "oppZeroWhenDominating"
@@ -4281,14 +4138,13 @@ export const CARDS = [
     "inf": 6,
     "gems": 0,
     "text": "When you play an Experience Content card (including this one): This card gains +2 ⭐ this round.",
-    "art": "art/Origins Video.png",
+    "art": "art/gen1/Origins Video.png",
     "class": "Basic",
     "style": "◆︎ Red",
     "genre": "❤️ Experience",
     "set": "Gen 1",
     "flavour": "527",
     "source": "Play tests, Gallery, Pre-Debut Beta Deck, Artwork (Pre-Debut Promo), Photo (Pre-Debut Promo, Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "onPlay",
@@ -4312,14 +4168,13 @@ export const CARDS = [
     "inf": 8,
     "gems": 0,
     "text": "Discard: Your Persona gains +2 ⭐ this clash.",
-    "art": "art/Mega Capping.png",
+    "art": "art/gen1/Mega Capping.png",
     "class": "Basic",
     "style": "◆︎ Red",
     "genre": "❤️ Experience",
     "set": "Gen 1",
     "flavour": "A lot of blue bears are still produced sexually.",
     "source": "Play tests, Pre-Debut Beta Deck, Artwork (Debut), Photo (Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "discardAbility",
@@ -4342,14 +4197,13 @@ export const CARDS = [
     "inf": 4,
     "gems": 0,
     "text": "While any opponent has 3 or more cards in their hand: This card gains +3 ⭐.",
-    "art": "art/Court Room Roleplay.png",
+    "art": "art/gen1/Court Room Roleplay.png",
     "class": "Basic",
     "style": "◆︎ Red",
     "genre": "❤️ Experience",
     "set": "Gen 1",
     "flavour": "They're putting nanontechnologies inside of the vaccines.",
     "source": "Play tests, TTS (3 Dec @ 6:00pm), Pre-Debut Beta Deck, Photo (Pre-Debut Promo, Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "selfStars",
@@ -4368,7 +4222,7 @@ export const CARDS = [
     "inf": 10,
     "gems": 0,
     "text": "Activate: Move this card to another Platform. Activate only during the Content Phase.",
-    "art": "art/Mukbang ASMR.png",
+    "art": "art/gen1/Mukbang ASMR.png",
     "class": "Basic",
     "style": "◆︎ Red",
     "genre": "❤️ Experience",
@@ -4378,7 +4232,6 @@ export const CARDS = [
     "playOnly": {
       "timing": "content"
     },
-    "hasArt": true,
     "effects": [
       {
         "type": "activate",
@@ -4400,14 +4253,13 @@ export const CARDS = [
     "inf": 15,
     "gems": 0,
     "text": "Clash Reward: Instead of gaining 1 🌠 at this Platform, gain 1 🌠 for each card in your opponents' hands.",
-    "art": "art/Scary Yandere Roleplay.png",
+    "art": "art/gen1/Scary Yandere Roleplay.png",
     "class": "Yabai",
     "style": "◆︎ Red",
     "genre": "❤️ Experience",
     "set": "Gen 1",
     "flavour": "Do you know the Official Phase Connect Discord?",
     "source": "Photo (Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "popReplace",
@@ -4422,8 +4274,8 @@ export const CARDS = [
     "cost": 1,
     "inf": 0,
     "gems": 0,
-    "text": "Play only during a clash.\n-\nYour Persona gains +4 ⭐ this clash; If you have an Upgraded Persona, it gains +7 ⭐ this clash instead.",
-    "art": "art/In Character.png",
+    "text": "Play only during a clash.\r\n-\r\nYour Persona gains +4 ⭐ this clash; If you have an Upgraded Persona, it gains +7 ⭐ this clash instead.",
+    "art": "art/gen1/In Character.png",
     "class": "Basic",
     "style": "◆︎ Red",
     "genre": "❤️ Experience",
@@ -4440,8 +4292,7 @@ export const CARDS = [
         "amount": 4,
         "upgradedAmount": 7
       }
-    ],
-    "hasArt": true
+    ]
   },
   {
     "id": "op01-150",
@@ -4450,8 +4301,8 @@ export const CARDS = [
     "cost": 4,
     "inf": 0,
     "gems": 0,
-    "text": "Play only during a clash.\n-\nMove all of your Content cards from another Platform to this Platform.",
-    "art": "art/ARA ARA.png",
+    "text": "Play only during a clash.\r\n-\r\nMove all of your Content cards from another Platform to this Platform.",
+    "art": "art/gen1/ARA ARA.png",
     "class": "Yabai",
     "style": "◆︎ Red",
     "genre": "❤️ Experience",
@@ -4466,8 +4317,7 @@ export const CARDS = [
         "type": "moveAll",
         "prompt": "ARA ARA: move all of your Content cards from which platform to this one?"
       }
-    ],
-    "hasArt": true
+    ]
   },
   {
     "id": "op01-151",
@@ -4477,14 +4327,13 @@ export const CARDS = [
     "inf": 3,
     "gems": 0,
     "text": "Activate, Return this to the top of your deck: Return 1 Content Card with 🟡2 or less on this Platform to its owner's hand.",
-    "art": "art/First Date.png",
+    "art": "art/gen1/First Date.png",
     "class": "Yabai",
     "style": "⬤︎ Purple",
     "genre": "❤️ Experience",
     "set": "Gen 1",
     "flavour": "She has a cute face chat, but she's a predator.",
     "source": "Artwork (Retail), Photo (Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "activate",
@@ -4515,7 +4364,7 @@ export const CARDS = [
     "inf": 5,
     "gems": 0,
     "text": "Discard: Move your Persona to this Platform. Use only during a clash.",
-    "art": "art/UWU.png",
+    "art": "art/gen1/UWU.png",
     "class": "Basic",
     "style": "⬤︎ Purple",
     "genre": "❤️ Experience",
@@ -4525,7 +4374,6 @@ export const CARDS = [
     "playOnly": {
       "timing": "clash"
     },
-    "hasArt": true,
     "effects": [
       {
         "type": "discardAbility",
@@ -4546,14 +4394,13 @@ export const CARDS = [
     "inf": 7,
     "gems": 0,
     "text": "When Played: If this card is on an Independent Platform, move all opposing Content cards from this Platform to another Platform.",
-    "art": "art/Thriller Story Reading.png",
+    "art": "art/gen1/Thriller Story Reading.png",
     "class": "Sugoi",
     "style": "⬤︎ Purple",
     "genre": "❤️ Experience",
     "set": "Gen 1",
     "flavour": "That's just Maemi experience. Don't worry about it.",
     "source": "Artwork (Gallery, Debut, Retail), Photo (Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "moveOppAll",
@@ -4572,14 +4419,13 @@ export const CARDS = [
     "inf": 10,
     "gems": 0,
     "text": "When Played: You may return 1 Content card from this Platform to its owner's hand.",
-    "art": "art/Peaceful ASMR.png",
+    "art": "art/gen1/Peaceful ASMR.png",
     "class": "Basic",
     "style": "⬤︎ Purple",
     "genre": "❤️ Experience",
     "set": "Gen 1",
     "flavour": "Nasa is all moe. There's no gap.",
     "source": "Artwork (Retail), Photo (Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "pickCard",
@@ -4603,14 +4449,13 @@ export const CARDS = [
     "inf": 4,
     "gems": 0,
     "text": "When Played: 1 of your other Content cards gains +4 ⭐ this round.",
-    "art": "art/Confessional Stream.png",
+    "art": "art/gen1/Confessional Stream.png",
     "class": "Basic",
     "style": "⬤︎ Purple",
     "genre": "❤️ Experience",
     "set": "Gen 1",
     "flavour": "Raise both your hands at the same time.",
     "source": "Play tests, TTS (3 Dec @ 6:00pm), Pre-Debut Beta Deck, Photo (Pre-Debut Promo, Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "pickCard",
@@ -4635,14 +4480,13 @@ export const CARDS = [
     "inf": 19,
     "gems": 0,
     "text": "Your opponents can't gain 🌠 here.",
-    "art": "art/Year 0 Science.png",
+    "art": "art/gen1/Year 0 Science.png",
     "class": "Yabai",
     "style": "⬤︎ Purple",
     "genre": "❤️ Experience",
     "set": "Gen 1",
     "flavour": "Time goes from 0 all the way through 2,022, the present day.",
     "source": "Photo (Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "noOppPop"
@@ -4657,7 +4501,7 @@ export const CARDS = [
     "inf": 0,
     "gems": 0,
     "text": "Return 1 Content card with 🟡3 or less to its owner's hand.",
-    "art": "art/Succumb to Cringe.png",
+    "art": "art/gen1/Succumb to Cringe.png",
     "class": "Basic",
     "style": "⬤︎ Purple",
     "genre": "❤️ Experience",
@@ -4677,8 +4521,7 @@ export const CARDS = [
           "do": "return"
         }
       }
-    ],
-    "hasArt": true
+    ]
   },
   {
     "id": "op01-158",
@@ -4687,8 +4530,8 @@ export const CARDS = [
     "cost": 7,
     "inf": 0,
     "gems": 0,
-    "text": "Play only during a clash.\n-\nSteal 1 🌠 at this Platform.",
-    "art": "art/Parasocial Trap.png",
+    "text": "Play only during a clash.\r\n-\r\nSteal 1 🌠 at this Platform.",
+    "art": "art/gen1/Parasocial Trap.png",
     "class": "Yabai",
     "style": "⬤︎ Purple",
     "genre": "❤️ Experience",
@@ -4703,8 +4546,7 @@ export const CARDS = [
         "type": "stealPop",
         "amount": 1
       }
-    ],
-    "hasArt": true
+    ]
   },
   {
     "id": "op01-159",
@@ -4714,14 +4556,13 @@ export const CARDS = [
     "inf": 2,
     "gems": 0,
     "text": "Discard: Gain 1 💎.",
-    "art": "art/VTuber Coffee.png",
+    "art": "art/gen1/VTuber Coffee.png",
     "class": "Basic",
     "style": "⬛︎ Green",
     "genre": "❤️ Experience",
     "set": "Gen 1",
     "flavour": "I'm getting light notes of grandma's musty chair.",
     "source": "Play tests, Pre-Debut Beta Deck, Artwork (Debut, Retail), Photo (Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "discardAbility",
@@ -4743,14 +4584,13 @@ export const CARDS = [
     "inf": 2,
     "gems": 0,
     "text": "If this card would be deleted: Return this card to your hand instead.",
-    "art": "art/Puzzle Hand Cam.png",
+    "art": "art/gen1/Puzzle Hand Cam.png",
     "class": "Sugoi",
     "style": "⬛︎ Green",
     "genre": "❤️ Experience",
     "set": "Gen 1",
     "flavour": "Need a whole new keyboard for a single spacebar.",
     "source": "Play tests, Pre-Debut Beta Deck, Photo (Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "returnInsteadOfDelete"
@@ -4765,14 +4605,13 @@ export const CARDS = [
     "inf": 4,
     "gems": 0,
     "text": "Activate, Return this card to your hand: Gain 2 💎.",
-    "art": "art/Mama Cameo.png",
+    "art": "art/gen1/Mama Cameo.png",
     "class": "Sugoi",
     "style": "⬛︎ Green",
     "genre": "❤️ Experience",
     "set": "Gen 1",
     "flavour": "I could find you a new daddy right now.",
     "source": "Play tests, Pre-Debut Beta Deck, Photo (Pre-Debut Promo)",
-    "hasArt": true,
     "effects": [
       {
         "type": "activate",
@@ -4795,14 +4634,13 @@ export const CARDS = [
     "inf": 8,
     "gems": 0,
     "text": "When Played: If you have an Upgraded Persona, gain 2 💎.",
-    "art": "art/Updated Model Stream.png",
+    "art": "art/gen1/Updated Model Stream.png",
     "class": "Basic",
     "style": "⬛︎ Green",
     "genre": "❤️ Experience",
     "set": "Gen 1",
     "flavour": "BIGGER",
     "source": "Play tests, Pre-Debut Beta Deck, Photo (Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "bits",
@@ -4821,15 +4659,14 @@ export const CARDS = [
     "cost": 6,
     "inf": 2,
     "gems": 0,
-    "text": "When Played: This card gains +10 ⭐ this round.\n\nKickback Gain 3 💎.",
-    "art": "art/Menhara Club.png",
+    "text": "When Played: This card gains +10 ⭐ this round.\r\n\r\nKickback Gain 3 💎.",
+    "art": "art/gen1/Menhara Club.png",
     "class": "Sugoi",
     "style": "⬛︎ Green",
     "genre": "❤️ Experience",
     "set": "Gen 1",
     "flavour": "Normal people with normal brains just don't exist in my world.",
     "source": "Photo (Retail)",
-    "hasArt": true,
     "effects": [
       {
         "type": "selfMod",
@@ -4849,7 +4686,7 @@ export const CARDS = [
     "inf": 0,
     "gems": 0,
     "text": "Return all Content cards in play to their owners' hands.",
-    "art": "art/Beating You With A Frying Pan ASMR.png",
+    "art": "art/gen1/Beating You With A Frying Pan ASMR.png",
     "class": "Yabai",
     "style": "⬛︎ Green",
     "genre": "❤️ Experience",
@@ -4860,8 +4697,7 @@ export const CARDS = [
       {
         "type": "returnContent"
       }
-    ],
-    "hasArt": true
+    ]
   },
   {
     "id": "op01-165",
@@ -4871,7 +4707,7 @@ export const CARDS = [
     "inf": 0,
     "gems": 0,
     "text": "Discard 1 card from your hand. Then, draw 2 cards.",
-    "art": "art/Sudden Rizz.png",
+    "art": "art/gen1/Sudden Rizz.png",
     "class": "Basic",
     "style": "⬛︎ Green",
     "genre": "❤️ Experience",
@@ -4884,8 +4720,7 @@ export const CARDS = [
         "draw": 2,
         "prompt": "Sudden Rizz: choose a card to discard, then draw 2"
       }
-    ],
-    "hasArt": true
+    ]
   },
   {
     "id": "op01-166",
@@ -4894,8 +4729,8 @@ export const CARDS = [
     "cost": 4,
     "inf": 0,
     "gems": 0,
-    "text": "Play only during a clash.\n-\nYour Persona gains +5 ⭐ this clash and you draw 2 cards.",
-    "art": "art/Microphone Upgrade.png",
+    "text": "Play only during a clash.\r\n-\r\nYour Persona gains +5 ⭐ this clash and you draw 2 cards.",
+    "art": "art/gen1/Microphone Upgrade.png",
     "class": "Sugoi",
     "style": "⬛︎ Green",
     "genre": "❤️ Experience",
@@ -4916,8 +4751,7 @@ export const CARDS = [
         "target": "self",
         "amount": 2
       }
-    ],
-    "hasArt": true
+    ]
   },
   {
     "id": "op01-167",
@@ -4927,7 +4761,7 @@ export const CARDS = [
     "inf": 4,
     "gems": 4,
     "text": "ACTIVATE: Eat a Phase Connect Coffee Bean: This card gains +5 ⭐ this round. Limit 2 per round. Limit 25 per 24 hours. (Please consume responsibly.)",
-    "art": "art/Sakana.png",
+    "art": "art/gen1/Sakana.png",
     "style": "⬛︎ Green",
     "genre": "💬 Zatsudan",
     "set": "Gen 1",
@@ -4937,8 +4771,7 @@ export const CARDS = [
       "amount": 5,
       "limitPerRound": 2,
       "limitTotal": 25
-    },
-    "hasArt": true
+    }
   },
   {
     "id": "op01-168",
@@ -4947,15 +4780,14 @@ export const CARDS = [
     "cost": 0,
     "inf": 0,
     "gems": 0,
-    "text": "Phase Connect deck only.\n\nWhen you play an Action card on this Platform: Your Persona gains +1 ⭐ for every Phase Connect Merch on your person this round.",
-    "art": "art/Phase Warehouse.png",
+    "text": "Phase Connect deck only.\r\n\r\nWhen you play an Action card on this Platform: Your Persona gains +1 ⭐ for every Phase Connect Merch on your person this round.",
+    "art": "art/gen1/Phase Warehouse.png",
     "class": "Basic",
     "set": "Gen 1",
     "tags": "Phase Connect",
     "source": "Photo (Debut Promo - Kickstarter)",
     "threshold": 3,
     "subValue": 500000,
-    "hasArt": true,
     "effects": [
       {
         "type": "deckOnly",
@@ -4980,7 +4812,7 @@ export const CARDS = [
     "inf": 0,
     "gems": 0,
     "text": "Every Creative Content card on all Platforms gains +2 ⭐ this round. If your Persona is Sakana, they gain +3 ⭐ instead.",
-    "art": "art/Buy Out Artist Alley.png",
+    "art": "art/gen1/Buy Out Artist Alley.png",
     "class": "Basic",
     "style": "⬛︎ Green",
     "genre": "✏️ Creatives",
@@ -4997,7 +4829,6 @@ export const CARDS = [
           "amount": 3
         }
       }
-    ],
-    "hasArt": true
+    ]
   }
 ];

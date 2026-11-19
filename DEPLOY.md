@@ -15,6 +15,12 @@ This writes small copies of the art your cards use into `public/art-web` (about 
 image. The full-size `public/art` folder stays on your computer only; `.gitignore` keeps it out of Git.
 Run it again after adding cards or changing art (it only redoes what changed).
 
+**One art folder per generation.** Keep each generation's art in its own folder: `public/art/gen1`, `public/art/gen2`, and so on.
+The small copies are written to the same layout (`public/art-web/gen1`, `gen2`, ...), and the card back stays loose in
+`public/art-web`. If your art is still loose in `public/art`, run `npm run organize-art` once (it moves it into `gen1`),
+then `npm run cards`. For Gen 2: put its art in `public/art/gen2`, run `npm run cards -- "--sets=Gen 1,Gen 2"`, then
+`npm run optimize-art`. A card's folder comes from its Set column ("Gen 2" uses `gen2`).
+
 ## 2. Check it works on your computer
 
     npm start
@@ -32,7 +38,8 @@ Install Git and make a free GitHub account, create an empty repository there, th
     git remote add origin https://github.com/YOUR-NAME/oshi-push.git
     git push -u origin main
 
-Check on GitHub that `public/art-web` is there and `public/art` is not.
+Check on GitHub that `public/art-web` is there (with `gen1`, `gen2`, ... inside) and `public/art` is not.
+Open `/art-status` on your site to see how many images arrived in each folder.
 
 ## 4. Deploy on Render
 
