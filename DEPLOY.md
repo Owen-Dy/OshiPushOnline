@@ -18,8 +18,9 @@ Run it again after adding cards or changing art (it only redoes what changed).
 **One art folder per generation.** Keep each generation's art in its own folder: `public/art/gen1`, `public/art/gen2`, and so on.
 The small copies are written to the same layout (`public/art-web/gen1`, `gen2`, ...), and the card back stays loose in
 `public/art-web`. If your art is still loose in `public/art`, run `npm run organize-art` once (it moves it into `gen1`),
-then `npm run cards`. For Gen 2: put its art in `public/art/gen2`, run `npm run cards -- "--sets=Gen 1,Gen 2"`, then
-`npm run optimize-art`. A card's folder comes from its Set column ("Gen 2" uses `gen2`).
+then `npm run cards`. For Gen 2: put its art in `public/art/gen2`, run `npm run cards`, then `npm run optimize-art`. Gen 1 and Gen 2 are both
+imported by default; to add Gen 3 later, add it to `DEFAULT_SETS` in `scripts/import-cards.js` (or run
+`npm run cards -- --sets=Gen1,Gen2,Gen3`). When it runs, `npm run cards` prints how many cards of each set have art. A card's folder comes from its Set column ("Gen 2" uses `gen2`).
 
 ## 2. Check it works on your computer
 
