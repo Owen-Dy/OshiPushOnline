@@ -124,7 +124,7 @@ app.use(async (ctx, next) => {
     attempts.push([webp(file), ART_WEB], [file, ART_WEB], [file, ART]);
   }
   for (const [f, root] of attempts) {
-    try { await send(ctx, f, { root, maxage: SEVEN_DAYS }); return; }
+    try { await send(ctx, f.split('/').map(encodeURIComponent).join('/'), { root, maxage: SEVEN_DAYS }); return; } // send() decodes its path, so a name containing % needs encoding first
     catch (e) { if (e.status !== 404 && e.code !== 'ENOENT' && e.code !== 'ENAMETOOLONG' && e.code !== 'ENOTDIR') throw e; }
   }
   return next();
