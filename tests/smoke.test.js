@@ -78,7 +78,7 @@ const place = (G, id, idx, card) => G.platforms[idx].cards[id].push(mk(card));
 
 // sandbox / win
 { const t = scene({ hand: [] }); t.as('0'); t.c.moves.dbgAddHandType?.('0', 'Action'); check('a normal match refuses sandbox tools', t.G().players['0'].hand.length, 0); }
-{ const t = scene({ sandbox: true, hand: [] }); t.as(t.cur()); t.c.moves.dbgAddHandType('0', 'Action'); check('a sandbox match accepts them (41 Actions)', t.G('0').players['0'].hand.length, 41); }
+{ const t = scene({ sandbox: true, hand: [] }); t.as(t.cur()); t.c.moves.dbgAddHandType('0', 'Action'); check(`a sandbox match accepts them (${CARDS.filter((c) => c.type === 'Action').length} Actions)`, t.G('0').players['0'].hand.length, CARDS.filter((c) => c.type === 'Action').length); }
 { const t = scene({ prep: (G) => { G.players['0'].subs = WIN_SUBS - G.platforms[0].subValue; G.platforms[0].pop['0'] = G.platforms[0].threshold - 1; } });
   t.pass(); t.pass(); check('capturing a platform at 1,000,000 subscribers wins the game', t.S().ctx.gameover, { winner: '0' }); }
 console.log(`\n${ok} passed, ${bad} failed`);

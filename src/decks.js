@@ -1,7 +1,7 @@
 // Deck builder: 1 Persona + 5 Platforms + 40 main deck cards (max 4 copies, each matching the persona's type or color). Decks are saved in this browser.
 import { CARDS } from '../cards.js';
 import { importDeckList } from '../deckImport.js';
-import { RULES, validateDeck, randomDeck, fitsPersona, platformFits, personaOnly, copyLimit } from '../deckRules.js';
+import { RULES, validateDeck, randomDeck, fitsPersona, platformFits, personaOnly, personaOnlyName, copyLimit } from '../deckRules.js';
 
 const $ = (id) => document.getElementById(id);
 const esc = (s = '') => String(s).replace(/[&<>"]/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
@@ -69,7 +69,7 @@ function add(id) {
     deck.platforms.push(id);
   } else {
     if (!mayAdd(c) && c.type === 'Upgrade') return say(`${c.name} is an Upgrade for ${c.name.split(',')[0]} and can only be used with that persona.`);
-    if (personaOnly(c, byId.get(deck.persona))) return say(`${c.name} can only be used in a deck with ${c.playOnly.persona}.`);
+    if (personaOnly(c, byId.get(deck.persona))) return say(`${c.name} can only be used in a deck with ${personaOnlyName(c)}.`);
     if (!mayAdd(c)) { const per = byId.get(deck.persona); return say(`${c.name} is not ${per.name}'s type (${per.genre || '-'}) or color (${per.style || '-'}).`); }
     if (deck.main.length >= RULES.MAIN) return say(`Main deck is full (${RULES.MAIN}).`);
     if (countName(deck.main, c.name) >= copyLimit(c)) return say(`Max ${copyLimit(c)} cop${copyLimit(c) === 1 ? 'y' : 'ies'} of ${c.name}.`);

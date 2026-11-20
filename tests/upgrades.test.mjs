@@ -4,7 +4,7 @@ import { CARDS } from '../cards.js';
 import { canPersonaActivate, personaAbility } from '../game.js';
 import { mk, test, finish, card, persona } from './harness.mjs';
 
-const UPGRADES = CARDS.filter((c) => c.type === 'Upgrade');
+const UPGRADES = CARDS.filter((c) => c.type === 'Upgrade' && c.set === 'Gen 1'); // these tests cover the Gen 1 Upgrades; Gen 2 Upgrades get their own tests
 const baseOf = (u) => persona(u.name.split(',')[0]);
 const up = (name) => card(name);
 

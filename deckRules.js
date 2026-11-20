@@ -25,7 +25,13 @@ export const upgradeFits = (card, persona) =>
 const key = (s) => String(s || '').toLowerCase().replace(/[^a-z]/g, ''); // "⬤︎ Purple" -> "purple", "💬 Zatsudan" -> "zatsudan"
 export const normKey = key;
 // "Play only if your Persona is X" cards belong to that persona's deck and no other (the importer reads this into card.playOnly.persona).
-export const personaOnly = (card, persona) => !!card.playOnly?.persona && !!persona && nameKey(persona.name) !== nameKey(card.playOnly.persona);
+export const personaOnly = (card, persona) => {
+  if (!persona) return false;
+  if (card.playOnly?.persona && nameKey(persona.name) !== nameKey(card.playOnly.persona)) return true;
+  return !platformFits(card, persona); // "X's deck only" written as a deckOnly effect (the Gen 2 Content cards)
+};
+// Which persona a restricted card belongs to, for messages.
+export const personaOnlyName = (card) => card.playOnly?.persona || (card.effects || []).find((fx) => fx.type === 'deckOnly')?.persona || '';
 export const fitsPersona = (card, persona) => {
   if (card.type === 'Upgrade') return upgradeFits(card, persona); // Upgrades: their own persona only (type and color don't matter)
   if (personaOnly(card, persona)) return false; // "Play only if your Persona is X"

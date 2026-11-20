@@ -146,6 +146,57 @@ export default {
   'Updated Model Stream': [{ type: 'bits', target: 'self', amount: 2, if: { upgraded: true } }],
   'Menhara Club': [{ type: 'selfMod', amount: 10 }, { type: 'kickback', amount: 3 }],
 
+  // ================= GEN 2 CONTENT CARDS =================
+  // New effect types used here (all implemented in game.js):
+  //   selfStars   when: firstPlayer | handAtLeast N | contentEverywhere      per: otherContentHere | trash | oppHand | otherPlatformsContent
+  //   selfStarsPersona   this card's ⭐ equal your Persona's ⭐        adjacentStars   +N ⭐ for you on each neighbouring platform (when: dominating)
+  //   blockPlay (costMax, oppOnly)   blockOtherContent   noPlayWithContent   onePerRoundHere   protectOthers
+  //   selfCostPerContent   actionCostUp   oppContentCostRound   returnInsteadOfDelete (to: 'deckTop')
+  //   pullOppPop   returnOrDeleteSelf   pickCard (chooser: 'opp', scope: 'adjacent')   moveOwnContent (excludeSelf)
+  //   onPersonaMoveHere on a Content card runs when its owner's Persona moves onto its platform
+  // Premium Content (played face-down, flipped later) is not built yet, so those cards are not listed here.
+  'Crystal Dragon Memories': [{ type: 'deckOnly', persona: 'Eden' }, { type: 'selfStars', amount: 4, per: 'otherContentHere' }],
+  'Vaseline On Toast': [{ type: 'deckOnly', persona: 'Captain Camille' }, { type: 'adjacentStars', amount: 3, when: { dominating: true } }],
+  'Hot Sauce Karaoke': [{ type: 'deckOnly', persona: 'Raelice' }, { type: 'selfStars', amount: 1, per: 'trash' }],
+  'Bug Burger Cooking Stream': [{ type: 'deckOnly', persona: 'La Avispa Nectarina' }, { type: 'selfStarsPersona' }],
+  '38+ Husbands': [{ type: 'deckOnly', persona: 'LineChu' }],
+  'Wanna Hear a Joel-ke?': [{ type: 'deckOnly', persona: 'Porcelain Maid' }, { type: 'selfStars', amount: 3, per: 'otherPlatformsContent' }],
+  'Toilet Swimmer': [{ type: 'selfStars', amount: -1, per: 'oppHand' }],
+  'Tomboy Abs': [{ type: 'selfStars', amount: 10, when: { firstPlayer: true } }],
+  'Good Boy': [{ type: 'selfStars', amount: 5, when: { handAtLeast: 5 } }],
+  'Casual Misogyny': [{ type: 'selfStars', amount: 10, when: { contentEverywhere: true } }],
+  'Convenience Store': [{ type: 'selfStars', amount: 3, when: { onlyContent: true } }],
+  'Sock Puppet Stream': [{ type: 'bits', target: 'self', amount: 1 }, { type: 'draw', target: 'self', amount: 1 }],
+  'Date Night': [{ type: 'draw', target: 'self', amount: 1 }, { type: 'discard', target: 'self', amount: 1 }],
+  'Blockheads Big Adventure!': [{ type: 'bitsPer', amount: 1, other: true }],
+  'Step on Building Blocks': [{ type: 'personaInf', target: 'opponent', amount: -3 }],
+  'Rampant Narcissim': [{ type: 'playHandFree', costMax: 1, prompt: 'Rampant Narcissim: you may play another Content card with 🟡1 from your hand on this platform for free' }],
+  'Retro Games': [{ type: 'playHandFree', costMax: 2, prompt: 'Retro Games: you may play a Content card with 🟡2 or less from your hand on this platform for free' }],
+  'WHO ARE YOU?': [{ type: 'playHandFree', costMax: 6, to: 'other', prompt: 'WHO ARE YOU?: you may play a Content card with 🟡6 or less from your hand on another platform for free' }],
+  'Knock Knock': [{ type: 'pickCard', optional: true, prompt: 'Knock Knock: you may move 1 of your Content cards from another platform to this one', pick: { scope: 'other', owner: 'mine' }, then: { do: 'moveHere' } }],
+  'Robot Vacuum': [{ type: 'moveOwnContent', excludeSelf: true, prompt: 'Robot Vacuum: you may move another of your Content cards from this platform to another platform' }],
+  'In Your Walls': [{ type: 'moveOwnContent', excludeSelf: true, prompt: 'In Your Walls: you may move another of your Content cards from this platform to another platform' }],
+  'Kiss, Marry, Kill': [{ type: 'pickCard', chooser: 'opp', prompt: 'Kiss, Marry, Kill: choose one of YOUR Content cards on this platform. It is deleted', pick: { scope: 'here', owner: 'opp' }, then: { do: 'delete' } }],
+  'Mods, Ban Them': [{ type: 'oppMovePop' }],
+  'Oversized Thighs': [{ type: 'pullOppPop', prompt: 'Oversized Thighs: move 1 opposing 🌠 from which platform to this one?' }],
+  'Joystick User': [{ type: 'gainPop', amount: 1, if: { popBehind: true } }],
+  'Vine Boom': [{ type: 'clashReward', text: 'Delete all Content cards on this Platform with 6 ⭐ or less.', effects: [{ type: 'deleteContent', scope: 'here', starsMax: 6 }] }],
+  'Touch Grass': [{ type: 'bearWithMe', prompt: 'Touch Grass: choose 1 Content card on this platform to keep (all others are deleted)' }],
+  'Boy Failure': [{ type: 'returnOrDeleteSelf', prompt: 'Boy Failure: return another of your Content cards on this platform to your hand' }],
+  'Horror Game Stream': [{ type: 'returnInsteadOfDelete', to: 'deckTop' }],
+  'Fashionista': [{ type: 'oppContentCostRound', amount: 3 }],
+  'Queen Status': [{ type: 'selfMod', amount: 3, if: { oppPersonaHere: true } }],
+  'Sigma Alpha Dominant': [{ type: 'selfCostPerContent', amount: 1 }],
+  'MILC': [{ type: 'contentDiscountOther', amount: 1 }],
+  'Trash Talk': [{ type: 'actionCostUp', amount: 2 }],
+  'Caught in 4k': [{ type: 'blockOtherContent' }],
+  'Morning Voice Stream': [{ type: 'noPlayWithContent' }],
+  'Brain Rot': [{ type: 'onePerRoundHere' }],
+  'Nail Painting': [{ type: 'blockPlay', costMax: 2, oppOnly: true }],
+  'Pro Gamer': [{ type: 'protectOthers' }],
+  'CUSTODY BATTLE': [{ type: 'activate', effects: [{ type: 'pickCard', prompt: 'CUSTODY BATTLE: choose a Content card on an adjacent platform; it gains +3 ⭐ this round', pick: { scope: 'adjacent', owner: 'any' }, then: { do: 'mod', amount: 3 } }] }],
+  'VTuber HR': [{ type: 'onPersonaMoveHere', then: [{ type: 'moveSelf', optional: true, prompt: 'VTuber HR: you may move this card to another platform' }] }],
+
   // ================= UPGRADE CARDS =================
   // Upgrades are played from your hand onto your Persona. Their abilities:
   //   discardAbility   "Discard: ..." (from your hand, uses your turn; timing 'clash' = only during a clash)   button under the card in your hand

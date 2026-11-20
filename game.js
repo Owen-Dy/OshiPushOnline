@@ -41,7 +41,15 @@ const popBlocked = (G, idx, id) => G.platforms[idx].cards[other(id)].some((c) =>
 // Content that can't be played right now: Puzzling Puzzle (🟡5+ here) and Craft Show (1 Content per round).
 export const contentBlocked = (G, id, card, idx) => {
   if (card.type !== 'Content') return false;
-  for (const oid of ['0', '1']) for (const c of G.platforms[idx].cards[oid]) for (const fx of fxOf(c, 'blockPlay')) if (card.cost >= fx.costMin) return true;
+  for (const oid of ['0', '1']) for (const c of G.platforms[idx].cards[oid]) {
+    for (const fx of fxOf(c, 'blockPlay')) {
+      if (fx.costMin !== undefined && card.cost >= fx.costMin) return true; // Puzzling Puzzle
+      if (fx.costMax !== undefined && card.cost <= fx.costMax && (!fx.oppOnly || oid !== id)) return true; // Nail Painting: only your opponents
+    }
+    if (oid === id && fxOf(c, 'blockOtherContent').length) return true; // Caught in 4k: you can't play other Content here
+    if (fxOf(c, 'onePerRoundHere').length && (G.platforms[idx].playedHere?.[id] || 0) >= 1) return true; // Brain Rot: 1 Content per player per round here
+  }
+  if (fxOf(card, 'noPlayWithContent').length && G.platforms[idx].cards[id].length > 0) return true; // Morning Voice Stream
   for (const fx of platformFx(G, idx, 'blockPlay')) if (card.cost >= fx.costMin) return true; // Michiru's Cabin
   const craft = G.platforms.some((pl) => ['0', '1'].some((o) => pl.cards[o].some((c) => fxOf(c, 'oneContentPerRound').length)));
   return craft && G.players[id].played.Content >= 1;
@@ -57,12 +65,20 @@ const cardBonus = (G, idx, owner, c) => {
     if (w.independent && !isIndependent(G, idx)) continue;
     if (w.onlyContent && p.cards[owner].length !== 1) continue;
     if (w.oppHandAtLeast !== undefined && G.players[opp].hand.length < w.oppHandAtLeast) continue;
+    if (w.firstPlayer && G.firstPlayer !== owner) continue; // Tomboy Abs
+    if (w.handAtLeast !== undefined && G.players[owner].hand.length < w.handAtLeast) continue; // Good Boy
+    if (w.contentEverywhere && !G.platforms.every((pl) => pl.cards[owner].length > 0)) continue; // Casual Misogyny
     let n = 1;
     if (fx.per === 'hand') n = G.players[owner].hand.length;
     else if (fx.per === 'otherCheapContent') n = p.cards[owner].filter((o) => o.id !== c.id && o.cost <= (fx.costMax ?? 3)).length;
+    else if (fx.per === 'otherContentHere') n = p.cards[owner].filter((o) => o.id !== c.id).length; // Crystal Dragon Memories
+    else if (fx.per === 'trash') n = G.players[owner].trash.length; // Hot Sauce Karaoke
+    else if (fx.per === 'oppHand') n = G.players[opp].hand.length; // Toilet Swimmer
+    else if (fx.per === 'otherPlatformsContent') n = G.platforms.filter((pl, j) => j !== idx && pl.cards[owner].length > 0).length; // Wanna Hear a Joel-ke?
     else if (fx.per === 'otherPlatformsGenre') n = G.platforms.filter((pl, j) => j !== idx && pl.cards[owner].some((o) => genreIs(o, fx.genre))).length;
     total += fx.amount * n;
   }
+  if (fxOf(c, 'selfStarsPersona').length) total += personaStarsOf(G, owner); // Bug Burger Cooking Stream: this card's ⭐ equal your Persona's
   for (const oid of ['0', '1']) for (const a of p.cards[oid]) for (const fx of fxOf(a, 'aura')) {
     if (fx.affects === 'otherAll' && a.id !== c.id) total += fx.amount;
     else if (fx.affects === 'opp' && oid !== owner) total += fx.amount;
@@ -100,9 +116,12 @@ const leaveCard = (G, owner, idx, card, dest = 'trash') => {
   return true;
 };
 // Deleting goes through here so Rent Free (can't be deleted) and Puzzle Hand Cam (returns to hand instead) work everywhere.
-const deleteCard = (G, owner, idx, card) => {
+// `by` = the player whose effect deletes it (Pro Gamer protects a player's other Content from an OPPOSING player's effects).
+const deleteCard = (G, owner, idx, card, by) => {
   if (fxOf(card, 'undeletable').length && G.platforms.every((pl) => pl.cards[owner].length > 0)) return false;
-  return leaveCard(G, owner, idx, card, fxOf(card, 'returnInsteadOfDelete').length ? 'hand' : 'trash');
+  if (by !== undefined && by !== owner && G.platforms[idx].cards[owner].some((o) => o.id !== card.id && fxOf(o, 'protectOthers').length)) return false;
+  const back = fxOf(card, 'returnInsteadOfDelete')[0]; // to: 'deckTop' (Horror Game Stream); otherwise it goes back to its owner's hand
+  return leaveCard(G, owner, idx, card, back ? back.to || 'hand' : 'trash');
 };
 
 // ---- Persona / Upgrade passive abilities ("While you have 0 💎: ... gains +3 ⭐") ----
@@ -122,12 +141,20 @@ const passiveBonus = (G, id, idx) => {
   }
   return total;
 };
+// The ⭐ a player's Persona has right now, on whichever platform it stands (0 if it has not been deployed).
+const personaStarsOf = (G, id) => {
+  const loc = G.personaLocations[id];
+  return loc == null ? 0 : Math.max(0, (activePersona(G, id)?.inf || 0) + passiveBonus(G, id, loc) + platformBonus(G, loc, id) + G.platforms[loc].pmods[id]);
+};
 // Stars `id` has on platform `idx`: persona (stars + passives + this-round changes) plus Content and Action cards.
 export const sideInf = (G, idx, id) => {
   const p = G.platforms[idx];
   const persona = G.personaLocations[id] === idx ? Math.max(0, (activePersona(G, id)?.inf || 0) + passiveBonus(G, id, idx) + platformBonus(G, idx, id) + p.pmods[id]) : 0;
   const content = p.cards[id].reduce((t, c) => t + starsOf(G, idx, id, c), 0); // c.mod: stars added this round; plus the card's own text
-  return persona + Math.max(0, p.mods[id] + content + p.actions[id].reduce((t, c) => t + c.inf, 0));
+  // "While you are Dominating this Platform: you gain +3 ⭐ at each adjacent Platform" (Vaseline On Toast): LEFT-CENTER-RIGHT are neighbours in a row
+  let adjacent = 0;
+  for (const j of [idx - 1, idx + 1]) if (j >= 0 && j <= 2) for (const c of G.platforms[j].cards[id]) for (const fx of fxOf(c, 'adjacentStars')) if (!fx.when?.dominating || dominating(G, id, j)) adjacent += fx.amount;
+  return persona + Math.max(0, p.mods[id] + content + adjacent + p.actions[id].reduce((t, c) => t + c.inf, 0));
 };
 
 // "While you have at least 1 Content card on every Platform: your Persona gains +5 ⭐ on this Platform" (Pippa's Quarters)
@@ -234,6 +261,8 @@ const conditionHolds = (G, me, idx, cond) =>
     // Dominating = you have more Content cards than your opponent on this platform
     (!cond.dominating || (idx != null && dominating(G, me, idx))) &&
     (!cond.upgraded || G.players[me].upgrades.length > 0) &&
+    (!cond.popBehind || (idx != null && G.platforms[idx].pop[other(me)] > G.platforms[idx].pop[me])) && // Joystick User: the opponent has more 🌠 here
+    (!cond.oppPersonaHere || (idx != null && G.personaLocations[other(me)] === idx)) && // Queen Status
     (cond.starsLead === undefined || (idx != null && sideInf(G, idx, me) - sideInf(G, idx, other(me)) >= cond.starsLead)));
 
 const applyEffect = (G, me, idx, fx, extra) => {
@@ -274,7 +303,7 @@ const applyEffect = (G, me, idx, fx, extra) => {
       if (fx.scope === 'here' && i !== idx) return;
       for (const id of ['0', '1']) {
         if (fx.owner === 'mine' && id !== me) continue;
-        for (const c of pl.cards[id].filter(hit)) deleteCard(G, id, i, c); // deleted cards go to their owner's Trash
+        for (const c of pl.cards[id].filter((c) => hit(c) && (fx.starsMax === undefined || starsOf(G, i, id, c) <= fx.starsMax))) deleteCard(G, id, i, c, me); // deleted cards go to their owner's Trash (Vine Boom: starsMax)
       }
     });
   } else if (fx.type === 'returnContent') {
@@ -292,7 +321,9 @@ const applyEffect = (G, me, idx, fx, extra) => {
   } else if (fx.type === 'selfMod') {
     if (extra?.self) extra.self.mod = (extra.self.mod || 0) + fx.amount; // "this card gains +N ⭐ this round"
   } else if (fx.type === 'bitsPer') {
-    G.players[who].bits += fx.amount * G.platforms.filter((pl) => pl.cards[who].length > 0).length; // per platform where you have Content
+    G.players[who].bits += fx.amount * G.platforms.filter((pl, j) => pl.cards[who].length > 0 && !(fx.other && j === idx)).length; // per platform where you have Content (other: not counting this one, Blockheads Big Adventure!)
+  } else if (fx.type === 'oppContentCostRound') {
+    (G.costUp ||= { 0: 0, 1: 0 })[other(me)] += fx.amount; // Fashionista: your opponent's Content costs more to play this round
   } else if (fx.type === 'anyPlatformThisRound') {
     G.anyPlatform[who] = true; // Clip Out of Context: play Content on other platforms as though your Persona were there
   } else if (fx.type === 'movePersonaHere') {
@@ -358,6 +389,8 @@ export const playCost = (G, id, card, idx) => {
   for (const fx of card.effects || []) if (fx.type === 'costReduction' && conditionHolds(G, id, at, fx.if)) cost -= fx.amount;
   if (card.type === 'Content') {
     cost -= G.players[id].contentDiscount;
+    cost += G.costUp?.[id] || 0; // Fashionista: Content costs more this round
+    for (const fx of card.effects || []) if (fx.type === 'selfCostPerContent') cost -= fx.amount * G.platforms.reduce((t, pl) => t + pl.cards[id].length, 0); // Sigma Alpha Dominant
     if (at != null) {
       for (const fx of platformFx(G, at, 'costReduce')) cost -= fx.amount; // Lia's Network
       for (const oc of G.platforms[at].cards[other(id)]) for (const fx of fxOf(oc, 'oppCostUp')) cost += fx.amount; // Math Stream
@@ -366,6 +399,7 @@ export const playCost = (G, id, card, idx) => {
   } else if (card.type === 'Action' && at != null && clashingNow(G) === at && cost > 0) {
     for (const c of G.platforms[at].cards[id]) for (const fx of fxOf(c, 'actionDiscount')) cost = Math.max(fx.min ?? 1, cost - fx.amount); // Speedrun
   }
+  if (card.type === 'Action' && at != null && clashingNow(G) === at) for (const oc of G.platforms[at].cards[other(id)]) for (const fx of fxOf(oc, 'actionCostUp')) cost += fx.amount; // Trash Talk
   return Math.max(0, cost);
 };
 
@@ -400,6 +434,7 @@ const firePlatformTriggers = (G, who, idx, played, event) => {
 const placeCard = (G, playerID, card, platformIndex, extra) => {
   if (card.type === 'Upgrade') G.players[playerID].upgrades.push(card); // goes on top of your persona
   else G.platforms[platformIndex][card.type === 'Content' ? 'cards' : 'actions'][playerID].push(card);
+  if (card.type === 'Content') { const ph = (G.platforms[platformIndex].playedHere ||= { 0: 0, 1: 0 }); ph[playerID] += 1; } // Brain Rot
   for (const fx of card.effects || []) applyEffect(G, playerID, platformIndex, fx, { ...extra, self: card });
   if (card.type === 'Action' || card.type === 'Content') {
     const played = G.players[playerID].played;
@@ -636,6 +671,7 @@ const cardOptions = (G, me, idx, pick) => {
     if (pick.platform !== undefined && i !== pick.platform) return;
     if (pick.scope === 'here' && i !== idx) return;
     if (pick.scope === 'other' && i === idx) return;
+    if (pick.scope === 'adjacent' && Math.abs(i - idx) !== 1) return; // CUSTODY BATTLE: a neighbouring platform
     for (const id of ['0', '1']) {
       if ((pick.owner === 'mine' && id !== me) || (pick.owner === 'opp' && id === me)) continue;
       for (const c of p.cards[id]) {
@@ -677,6 +713,7 @@ const moveRef = (G, ref, dest) => {
     G.platforms[from].pmods[ref.owner] = 0;
     G.personaLocations[ref.owner] = dest;
     for (const fx of platformFx(G, dest, 'onPersonaMoveHere')) for (const t of fx.then) applyEffect(G, ref.owner, dest, t, { source: G.platforms[dest].name });
+    for (const c of [...G.platforms[dest].cards[ref.owner]]) for (const fx of fxOf(c, 'onPersonaMoveHere')) for (const t of fx.then) applyEffect(G, ref.owner, dest, t, { source: c.name, self: c }); // VTuber HR
     return;
   }
   removeFromPlatform(G, ref);
@@ -717,7 +754,18 @@ const startChoice = (G, me, idx, fx, extra = {}) => {
   const base = { actor: me, player: me, idx, source: extra.source || '', prompt: fx.prompt || 'Choose' };
   const ask = (more, front) => pushChoice(G, { ...base, ...more }, front);
   switch (fx.type) {
-    case 'pickCard': { const options = cardOptions(G, me, idx, { ...fx.pick, selfId: extra.self?.id }); if (options.length) ask({ kind: 'card', options, min: fx.optional ? 0 : 1, action: fx.then }); break; }
+    case 'pickCard': { const options = cardOptions(G, me, idx, { ...fx.pick, selfId: extra.self?.id }); if (options.length) ask({ ...(fx.chooser === 'opp' ? { player: opp } : {}), kind: 'card', options, min: fx.optional ? 0 : 1, action: fx.then }); break; } // chooser: 'opp' = your opponent makes the choice (Kiss, Marry, Kill)
+    case 'pullOppPop': { // Oversized Thighs: move 1 opposing 🌠 from another platform to this one
+      const from = [0, 1, 2].filter((i) => i !== idx && G.platforms[i].pop[opp] >= 1);
+      if (from.length && !popBlocked(G, idx, opp)) ask({ kind: 'platform', options: platformOptions(G, from), action: { do: 'pullOppPop' } });
+      break;
+    }
+    case 'returnOrDeleteSelf': { // Boy Failure: return another of your Content cards here to your hand; if you cannot, delete this card
+      const options = cardOptions(G, me, idx, { scope: 'here', owner: 'mine', excludeSelf: true, selfId: extra.self?.id });
+      if (options.length) ask({ kind: 'card', options, action: { do: 'return' } });
+      else if (extra.self) deleteCard(G, me, idx, extra.self, me);
+      break;
+    }
     case 'bearWithMe': { const options = cardOptions(G, me, idx, { scope: 'here', owner: 'any' }); if (options.length) ask({ kind: 'card', options, action: { do: 'bear1' } }); break; }
     case 'potion': { const options = cardOptions(G, me, idx, { scope: 'here', owner: 'any', persona: true }); if (options.length) ask({ kind: 'card', options, action: { do: 'potion1', bonus: fx.bonusPersona } }); break; }
     case 'noShow': {
@@ -809,7 +857,7 @@ const startChoice = (G, me, idx, fx, extra = {}) => {
       break;
     }
     case 'moveOwnContent': { // Sketch Book: you may move 1 of your Content cards from this platform to another platform
-      const options = cardOptions(G, me, idx, { scope: 'here', owner: 'mine' });
+      const options = cardOptions(G, me, idx, { scope: 'here', owner: 'mine', excludeSelf: fx.excludeSelf, selfId: extra.self?.id }); // excludeSelf: "another 1 of your Content cards" (Robot Vacuum, In Your Walls)
       if (options.length) ask({ kind: 'card', options, min: 0, action: { do: 'moveOwn1' } });
       break;
     }
@@ -851,7 +899,7 @@ const startChoice = (G, me, idx, fx, extra = {}) => {
     default: break;
   }
 };
-const CHOICE_EFFECTS = ['pickCard', 'lookPlay', 'payThen', 'merchStars', 'copyPlatformReward', 'moveOwnContent', 'moveSelf', 'oppMovePop', 'gainPopOther', 'moveOppAll', 'playHandFree', 'playTrashSpend', 'playTrashAction', 'lookTrashHand', 'bearWithMe', 'potion', 'noShow', 'revealPick', 'playHand', 'playTrash', 'trashToHand', 'discardDraw', 'movePersona', 'movePop', 'moveAll'];
+const CHOICE_EFFECTS = ['pullOppPop', 'returnOrDeleteSelf', 'pickCard', 'lookPlay', 'payThen', 'merchStars', 'copyPlatformReward', 'moveOwnContent', 'moveSelf', 'oppMovePop', 'gainPopOther', 'moveOppAll', 'playHandFree', 'playTrashSpend', 'playTrashAction', 'lookTrashHand', 'bearWithMe', 'potion', 'noShow', 'revealPick', 'playHand', 'playTrash', 'trashToHand', 'discardDraw', 'movePersona', 'movePop', 'moveAll'];
 
 // Carry out the player's answer.
 const runChoice = (G, ch, keys) => {
@@ -873,7 +921,7 @@ const runChoice = (G, ch, keys) => {
     case 'double': for (const r of refs()) r.card.mod = (r.card.mod || 0) + r.card.inf; break;
     case 'delete': { // payCost: Toxic Gaming spends the card's 🟡. draw: only if something was deleted (Gomi Kuma)
       let gone = 0;
-      for (const r of refs()) { if (a.payCost) player.bits -= Math.min(player.bits, r.card.cost); if (deleteCard(G, r.owner, r.idx, r.card)) gone++; }
+      for (const r of refs()) { if (a.payCost) player.bits -= Math.min(player.bits, r.card.cost); if (deleteCard(G, r.owner, r.idx, r.card, actor)) gone++; }
       if (a.draw && gone) for (let k = 0; k < a.draw; k++) { const d = player.deck.shift(); if (d) player.hand.push(d); }
       break;
     }
@@ -886,7 +934,7 @@ const runChoice = (G, ch, keys) => {
     case 'bear2': {
       const keep = new Set([a.first, keys[0]]), p = G.platforms[ch.idx];
       for (const id of ['0', '1']) {
-        for (const c of p.cards[id].filter((c) => !keep.has(`c|${ch.idx}|${id}|${c.id}`))) deleteCard(G, id, ch.idx, c);
+        for (const c of p.cards[id].filter((c) => !keep.has(`c|${ch.idx}|${id}|${c.id}`))) deleteCard(G, id, ch.idx, c, actor);
       }
       break;
     }
@@ -912,6 +960,7 @@ const runChoice = (G, ch, keys) => {
       else { if (popBlocked(G, target, opp)) break; G.platforms[ch.idx].pop[opp] -= 1; G.platforms[target].pop[opp] += 1; captureIfReady(G, target, opp); } // can complete a capture, but it is not a clash win, so no Clash Reward
       break;
     }
+    case 'pullOppPop': { const from = Number(keys[0]); G.platforms[from].pop[opp] -= 1; G.platforms[ch.idx].pop[opp] += 1; captureIfReady(G, ch.idx, opp); break; } // can complete a capture, but it is not a clash win, so no Clash Reward
     case 'moveAll': {
       const from = Number(keys[0]), cards = G.platforms[from].cards[actor];
       G.platforms[ch.idx].cards[actor].push(...cards);
@@ -1093,6 +1142,7 @@ export const OshiPush = {
     actionLock: { 0: false, 1: false },
     roundRewards: { 0: [], 1: [] }, // Clash Rewards cards gave a persona for this round
     anyPlatform: { 0: false, 1: false }, // Clip Out of Context: Content may be played on any platform this round
+    costUp: { 0: 0, 1: 0 }, // Fashionista: extra 🟡 your Content costs this round
     phase: 'deckSelect', // the current phase's name (set when each phase begins), so card text can ask "during a clash"
     autoPass: { 0: false, 1: false }, // 'Pass all': passing automatically for the rest of the phase
     pendingDiscard: { 0: 0, 1: 0 }, // cards a player must still choose to discard (effects)
@@ -1311,6 +1361,8 @@ export const OshiPush = {
         for (const p of G.platforms) for (const id of ['0', '1']) { for (const c of p.actions[id]) delete c.mod; G.players[id].trash.push(...p.actions[id]); } // played Actions go to the Trash
         G.roundRewards = { 0: [], 1: [] };
         G.anyPlatform = { 0: false, 1: false };
+        G.costUp = { 0: 0, 1: 0 };
+        for (const p of G.platforms) p.playedHere = { 0: 0, 1: 0 };
         for (const pl of G.platforms) pl.used = {}; // "the first time ..." platform rules (Iori's Den) refresh
         for (const id of ['0', '1']) G.players[id].merch = null; // Phase Warehouse: declare your merch again next round
         for (const pl of G.platforms) for (const id of ['0', '1']) for (const c of pl.cards[id]) delete c.used; // Activate abilities refresh
