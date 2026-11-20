@@ -16,7 +16,7 @@ export default {
   'Sound Alert Jumpscare': [{ type: 'pickCard', prompt: 'Sound Alert Jumpscare: choose one of your Content cards (+3 ⭐ this clash for each platform where you have Content)', pick: { scope: 'any', owner: 'mine' }, then: { do: 'mod', amountPer: 3 } }],
   'FAQ YU': [{ type: 'pickCard', prompt: 'FAQ YU: choose a Persona or Content card; it gains ⭐ equal to the cards in your hand this round', pick: { scope: 'any', owner: 'any', persona: true }, then: { do: 'mod', amountFrom: 'hand' } }],
   'Embrace Scuff': [{ type: 'pickCard', prompt: 'Embrace Scuff: choose a Content card to gain +7 ⭐ this clash (draw 1 if it is on an Independent platform)', pick: { scope: 'any', owner: 'any' }, then: { do: 'mod', amount: 7, drawIf: { tag: 'Independent', n: 1 } } }],
-  'Vomit Drawer': [{ type: 'pickCard', prompt: 'Vomit Drawer: delete an opposing Content card with 6 ⭐ or less', pick: { scope: 'any', owner: 'opp', starsMax: 6 }, then: { do: 'delete' } }],
+  'Vomit Drawer': [{ type: 'pickCard', prompt: 'Vomit Drawer: delete an opposing Content card on this platform with 6 ⭐ or less', pick: { scope: 'here', owner: 'opp', starsMax: 6 }, then: { do: 'delete' } }],
   'Desk Slam': [{ type: 'pickCard', prompt: 'Desk Slam: delete a Content card with 🟡3 or less', pick: { scope: 'any', owner: 'any', costMax: 3 }, then: { do: 'delete' } }],
   'Yell at Fish': [{ type: 'pickCard', prompt: 'Yell at Fish: delete a Content card with 🟡 less than the number of cards in your hand', pick: { scope: 'any', owner: 'any', costLtHand: true }, then: { do: 'delete' } }],
   'Succumb to Cringe': [{ type: 'pickCard', prompt: 'Succumb to Cringe: return a Content card with 🟡3 or less to its owner\'s hand', pick: { scope: 'any', owner: 'any', costMax: 3 }, then: { do: 'return' } }],
@@ -45,6 +45,42 @@ export default {
   // Hakushika Iori only, during a clash. 'playFromTrash': it can also be played from the Trash (then it goes to the bottom of the deck).
   'Scary Story Writing': [{ type: 'playFromTrash' }, { type: 'personaInf', target: 'self', amount: 3 }],
   'ARA ARA': [{ type: 'moveAll', prompt: 'ARA ARA: move all of your Content cards from which platform to this one?' }],
+
+  // ================= GEN 2 ACTION CARDS =================
+  // Effect types added for these (all in game.js): winClash (if: contentEverywhere | dominating), noPopThisClash, discardOppDraw,
+  //   personaInf (perContent | perPopPlatform | perOppHand), draw (perDominating | untilHand), revealPick (pickType, rest: 'trash'),
+  //   euclaseFrost, ashBlast, hardPivot, waifuWheel, beMoreCultured, playTop, pickCard then: modDelete | moveChosen, mod amountFrom 'trash'.
+  // Not built yet (they need Premium Content or a shuffle): Find the Bepis, Powered by Bepis, Permission to Swear, Hydraulic Press, Gacha Pull.
+  // Partly built: AVId Gummy Worm Enjoyer (the free play from the top of your deck is missing), Take a Shot (the extra draw for Premium is missing).
+  'Euclase Frost': [{ type: 'deckOnly', persona: 'Eden' }, { type: 'euclaseFrost', costMax: 4, prompt: 'Euclase Frost: choose any number of your Content cards with 🟡4 or less on this platform to move to other platforms' }],
+  'Throbbing Egghead': [{ type: 'deckOnly', persona: 'Captain Camille' }, { type: 'personaInf', target: 'self', amount: 5 }, { type: 'draw', target: 'self', amount: 1, perDominating: true }],
+  'Bonus Three Inches': [{ type: 'deckOnly', persona: 'Porcelain Maid' }, { type: 'winClash', if: { contentEverywhere: true } }],
+  'Remove Ball-Jointed Head': [{ type: 'deckOnly', persona: 'Porcelain Maid' }, { type: 'discardOppDraw', amount: 1 }],
+  'Off the Raelz': [{ type: 'deckOnly', persona: 'Raelice' }, { type: 'revealPick', count: 3, n: 1, pickType: 'Content', rest: 'trash', prompt: 'Off the Raelz: draw 1 Content card from the revealed cards (the others are discarded)' }],
+  'AVId Gummy Worm Enjoyer': [{ type: 'deckOnly', persona: 'La Avispa Nectarina' }, { type: 'personaInf', target: 'self', amount: 10 }],
+  'Unique Laughing Sounds': [{ type: 'personaInf', target: 'self', perContent: 3 }],
+  'Pinata': [{ type: 'winClash', if: { dominating: true } }],
+  'Nose Pull': [{ type: 'pickCard', prompt: 'Nose Pull: delete an opposing Content card on this platform', pick: { scope: 'here', owner: 'opp' }, then: { do: 'delete' } }],
+  'Soulslike Notes': [{ type: 'draw', target: 'self', untilHand: 3 }],
+  'Ash Blasting': [{ type: 'ashBlast', prompt: "Ash Blasting: look at your opponent's hand and choose a card for them to discard" }],
+  'Sniffa': [{ type: 'anyPlatformThisRound' }],
+  'Date Your Mom': [{ type: 'personaInf', target: 'self', perPopPlatform: 5 }],
+  'Add Reverb': [{ type: 'playHandFree', costMax: 5, prompt: 'Add Reverb: you may play a Content card with 🟡5 or less from your hand on this platform for free' }],
+  'Cage Chat': [{ type: 'pickCard', prompt: 'Cage Chat: choose a Content card; it loses -4 ⭐ this clash (it is deleted if it ends up with 0 ⭐)', pick: { scope: 'any', owner: 'any' }, then: { do: 'modDelete', amount: -4 } }],
+  'Accidental Flash': [
+    { type: 'movePop', from: 'here', optional: true, prompt: 'Accidental Flash: move an opposing 🌠 from this platform to which platform? (1 of 2)' },
+    { type: 'movePop', from: 'here', optional: true, prompt: 'Accidental Flash: move a second opposing 🌠 from this platform to which platform? (2 of 2)' }],
+  'No Prep, No Problem': [{ type: 'pickCard', prompt: 'No Prep, No Problem: choose a Content card on a platform with 2 or more Content cards', pick: { scope: 'any', owner: 'any', platformMinContent: 2 }, then: { do: 'moveChosen' } }],
+  'Hard Pivot': [{ type: 'hardPivot', prompt: 'Hard Pivot: choose any number of cards to discard (you draw that many)' }],
+  'Take a Shot': [{ type: 'pickCard', prompt: 'Take a Shot: choose one of your Content cards to gain +6 ⭐ this clash', pick: { scope: 'any', owner: 'mine' }, then: { do: 'mod', amount: 6 } }],
+  'Intended Flash': [{ type: 'personaInf', target: 'self', amount: 5, perOppHand: 1 }],
+  'Be More Cultured': [{ type: 'beMoreCultured' }], // "opposing" = on the platform your Persona is on
+  'Boymode': [{ type: 'noPopThisClash' }],
+  'Lonely MILF Looking for Comfort': [{ type: 'personaInf', target: 'self', amount: 2 }, { type: 'playTop' }],
+  'Waifu Wheel': [{ type: 'draw', target: 'self', amount: 3 }, { type: 'waifuWheel' }], // draw 3, then you may put up to 2 cards from your hand back on top
+  'Aggressive Bite': [{ type: 'pickCard', prompt: 'Aggressive Bite: choose an opposing Content card on this platform to lose -5 ⭐ this clash', pick: { scope: 'here', owner: 'opp' }, then: { do: 'mod', amount: -5 } }],
+  'Identity Theft': [{ type: 'personaReward', text: 'Steal 1 🌠 on this Platform.', effects: [{ type: 'stealPop', target: 'self', amount: 1 }] }],
+  'ARF ARF': [{ type: 'pickCard', prompt: 'ARF ARF: choose one of your Content cards; it gains +1 ⭐ this clash for each card in your Trash', pick: { scope: 'any', owner: 'mine' }, then: { do: 'mod', amountFrom: 'trash' } }],
 
   // ================= CONTENT CARDS =================
   // Effect types used below (all implemented in game.js):

@@ -92,6 +92,10 @@ test('Step on Building Blocks: an opposing Persona loses 3 ⭐ this round', () =
   t.play('0', 'Step on Building Blocks', 0);
   assert.equal(sideInf(t.G(), 0, '1'), Math.max(0, before - 3));
 });
+test('Step on Building Blocks: the opposing Persona is only affected if it is on this platform', () => {
+  const t = mk({ at0: 0, at1: 1 }); t.bits('0', 10); const before = sideInf(t.G(), 1, '1');
+  t.play('0', 'Step on Building Blocks', 0); assert.equal(sideInf(t.G(), 1, '1'), before, 'their Persona is on another platform');
+});
 test('Rampant Narcissim: may play another 🟡1 Content for free', () => {
   const t = mk(); t.bits('0', 10); const c = t.give('0', cheap(1)); t.bits('0', 10);
   t.play('0', 'Rampant Narcissim', 0);

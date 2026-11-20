@@ -37,7 +37,7 @@ const locate = (G, cardId) => {
 const keyOfCard = (G, card) => { const l = card ? locate(G, card.id) : null; return l ? `c|${l.idx}|${l.owner}|${card.id}` : null; };
 const clashingNow = (G) => (G.phase === 'clash' && G.clashIndex < 3 ? G.clashSequence[G.clashIndex] : null); // the platform whose clash is happening
 // "Your opponents can't gain 🌠 here" (Year 0 Science): can `id` gain popularity on platform idx?
-const popBlocked = (G, idx, id) => G.platforms[idx].cards[other(id)].some((c) => fxOf(c, 'noOppPop').length);
+const popBlocked = (G, idx, id) => G.platforms[idx].cards[other(id)].some((c) => fxOf(c, 'noOppPop').length) || !!G.platforms[idx].noPop?.[id]; // Boymode: noPop
 // Content that can't be played right now: Puzzling Puzzle (🟡5+ here) and Craft Show (1 Content per round).
 export const contentBlocked = (G, id, card, idx) => {
   if (card.type !== 'Content') return false;
@@ -195,8 +195,8 @@ function resolveOne(G, idx) {
   const sum = (id) => sideInf(G, idx, id);
   const entry = { name: p.name, inf: { 0: sum('0'), 1: sum('1') }, winner: null, captured: false, pop: null };
 
-  if (entry.inf[0] !== entry.inf[1]) {
-    const winner = entry.inf[0] > entry.inf[1] ? '0' : '1';
+  if (p.forceWin || entry.inf[0] !== entry.inf[1]) {
+    const winner = p.forceWin || (entry.inf[0] > entry.inf[1] ? '0' : '1'); // forceWin: "you win this clash" (Pinata, Bonus Three Inches)
     // Scary Yandere Roleplay: gain 1 🌠 per card in your opponents' hands instead of 1. Year 0 Science: the loser's side can stop the gain.
     let gain = 1;
     if (p.cards[winner].some((c) => fxOf(c, 'popReplace').length)) gain = G.players[other(winner)].hand.length;
@@ -262,6 +262,7 @@ const conditionHolds = (G, me, idx, cond) =>
     (!cond.dominating || (idx != null && dominating(G, me, idx))) &&
     (!cond.upgraded || G.players[me].upgrades.length > 0) &&
     (!cond.popBehind || (idx != null && G.platforms[idx].pop[other(me)] > G.platforms[idx].pop[me])) && // Joystick User: the opponent has more 🌠 here
+    (!cond.contentEverywhere || G.platforms.every((pl) => pl.cards[me].length > 0)) && // Bonus Three Inches
     (!cond.oppPersonaHere || (idx != null && G.personaLocations[other(me)] === idx)) && // Queen Status
     (cond.starsLead === undefined || (idx != null && sideInf(G, idx, me) - sideInf(G, idx, other(me)) >= cond.starsLead)));
 
@@ -273,19 +274,24 @@ const applyEffect = (G, me, idx, fx, extra) => {
     G.players[who].bits = Math.max(0, G.players[who].bits + fx.amount);
   } else if (fx.type === 'personaInf') {
     const loc = G.personaLocations[who];
-    const amt = fx.upgradedAmount !== undefined && G.players[who].upgrades.length ? fx.upgradedAmount : fx.amount; // e.g. In Character
-    if (loc !== null) G.platforms[loc].pmods[who] += amt;
+    let amt = fx.upgradedAmount !== undefined && G.players[who].upgrades.length ? fx.upgradedAmount : fx.amount || 0; // e.g. In Character
+    if (fx.perContent) amt += fx.perContent * G.platforms.reduce((t, pl) => t + pl.cards[who].length, 0); // Unique Laughing Sounds: per Content card you have in play
+    if (fx.perPopPlatform) amt += fx.perPopPlatform * G.platforms.filter((pl) => pl.pop[who] > 0).length; // Date Your Mom: per platform where you have 🌠
+    if (fx.perOppHand) amt += fx.perOppHand * G.players[other(who)].hand.length; // Intended Flash: per card in your opponents' hands
+    if (loc !== null && (who === me || idx == null || loc === idx)) G.platforms[loc].pmods[who] += amt; // "opposing" = the platform your Persona is on
   } else if (fx.type === 'personaInfSet') {
     // Bring the persona's current stars to fx.value; later gains still add on top.
     const loc = G.personaLocations[who];
-    if (loc !== null) {
+    if (loc !== null && (who === me || idx == null || loc === idx)) {
       const p = G.platforms[loc];
       p.pmods[who] += fx.value - Math.max(0, (activePersona(G, who)?.inf || 0) + p.pmods[who]);
     }
   } else if (fx.type === 'discard') {
     requireDiscard(G, who, fx.amount);
   } else if (fx.type === 'draw') {
-    const n = fx.perContentPlatform ? fx.amount * G.platforms.filter((pl) => pl.cards[who].length > 0).length : fx.amount;
+    let n = fx.perContentPlatform ? fx.amount * G.platforms.filter((pl) => pl.cards[who].length > 0).length : fx.amount;
+    if (fx.perDominating) n = fx.amount * G.platforms.filter((pl, j) => dominating(G, who, j)).length; // Throbbing Egghead
+    if (fx.untilHand !== undefined) n = Math.max(0, fx.untilHand - G.players[who].hand.length); // Soulslike Notes: draw until you have N cards
     for (let i = 0; i < n; i++) {
       const drawn = G.players[who].deck.shift();
       if (drawn) G.players[who].hand.push(drawn);
@@ -322,6 +328,14 @@ const applyEffect = (G, me, idx, fx, extra) => {
     if (extra?.self) extra.self.mod = (extra.self.mod || 0) + fx.amount; // "this card gains +N ⭐ this round"
   } else if (fx.type === 'bitsPer') {
     G.players[who].bits += fx.amount * G.platforms.filter((pl, j) => pl.cards[who].length > 0 && !(fx.other && j === idx)).length; // per platform where you have Content (other: not counting this one, Blockheads Big Adventure!)
+  } else if (fx.type === 'winClash') {
+    if (!G.platforms[idx].forceWin) G.platforms[idx].forceWin = me; // you win the clash on this platform, whatever the ⭐
+  } else if (fx.type === 'noPopThisClash') {
+    (G.platforms[idx].noPop ||= { 0: false, 1: false })[other(me)] = true; // Boymode: your opponent can't gain 🌠 from this clash
+  } else if (fx.type === 'discardOppDraw') {
+    const o = other(me), n = Math.min(fx.amount, G.players[o].hand.length); // Remove Ball-Jointed Head: they discard, you draw one per card discarded
+    requireDiscard(G, o, fx.amount);
+    applyEffect(G, me, idx, { type: 'draw', target: 'self', amount: n });
   } else if (fx.type === 'oppContentCostRound') {
     (G.costUp ||= { 0: 0, 1: 0 })[other(me)] += fx.amount; // Fashionista: your opponent's Content costs more to play this round
   } else if (fx.type === 'anyPlatformThisRound') {
@@ -365,7 +379,7 @@ export const cardPlayable = (card, persona, phase) => {
   const po = card.playOnly || {};
   // "Discard: ... Use only during a clash." (Upgrades, Spooky Town ...) limits the ability, not playing the card (see canDiscardAbility)
   const abilityTimed = (card.effects || []).some((fx) => (fx.type === 'discardAbility' || fx.type === 'activate' || fx.type === 'personaActivate') && fx.timing);
-  const timing = abilityTimed ? undefined : po.timing || (/only during a clash/i.test(card.text || '') ? 'clash' : undefined);
+  const timing = abilityTimed ? undefined : po.timing || (/(?:only|on) during a clash/i.test(card.text || '') ? 'clash' : undefined);
   if (po.persona && !(persona && nameKey(persona.name) === nameKey(po.persona))) return false;
   if (timing === 'clash' && phase !== 'clash') return false;
   if (timing === 'content' && phase !== 'content') return false;
@@ -671,6 +685,7 @@ const cardOptions = (G, me, idx, pick) => {
     if (pick.platform !== undefined && i !== pick.platform) return;
     if (pick.scope === 'here' && i !== idx) return;
     if (pick.scope === 'other' && i === idx) return;
+    if (pick.platformMinContent !== undefined && p.cards['0'].length + p.cards['1'].length < pick.platformMinContent) return; // No Prep, No Problem
     if (pick.scope === 'adjacent' && Math.abs(i - idx) !== 1) return; // CUSTODY BATTLE: a neighbouring platform
     for (const id of ['0', '1']) {
       if ((pick.owner === 'mine' && id !== me) || (pick.owner === 'opp' && id === me)) continue;
@@ -780,9 +795,9 @@ const startChoice = (G, me, idx, fx, extra = {}) => {
     case 'revealPick': {
       const revealed = player.deck.splice(0, fx.count || 4);
       const n = fx.nIf && is(fx.nIf.persona) ? fx.nIf.n : fx.n;
-      const acts = revealed.filter((c) => c.type === 'Action');
-      if (!acts.length) { player.deck.push(...revealed); break; }
-      ask({ kind: 'card', options: acts.map((c) => zoneOption('r', c)), min: Math.min(n, acts.length), max: n, stash: revealed, revealed: revealed.map((c) => c.name), action: { do: 'revealPick' } });
+      const acts = revealed.filter((c) => c.type === (fx.pickType || 'Action'));
+      if (!acts.length) { if (fx.rest === 'trash') player.trash.push(...revealed); else player.deck.push(...revealed); break; } // fx.rest: 'trash' = the others are discarded (Off the Raelz)
+      ask({ kind: 'card', options: acts.map((c) => zoneOption('r', c)), min: Math.min(n, acts.length), max: n, stash: revealed, revealed: revealed.map((c) => c.name), action: { do: 'revealPick', rest: fx.rest } });
       break;
     }
     case 'playHand': {
@@ -891,6 +906,47 @@ const startChoice = (G, me, idx, fx, extra = {}) => {
       if (list.length) ask({ kind: 'platform', options: platformOptions(G, list), min: fx.optional ? 0 : 1, action: { do: 'movePop', mode: fx.from === 'other' ? 'gaslight' : 'narrative' } }); // optional: "you may" (Convulsive Movement)
       break;
     }
+    case 'euclaseFrost': { // Euclase Frost: move any number of your Content cards with 🟡4 or less from this platform to other platforms
+      const options = cardOptions(G, me, idx, { scope: 'here', owner: 'mine', costMax: fx.costMax ?? 4 });
+      if (options.length) ask({ kind: 'card', options, min: 0, max: options.length, action: { do: 'euclase1' } });
+      break;
+    }
+    case 'ashBlast': { // Ash Blasting: look at an opponent's hand and discard 1 card from it
+      const options = G.players[opp].hand.map((c) => zoneOption('o', c));
+      if (options.length) ask({ kind: 'card', options, secret: true, action: { do: 'ashBlast' } });
+      break;
+    }
+    case 'hardPivot': { // Hard Pivot: discard any number of cards, then draw that many
+      if (player.hand.length) ask({ kind: 'card', options: player.hand.map((c) => zoneOption('h', c)), min: 0, max: player.hand.length, secret: true, action: { do: 'hardPivot' } });
+      break;
+    }
+    case 'waifuWheel': { // Waifu Wheel: you may put any 2 cards from your hand on top of your deck
+      if (player.hand.length) ask({ kind: 'card', options: player.hand.map((c) => zoneOption('h', c)), min: 0, max: Math.min(2, player.hand.length), secret: true, action: { do: 'waifu1' },
+        prompt: `${base.source}: you may put up to 2 cards from your hand on top of your deck` });
+      break;
+    }
+    case 'beMoreCultured': { // Be More Cultured: reveal the top card; return an opposing Content card with 🟡 equal or less than it
+      const top = player.deck[0];
+      if (!top) break;
+      const options = cardOptions(G, me, idx, { scope: 'here', owner: 'opp', costMax: top.cost }); // "opposing" = on the platform your Persona is on
+      if (options.length) ask({ kind: 'card', options, revealed: [top.name], prompt: `${base.source}: you revealed ${top.name} (🟡${top.cost}). Return an opposing Content card with 🟡${top.cost} or less to its owner's hand`, action: { do: 'return' } });
+      break;
+    }
+    case 'playTop': { // Lonely MILF: look at the top card of your deck. You may play it (paying its 🟡)
+      const top = player.deck[0];
+      if (!top) break;
+      const playable = ['Content', 'Action'].includes(top.type) && !top.xCost && cardPlayable(top, persona, G.phase)
+        && (top.type === 'Content' ? !contentBlocked(G, me, top, idx) : !G.actionLock[me] && (G.phase !== 'clash' || idx === clashingNow(G)));
+      const cost = top.xCost ? null : playCost(G, me, top, idx);
+      const canPay = cost !== null && cost <= player.bits;
+      const what = `${top.name} (${top.type}${cost === null ? '' : `, 🟡${cost}`})`;
+      const options = [];
+      if (playable && canPay) options.push({ key: 'yes', kind: 'option', name: `Play ${top.name} (🟡${cost})` });
+      options.push({ key: 'no', kind: 'option', name: playable && canPay ? 'Leave it on top of your deck' : 'OK (it stays on top of your deck)' });
+      const why = !playable ? "It can't be played right now" : !canPay ? `You can't pay for it (you have 🟡${player.bits})` : 'You may play it (paying its 🟡)';
+      ask({ kind: 'option', secret: true, options, min: 1, max: 1, prompt: `${base.source}: the top card of your deck is ${what}. ${why}.`, action: { do: 'playTop' } });
+      break;
+    }
     case 'moveAll': {
       const list = [0, 1, 2].filter((i) => i !== idx && G.platforms[i].cards[me].length > 0);
       if (list.length) ask({ kind: 'platform', options: platformOptions(G, list), action: { do: 'moveAll' } });
@@ -899,7 +955,7 @@ const startChoice = (G, me, idx, fx, extra = {}) => {
     default: break;
   }
 };
-const CHOICE_EFFECTS = ['pullOppPop', 'returnOrDeleteSelf', 'pickCard', 'lookPlay', 'payThen', 'merchStars', 'copyPlatformReward', 'moveOwnContent', 'moveSelf', 'oppMovePop', 'gainPopOther', 'moveOppAll', 'playHandFree', 'playTrashSpend', 'playTrashAction', 'lookTrashHand', 'bearWithMe', 'potion', 'noShow', 'revealPick', 'playHand', 'playTrash', 'trashToHand', 'discardDraw', 'movePersona', 'movePop', 'moveAll'];
+const CHOICE_EFFECTS = ['euclaseFrost', 'ashBlast', 'hardPivot', 'waifuWheel', 'beMoreCultured', 'playTop', 'pullOppPop', 'returnOrDeleteSelf', 'pickCard', 'lookPlay', 'payThen', 'merchStars', 'copyPlatformReward', 'moveOwnContent', 'moveSelf', 'oppMovePop', 'gainPopOther', 'moveOppAll', 'playHandFree', 'playTrashSpend', 'playTrashAction', 'lookTrashHand', 'bearWithMe', 'potion', 'noShow', 'revealPick', 'playHand', 'playTrash', 'trashToHand', 'discardDraw', 'movePersona', 'movePop', 'moveAll'];
 
 // Carry out the player's answer.
 const runChoice = (G, ch, keys) => {
@@ -909,7 +965,7 @@ const runChoice = (G, ch, keys) => {
   const take = (list, id) => { const i = list.findIndex((c) => c.id === id); return i === -1 ? null : list.splice(i, 1)[0]; };
   switch (a.do) {
     case 'mod': {
-      const amt = a.amountPer ? a.amountPer * G.platforms.filter((p) => p.cards[actor].length > 0).length : a.amountFrom === 'hand' ? player.hand.length : a.amount;
+      const amt = a.amountPer ? a.amountPer * G.platforms.filter((p) => p.cards[actor].length > 0).length : a.amountFrom === 'hand' ? player.hand.length : a.amountFrom === 'trash' ? player.trash.length : a.amount;
       for (const r of refs()) {
         if (r.persona) { const loc = G.personaLocations[r.owner]; if (loc !== null) G.platforms[loc].pmods[r.owner] += amt; continue; }
         r.card.mod = (r.card.mod || 0) + amt;
@@ -955,9 +1011,52 @@ const runChoice = (G, ch, keys) => {
     case 'movePersona': if (keys.length) moveRef(G, { persona: true, owner: actor }, Number(keys[0])); break; // "you may": declining picks nothing
     case 'movePop': {
       if (!keys.length) break; // "you may": declining picks nothing
+      if (a.mode !== 'gaslight' && G.platforms[ch.idx].pop[opp] < 1) break; // nothing left to move (Accidental Flash asks twice)
       const target = Number(keys[0]);
       if (a.mode === 'gaslight') { if (popBlocked(G, ch.idx, actor)) break; G.platforms[target].pop[actor] -= 1; G.platforms[ch.idx].pop[actor] += 1; captureIfReady(G, ch.idx, actor); }
       else { if (popBlocked(G, target, opp)) break; G.platforms[ch.idx].pop[opp] -= 1; G.platforms[target].pop[opp] += 1; captureIfReady(G, target, opp); } // can complete a capture, but it is not a clash win, so no Clash Reward
+      break;
+    }
+    case 'euclase1': // then ask where each chosen card goes
+      for (const k of [...keys].reverse()) {
+        const r = refOf(G, k);
+        if (r) ask({ kind: 'platform', options: platformOptions(G, [0, 1, 2].filter((i) => i !== ch.idx)), prompt: `${ch.source}: move ${r.card.name} to which platform?`, action: { do: 'moveOwn2', key: k } });
+      }
+      break;
+    case 'moveChosen': { // No Prep, No Problem: the chosen card goes to another platform
+      const r = refOf(G, keys[0]);
+      if (r) ask({ kind: 'platform', options: platformOptions(G, [0, 1, 2].filter((i) => i !== r.idx)), prompt: `${ch.source}: move ${r.card.name} to which platform?`, action: { do: 'moveOwn2', key: keys[0] } });
+      break;
+    }
+    case 'modDelete': // Cage Chat: it loses ⭐; if it is down to 0, delete it
+      for (const r of refs()) { if (r.persona) continue; r.card.mod = (r.card.mod || 0) + a.amount; if (starsOf(G, r.idx, r.owner, r.card) === 0) deleteCard(G, r.owner, r.idx, r.card, actor); }
+      break;
+    case 'ashBlast': { const card = take(G.players[opp].hand, keys[0].slice(2)); if (card) G.players[opp].trash.push(card); break; }
+    case 'hardPivot': {
+      let n = 0;
+      for (const k of keys) { const card = take(player.hand, k.slice(2)); if (card) { player.trash.push(card); n++; } }
+      applyEffect(G, actor, ch.idx, { type: 'draw', target: 'self', amount: n });
+      break;
+    }
+    case 'waifu1': { // Waifu Wheel: the chosen cards leave your hand; with 2 you decide which goes on top
+      const cards = keys.map((k) => take(player.hand, k.slice(2))).filter(Boolean);
+      if (cards.length === 2) ask({ kind: 'card', options: cards.map((c) => zoneOption('r', c)), stash: cards, secret: true, prompt: `${ch.source}: which card goes on TOP of your deck? (the other goes just under it)`, action: { do: 'waifu2' } });
+      else player.deck.unshift(...cards);
+      break;
+    }
+    case 'waifu2': {
+      const topCard = ch.stash.find((c) => c.id === keys[0].slice(2)), under = ch.stash.find((c) => c !== topCard);
+      if (under) player.deck.unshift(under);
+      if (topCard) player.deck.unshift(topCard);
+      break;
+    }
+    case 'playTop': {
+      if (keys[0] !== 'yes') break;
+      const card = player.deck.shift();
+      if (!card) break;
+      player.bits -= Math.min(player.bits, playCost(G, actor, card, ch.idx));
+      if (card.type === 'Content') player.contentDiscount = 0;
+      placeCard(G, actor, card, ch.idx, { source: ch.source });
       break;
     }
     case 'pullOppPop': { const from = Number(keys[0]); G.platforms[from].pop[opp] -= 1; G.platforms[ch.idx].pop[opp] += 1; captureIfReady(G, ch.idx, opp); break; } // can complete a capture, but it is not a clash win, so no Clash Reward
@@ -1028,7 +1127,7 @@ const runChoice = (G, ch, keys) => {
     }
     case 'revealPick': {
       const chosen = new Set(keys.map((k) => k.slice(2)));
-      for (const c of ch.stash) if (chosen.has(c.id)) player.hand.push(c); else player.deck.push(c); // the rest go to the bottom of the deck
+      for (const c of ch.stash) if (chosen.has(c.id)) player.hand.push(c); else if (a.rest === 'trash') player.trash.push(c); else player.deck.push(c); // the rest go to the bottom of the deck (or the Trash)
       break;
     }
     case 'discardDraw': {
@@ -1174,7 +1273,7 @@ export const OshiPush = {
 
   playerView: ({ G, playerID }) => {
     const copy = JSON.parse(JSON.stringify(G));
-    copy.choices = copy.choices.map((ch) => (ch.secret && ch.player !== playerID ? { ...ch, options: ch.options.map(() => ({ hidden: true })), stash: undefined, hold: undefined } : ch));
+    copy.choices = copy.choices.map((ch) => (ch.secret && ch.player !== playerID ? { ...ch, prompt: '', revealed: undefined, options: ch.options.map(() => ({ hidden: true })), stash: undefined, hold: undefined } : ch));
     for (const id of ['0', '1']) {
       copy.players[id].deck = copy.players[id].deck.map(() => ({ hidden: true }));
       if (id === playerID) continue;
@@ -1362,7 +1461,7 @@ export const OshiPush = {
         G.roundRewards = { 0: [], 1: [] };
         G.anyPlatform = { 0: false, 1: false };
         G.costUp = { 0: 0, 1: 0 };
-        for (const p of G.platforms) p.playedHere = { 0: 0, 1: 0 };
+        for (const p of G.platforms) { p.playedHere = { 0: 0, 1: 0 }; p.forceWin = null; p.noPop = { 0: false, 1: false }; }
         for (const pl of G.platforms) pl.used = {}; // "the first time ..." platform rules (Iori's Den) refresh
         for (const id of ['0', '1']) G.players[id].merch = null; // Phase Warehouse: declare your merch again next round
         for (const pl of G.platforms) for (const id of ['0', '1']) for (const c of pl.cards[id]) delete c.used; // Activate abilities refresh
