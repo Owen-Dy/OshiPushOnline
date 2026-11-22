@@ -98,6 +98,97 @@ function startGame() {
   let selectedZone = 'hand'; // 'hand' | 'trash' | 'deck': Scary Story Writing can be played from the Trash, AVId Gummy Worm Enjoyer from the top of your deck
   let picked = []; // options ticked in the current multi-pick decision
   let lastChoiceId = null;
+  let previousPublicState = null;
+  const historyKey = `oshi-public-history:${matchID}`;
+  const historyItems = (() => { try { return JSON.parse(localStorage.getItem(historyKey) || '[]').slice(-120); } catch { return []; } })();
+  const renderHistory = () => {
+    const list = $('history-list');
+    if (!list) return;
+    list.innerHTML = historyItems.length ? historyItems.map((h) => `<li${h.pid === null ? '' : ` data-player="${h.pid}"`}><span class="history-time">${esc(h.time)}${h.pid === null ? '' : ` · ${h.pid === playerID ? 'You' : 'Opponent'}`}</span>${esc(h.message)}</li>`).join('') : '<li class="history-empty">Public actions will appear here.</li>';
+    $('history-count').textContent = `${historyItems.length} action${historyItems.length === 1 ? '' : 's'}`;
+    list.scrollTop = list.scrollHeight;
+  };
+  const historyCardMap = (G) => {
+    const cards = new Map();
+    for (let i = 0; i < (G.platforms || []).length; i++) {
+      const pl = G.platforms[i];
+      if (pl.card) cards.set(`platform-card:${i}`, { card: pl.card, pid: pl.cardOwner ?? null, place: `${pl.name} platform` });
+      for (const pid of ['0', '1']) {
+        for (const c of (pl.cards?.[pid] || [])) cards.set(`platform:${i}:${pid}:${c.id}`, { card: c, pid, place: `${pl.name} platform` });
+        for (const c of (pl.actions?.[pid] || [])) cards.set(`action:${i}:${pid}:${c.id}`, { card: c, pid, place: `${pl.name} clash` });
+      }
+    }
+    for (const pid of ['0', '1']) {
+      const p = G.players[pid];
+      for (const c of (p.upgrades || [])) cards.set(`upgrade:${pid}:${c.id}`, { card: c, pid, place: 'Persona' });
+      if (p.cameo) cards.set(`cameo:${pid}:${p.cameo.id}`, { card: p.cameo, pid, place: 'Persona' });
+    }
+    return cards;
+  };
+  const recordPublicChanges = (state) => {
+    if (!state?.G) return;
+    const G = state.G, prev = previousPublicState;
+    if (!prev) {
+      previousPublicState = JSON.parse(JSON.stringify({ G, phase: state.ctx.phase, round: G.round, currentPlayer: state.ctx.currentPlayer }));
+      renderHistory();
+      return;
+    }
+    const before = historyCardMap(prev.G), after = historyCardMap(G);
+    const added = new Set();
+    const push = (message, pid = null) => {
+      historyItems.push({ message, pid, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) });
+      if (historyItems.length > 120) historyItems.shift();
+      try { localStorage.setItem(historyKey, JSON.stringify(historyItems)); } catch {}
+    };
+    for (const [key, item] of after) {
+      const old = before.get(key);
+      if (!old) {
+        added.add(key);
+        const c = item.card;
+        const name = c.faceDown ? 'a face-down Premium card' : (c.name || 'a card');
+        push(`${name} played to ${item.place}.`, item.pid);
+      } else if (old.card.faceDown && !item.card.faceDown) {
+        push(`${item.card.name || 'A card'} was flipped face-up.`, item.pid);
+      }
+    }
+    for (const [key, item] of before) {
+      if (!after.has(key)) {
+        const inTrash = ['0', '1'].some((pid) => (G.players[pid].trash || []).some((c) => c.id === item.card.id));
+        if (!inTrash) push(`${item.card.faceDown ? 'A face-down card' : (item.card.name || 'A card')} left play.`, item.pid);
+      }
+    }
+    for (const pid of ['0', '1']) {
+      const oldLoc = prev.G.personaLocations?.[pid], newLoc = G.personaLocations?.[pid];
+      if (newLoc !== null && newLoc !== undefined && oldLoc !== newLoc) push(`Persona deployed to ${G.platforms[newLoc]?.name || 'a platform'}.`, pid);
+      const oldP = prev.G.players[pid], newP = G.players[pid];
+      const handDelta = (oldP.hand?.length || 0) - (newP.hand?.length || 0);
+      const publicPlayed = [...added].some((k) => after.get(k)?.pid === pid);
+      const oldTrash = new Set((oldP.trash || []).map((c) => c.id));
+      const newlyTrashed = (newP.trash || []).filter((c) => !oldTrash.has(c.id));
+      if (newlyTrashed.length) for (const c of newlyTrashed) push(`${c.name || 'A card'} was discarded to the Trash.`, pid);
+      else if (handDelta > 0 && !publicPlayed) push(`${handDelta === 1 ? 'Discarded a card' : `Discarded ${handDelta} cards`} from hand.`, pid);
+      if (newP.subs > oldP.subs) push(`Gained ${(newP.subs - oldP.subs).toLocaleString()} subscribers.`, pid);
+      if (newP.bits !== oldP.bits) { const delta = newP.bits - oldP.bits; push(`${delta > 0 ? 'Gained' : 'Spent'} ${Math.abs(delta)} Bits.`, pid); }
+      if ((newP.activationsTotal || 0) > (oldP.activationsTotal || 0)) push(`Activated Persona ability${(newP.activationsTotal - oldP.activationsTotal) > 1 ? 'ies' : ''}.`, pid);
+    }
+    for (let i = 0; i < G.platforms.length; i++) for (const pid of ['0', '1']) {
+      const delta = (G.platforms[i].pop?.[pid] || 0) - (prev.G.platforms[i].pop?.[pid] || 0);
+      if (delta) push(`${delta > 0 ? 'Gained' : 'Lost'} ${Math.abs(delta)} popularity at ${G.platforms[i].name}.`, pid);
+    }
+    for (const [key, item] of after) {
+      const old = before.get(key);
+      if (old && !old.card.used && item.card.used && item.card.name) push(`${item.card.name} ability was activated.`, item.pid);
+    }
+    if (prev.phase === state.ctx.phase && state.ctx.currentPlayer !== undefined && prev.currentPlayer !== state.ctx.currentPlayer) push(`Turn passed to ${state.ctx.currentPlayer === playerID ? 'you' : 'opponent'}.`);
+    if (prev.G.clashLog?.length < G.clashLog?.length) {
+      for (const result of G.clashLog.slice(prev.G.clashLog.length)) if (result?.name) push(`Clash resolved at ${result.name}.`);
+    }
+    if (prev.G.round !== G.round) push(`Round ${G.round} began.`);
+    else if (prev.phase !== state.ctx.phase) push(`${String(state.ctx.phase).replace(/([A-Z])/g, ' $1')} phase began.`);
+    if (prev.G.clashIndex !== G.clashIndex && state.ctx.phase === 'clash') push(`Clash ${G.clashIndex + 1} started at ${G.platforms[G.clashSequence[G.clashIndex]]?.name || 'next platform'}.`);
+    previousPublicState = JSON.parse(JSON.stringify({ G, phase: state.ctx.phase, round: G.round, currentPlayer: state.ctx.currentPlayer }));
+    renderHistory();
+  };
   const savedDecks = () => { try { return JSON.parse(localStorage.getItem('oshi-decks') || '[]'); } catch { return []; } };
 
   const render = (state) => {
@@ -450,5 +541,5 @@ function startGame() {
     lastClashKey = key;
     if ($('clash').innerHTML.trim()) $('clash').scrollIntoView({ block: 'nearest', behavior: 'smooth' });
   };
-  client.subscribe((s) => { render(s); sandboxStep(s); updateBotBox(); focusClash(s); });
+  client.subscribe((s) => { recordPublicChanges(s); render(s); sandboxStep(s); updateBotBox(); focusClash(s); });
 }
