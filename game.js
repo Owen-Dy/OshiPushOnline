@@ -5,7 +5,7 @@ export { upgradeFits }; // the match screen uses it too
 
 const STARTING_HAND = 5;
 export const WIN_SUBS = 1000000; // first player to this many subscribers wins
-export const HAND_LIMIT = 6; // checked at the end of every round; extra cards must be discarded
+export const HAND_LIMIT = 7; // checked at the end of every round; extra cards must be discarded
 const CARDS_BY_ID = new Map(CARDS.map((c) => [c.id, c]));
 
 // Turn a validated deck into this player's persona, platform cards, shuffled draw pile and opening hand.
