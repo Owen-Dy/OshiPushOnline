@@ -60,6 +60,9 @@
   .chip { display:inline-flex; align-items:center; gap:4px; margin:2px 6px 2px 0; }
   .chip img { width:28px; height:20px; object-fit:cover; border-radius:3px; background:#4c3f7a; }
   #hand, #trashplay { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; margin:10px 0 16px; }
+  #trashrow { margin:14px 0; padding:10px 12px; background:var(--panel); border:1px solid var(--line); border-radius:8px; }
+  #trashrow h2 { margin:0; }
+  #trashplay .cond { display:block; text-align:center; }
   #hand { flex:1; min-width:0; }
   #handrow { flex-wrap:nowrap; }
   #handrow::before { content:''; flex:none; width:48px; } /* same width as the deck pile on the right, so the hand sits exactly in the middle */
@@ -156,7 +159,7 @@
   <div id="platforms"></div>
   <h2>Your hand <small id="deck"></small></h2>
   <div class="row" id="handrow"><div id="hand"></div><div id="mydeck"></div></div>
-  <div id="trashrow" hidden><h2>Playable from your Trash <small class="meta">(pick a card, then a platform)</small></h2><div id="trashplay"></div></div>
+  <div id="trashrow" hidden><h2>Your Trash <small id="trashcount" class="meta"></small></h2><p class="meta">All discarded cards are shown here. Playable cards can be selected, then placed on a platform.</p><div id="trashplay"></div></div>
   <div id="clash"></div>
   <button id="pass">Pass turn</button>
   <button id="passall" title="Turn on to pass now and skip all your later turns until this phase ends. Turn off to act again.">Pass all: OFF</button>

@@ -363,12 +363,13 @@ function startGame() {
       const abBtn = ab ? `<button class="ability" data-discardab="${esc(c.id)}" ${abOK ? '' : 'disabled'} title="${esc(c.text)}">Discard to use its ability</button>` : '';
       return `<div class="cardwrap">${cardBtn(c, 'data-card', c.id === selected && selectedZone === 'hand', need > 0 || canPlay(c), need > 0 ? ' discard' : '')}${abBtn}</div>`;
     }).join('');
-    // Cards in your Trash that can be played from there (Scary Story Writing)
-    const fromTrash = me.trash.filter(canPlayFromTrash);
-    $('trashrow').hidden = !fromTrash.length;
-    $('trashplay').innerHTML = fromTrash.map((c) => `<div class="cardwrap">${cardBtn(c, 'data-trashcard', c.id === selected && selectedZone === 'trash', canPlay(c, 'trash'))}</div>`).join('');
-    const topPlay = me.deck.length && canPlayFromTop(G, playerID, me.deck[0]) ? [me.deck[0]] : []; // AVId Gummy Worm Enjoyer
-    $('trashplay').innerHTML += topPlay.map((c) => `<div class="cardwrap">${cardBtn(c, 'data-topcard', c.id === selected && selectedZone === 'deck', canPlay(c, 'deck'))}<span class="cond">Revealed top card: free to play</span></div>`).join('');
+    // Show the entire Trash, not just cards that have an effect allowing them to be replayed.
+    $('trashrow').hidden = !me.trash.length;
+    $('trashcount').textContent = `(${me.trash.length} card${me.trash.length === 1 ? '' : 's'})`;
+    $('trashplay').innerHTML = me.trash.map((c) => {
+      const playable = canPlayFromTrash(c) && canPlay(c, 'trash');
+      return `<div class="cardwrap">${cardBtn(c, 'data-trashcard', c.id === selected && selectedZone === 'trash', playable)}<span class="cond">${playable ? 'Playable from Trash' : 'In Trash'}</span></div>`;
+    }).join('');
     $('mydeck').innerHTML = pile(me.deck.length, me.deck[0]);
     const opp = G.players[other];
     $('opp').innerHTML = `<span class="meta">Opponent</span>${pile(opp.deck.length, opp.deck[0])}<div class="minihand">${opp.hand.map(() => img(CARD_BACK, 'cardback')).join('')}</div>`;
