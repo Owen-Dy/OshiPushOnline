@@ -1,10 +1,12 @@
 // Headless tests for the Gen 2 Action card effects. Run: node tests/gen2-actions.test.mjs
 import assert from 'assert';
-import { mk, test, finish, card } from './harness.mjs';
+import { mk, test, finish, card, persona, PIPPA } from './harness.mjs';
 import { CARDS } from '../cards.js';
-import { sideInf, OshiPush } from '../game.js';
+import { sideInf, OshiPush, topRevealed, canPlayFromDeckTop } from '../game.js';
 
-const cheap = (cost) => CARDS.find((c) => c.type === 'Content' && c.cost === cost && !(c.effects || []).length && !c.playOnly && !c.xCost).name; // a plain card
+const SAFE = new Set(['discardAbility']); // a card whose only ability works from your hand is as good as a plain one on the board
+const cheap = (cost) => (CARDS.find((c) => c.type === 'Content' && c.cost === cost && !(c.effects || []).length && !c.playOnly && !c.xCost)
+  || CARDS.find((c) => c.type === 'Content' && c.cost === cost && (c.effects || []).every((e) => SAFE.has(e.type)) && !c.playOnly && !c.xCost)).name; // a plain card to play for free
 const at = (t, idx, id) => t.G().platforms[idx].cards[id].map((c) => c.name);
 // A match in the Clash Phase, on the first platform, with both Personas there and plenty of 💎.
 const inClash = (opts) => { const t = mk(opts); t.clash(); t.as('0', 'dbgDeploy', '0', 0); t.as('0', 'dbgDeploy', '1', 0); t.bits('0', 30); t.bits('1', 30); return t; };
@@ -47,6 +49,42 @@ test('Off the Raelz: reveal 3, draw a Content card from them, discard the rest',
 test('AVId Gummy Worm Enjoyer: Persona +10 this round', () => {
   const t = mk(); t.bits('0', 10); const before = sideInf(t.G(), 0, '0'); t.play('0', 'AVId Gummy Worm Enjoyer', 0);
   assert.equal(sideInf(t.G(), 0, '0'), before + 10);
+});
+// ---- AVId Gummy Worm Enjoyer: "While this card is revealed as the top card of your deck: You may play this card for free." ----
+const NECTARINA = persona('La Avispa Nectarina');
+const WORM = 'AVId Gummy Worm Enjoyer';
+test('AVId Gummy Worm Enjoyer: Nectarina plays it free from the top of her deck (+10 ⭐, no 💎 spent)', () => {
+  const t = mk({ p0: NECTARINA }); t.bits('0', 0); t.as('0', 'testDeck', '0', [WORM, cheap(1)]); t.turn('0');
+  assert.ok(topRevealed(t.G(), '0')); assert.ok(canPlayFromDeckTop(t.G(), '0', t.G().players['0'].deck[0]));
+  const before = sideInf(t.G(), 0, '0'), id = t.G().players['0'].deck[0].id, hand = t.G().players['0'].hand.length;
+  t.as('0', 'playCard', id, 0, undefined, 'deck');
+  assert.equal(sideInf(t.G(), 0, '0'), before + 10); assert.equal(t.G().players['0'].bits, 0, 'free');
+  assert.equal(t.G().players['0'].deck[0].name, cheap(1), 'the next card is now on top'); assert.equal(t.G().players['0'].hand.length, hand, 'hand untouched');
+  assert.notEqual(t.cur(), '0', 'it used the turn');
+});
+test('AVId Gummy Worm Enjoyer: works during a clash too', () => {
+  const t = mk({ p0: NECTARINA }); t.clash(); t.as('0', 'dbgDeploy', '0', 0); t.as('0', 'dbgDeploy', '1', 0); t.bits('0', 0);
+  t.as('0', 'testDeck', '0', [WORM, cheap(1)]); t.turn('0'); const before = sideInf(t.G(), 0, '0');
+  t.as('0', 'playCard', t.G().players['0'].deck[0].id, 0, undefined, 'deck');
+  assert.equal(sideInf(t.G(), 0, '0'), before + 10);
+});
+test('AVId Gummy Worm Enjoyer: not playable from the deck when it is not the top card', () => {
+  const t = mk({ p0: NECTARINA }); t.bits('0', 0); t.as('0', 'testDeck', '0', [cheap(1), WORM]); t.turn('0');
+  const worm = t.G().players['0'].deck[1], before = sideInf(t.G(), 0, '0');
+  t.as('0', 'playCard', worm.id, 0, undefined, 'deck'); assert.equal(sideInf(t.G(), 0, '0'), before); assert.equal(t.G().players['0'].deck.length, 2);
+});
+test('AVId Gummy Worm Enjoyer: from the deck only while the top card is revealed (not with other Personas)', () => {
+  const t = mk({ p0: PIPPA }); t.bits('0', 10); t.as('0', 'testDeck', '0', [WORM, cheap(1)]); t.turn('0');
+  assert.ok(!topRevealed(t.G(), '0')); const before = sideInf(t.G(), 0, '0');
+  t.as('0', 'playCard', t.G().players['0'].deck[0].id, 0, undefined, 'deck'); assert.equal(sideInf(t.G(), 0, '0'), before); assert.equal(t.G().players['0'].deck.length, 2);
+});
+test('AVId Gummy Worm Enjoyer: an ordinary Action cannot be played from the top of the deck', () => {
+  const t = mk({ p0: NECTARINA }); t.bits('0', 10); t.as('0', 'testDeck', '0', ['Hype', cheap(1)]); t.turn('0');
+  t.as('0', 'playCard', t.G().players['0'].deck[0].id, 0, undefined, 'deck'); assert.equal(t.G().players['0'].deck.length, 2); assert.equal(t.G().platforms[0].actions['0'].length, 0);
+});
+test('AVId Gummy Worm Enjoyer: still playable from your hand for 🟡4', () => {
+  const t = mk({ p0: NECTARINA }); t.bits('0', 4); const before = sideInf(t.G(), 0, '0'); t.play('0', WORM, 0);
+  assert.equal(sideInf(t.G(), 0, '0'), before + 10); assert.equal(t.G().players['0'].bits, 0);
 });
 test('Soulslike Notes: draw until you have 3 cards', () => {
   const t = mk(); t.bits('0', 10); t.as('0', 'dbgClearHand', '0'); t.give('0', 'Soulslike Notes'); t.turn('0');
@@ -122,6 +160,26 @@ test('Accidental Flash: move up to 2 opposing 🌠 from here to other platforms'
   assert.deepEqual([0, 1, 2].map((i) => t.G().platforms[i].pop['1']), [0, 1, 1]);
   const u = mk(); u.bits('0', 10); u.as('0', 'dbgSetPop', 0, '1', 1); u.play('0', 'Accidental Flash', 0);
   u.pick('0', '1'); u.pick('0', '2'); assert.deepEqual([0, 1, 2].map((i) => u.G().platforms[i].pop['1']), [0, 1, 0], 'only 1 🌠 existed: nothing goes negative');
+});
+
+test('Gacha Pull: delete a Content card; its controller reveals until a Content card, plays it there, shuffles the rest into their deck', () => {
+  const t = mk(); t.bits('0', 10); const x = t.put('1', 1, cheap(1));
+  t.as('0', 'testDeck', '1', ['Pinata', cheap(2), 'Hype', 'Soulslike Notes']);
+  t.play('0', 'Gacha Pull', 0); t.pick('0', x.name);
+  assert.ok(t.G().players['1'].trash.some((c) => c.id === x.id), 'the chosen card was deleted');
+  assert.ok(at(t, 1, '1').includes(cheap(2)), 'the first Content card revealed is played on the same platform');
+  assert.deepEqual(t.G().players['1'].deck.map((c) => c.name).sort(), ['Hype', 'Pinata', 'Soulslike Notes'], 'the revealed non-Content card went back; the rest was not revealed');
+  assert.deepEqual(t.G().notice.revealed, ['Pinata', cheap(2)]); assert.equal(t.G().notice.played, cheap(2)); assert.equal(t.G().notice.player, '1');
+});
+test('Gacha Pull: with no Content card in the deck, everything revealed is shuffled back', () => {
+  const t = mk(); t.bits('0', 10); const x = t.put('1', 1, cheap(1)); t.as('0', 'testDeck', '1', ['Pinata', 'Hype']);
+  t.play('0', 'Gacha Pull', 0); t.pick('0', x.name);
+  assert.deepEqual(t.G().players['1'].deck.map((c) => c.name).sort(), ['Hype', 'Pinata']); assert.equal(t.G().notice.played, null);
+});
+test('Gacha Pull: a card Pro Gamer protects is not deleted, so nothing is revealed', () => {
+  const t = mk(); t.bits('0', 10); t.put('1', 1, 'Pro Gamer'); const y = t.put('1', 1, cheap(1)); t.as('0', 'testDeck', '1', [cheap(2), 'Hype']);
+  t.play('0', 'Gacha Pull', 0); t.pick('0', y.name);
+  assert.ok(at(t, 1, '1').includes(y.name)); assert.equal(t.G().players['1'].deck.length, 2); assert.equal(t.G().notice, null);
 });
 
 // ---------- clash-only Actions ----------

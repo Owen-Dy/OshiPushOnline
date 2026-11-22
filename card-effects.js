@@ -50,14 +50,12 @@ export default {
   // Effect types added for these (all in game.js): winClash (if: contentEverywhere | dominating), noPopThisClash, discardOppDraw,
   //   personaInf (perContent | perPopPlatform | perOppHand), draw (perDominating | untilHand), revealPick (pickType, rest: 'trash'),
   //   euclaseFrost, ashBlast, hardPivot, waifuWheel, beMoreCultured, playTop, pickCard then: modDelete | moveChosen, mod amountFrom 'trash'.
-  // Not built yet (they need Premium Content or a shuffle): Find the Bepis, Powered by Bepis, Permission to Swear, Hydraulic Press, Gacha Pull.
-  // Partly built: AVId Gummy Worm Enjoyer (the free play from the top of your deck is missing), Take a Shot (the extra draw for Premium is missing).
   'Euclase Frost': [{ type: 'deckOnly', persona: 'Eden' }, { type: 'euclaseFrost', costMax: 4, prompt: 'Euclase Frost: choose any number of your Content cards with 🟡4 or less on this platform to move to other platforms' }],
   'Throbbing Egghead': [{ type: 'deckOnly', persona: 'Captain Camille' }, { type: 'personaInf', target: 'self', amount: 5 }, { type: 'draw', target: 'self', amount: 1, perDominating: true }],
   'Bonus Three Inches': [{ type: 'deckOnly', persona: 'Porcelain Maid' }, { type: 'winClash', if: { contentEverywhere: true } }],
   'Remove Ball-Jointed Head': [{ type: 'deckOnly', persona: 'Porcelain Maid' }, { type: 'discardOppDraw', amount: 1 }],
   'Off the Raelz': [{ type: 'deckOnly', persona: 'Raelice' }, { type: 'revealPick', count: 3, n: 1, pickType: 'Content', rest: 'trash', prompt: 'Off the Raelz: draw 1 Content card from the revealed cards (the others are discarded)' }],
-  'AVId Gummy Worm Enjoyer': [{ type: 'deckOnly', persona: 'La Avispa Nectarina' }, { type: 'personaInf', target: 'self', amount: 10 }],
+  'AVId Gummy Worm Enjoyer': [{ type: 'deckOnly', persona: 'La Avispa Nectarina' }, { type: 'playFromTop' }, { type: 'personaInf', target: 'self', amount: 10 }], // playFromTop: free while it is the revealed top card of your deck
   'Unique Laughing Sounds': [{ type: 'personaInf', target: 'self', perContent: 3 }],
   'Pinata': [{ type: 'winClash', if: { dominating: true } }],
   'Nose Pull': [{ type: 'pickCard', prompt: 'Nose Pull: delete an opposing Content card on this platform', pick: { scope: 'here', owner: 'opp' }, then: { do: 'delete' } }],
@@ -71,8 +69,9 @@ export default {
     { type: 'movePop', from: 'here', optional: true, prompt: 'Accidental Flash: move an opposing 🌠 from this platform to which platform? (1 of 2)' },
     { type: 'movePop', from: 'here', optional: true, prompt: 'Accidental Flash: move a second opposing 🌠 from this platform to which platform? (2 of 2)' }],
   'No Prep, No Problem': [{ type: 'pickCard', prompt: 'No Prep, No Problem: choose a Content card on a platform with 2 or more Content cards', pick: { scope: 'any', owner: 'any', platformMinContent: 2 }, then: { do: 'moveChosen' } }],
+  'Gacha Pull': [{ type: 'pickCard', prompt: 'Gacha Pull: choose a Content card to delete (its controller then reveals cards until they find a Content card and plays it on the same platform)', pick: { scope: 'any', owner: 'any' }, then: { do: 'gacha' } }],
   'Hard Pivot': [{ type: 'hardPivot', prompt: 'Hard Pivot: choose any number of cards to discard (you draw that many)' }],
-  'Take a Shot': [{ type: 'pickCard', prompt: 'Take a Shot: choose one of your Content cards to gain +6 ⭐ this clash', pick: { scope: 'any', owner: 'mine' }, then: { do: 'mod', amount: 6 } }],
+  'Take a Shot': [{ type: 'pickCard', prompt: 'Take a Shot: choose one of your Content cards to gain +6 ⭐ this clash', pick: { scope: 'any', owner: 'mine' }, then: { do: 'mod', amount: 6, drawIfFaceUpPremium: true } }],
   'Intended Flash': [{ type: 'personaInf', target: 'self', amount: 5, perOppHand: 1 }],
   'Be More Cultured': [{ type: 'beMoreCultured' }], // "opposing" = on the platform your Persona is on
   'Boymode': [{ type: 'noPopThisClash' }],
@@ -195,7 +194,6 @@ export default {
   'Vaseline On Toast': [{ type: 'deckOnly', persona: 'Captain Camille' }, { type: 'adjacentStars', amount: 3, when: { dominating: true } }],
   'Hot Sauce Karaoke': [{ type: 'deckOnly', persona: 'Raelice' }, { type: 'selfStars', amount: 1, per: 'trash' }],
   'Bug Burger Cooking Stream': [{ type: 'deckOnly', persona: 'La Avispa Nectarina' }, { type: 'selfStarsPersona' }],
-  '38+ Husbands': [{ type: 'deckOnly', persona: 'LineChu' }],
   'Wanna Hear a Joel-ke?': [{ type: 'deckOnly', persona: 'Porcelain Maid' }, { type: 'selfStars', amount: 3, per: 'otherPlatformsContent' }],
   'Toilet Swimmer': [{ type: 'selfStars', amount: -1, per: 'oppHand' }],
   'Tomboy Abs': [{ type: 'selfStars', amount: 10, when: { firstPlayer: true } }],
@@ -232,6 +230,62 @@ export default {
   'Pro Gamer': [{ type: 'protectOthers' }],
   'CUSTODY BATTLE': [{ type: 'activate', effects: [{ type: 'pickCard', prompt: 'CUSTODY BATTLE: choose a Content card on an adjacent platform; it gains +3 ⭐ this round', pick: { scope: 'adjacent', owner: 'any' }, then: { do: 'mod', amount: 3 } }] }],
   'VTuber HR': [{ type: 'onPersonaMoveHere', then: [{ type: 'moveSelf', optional: true, prompt: 'VTuber HR: you may move this card to another platform' }] }],
+
+  // ================= GEN 2: PREMIUM CONTENT =================
+  // A Premium card is always played face-down (🟡2, 3 ⭐). Its owner can flip it face-up as an action once `flipIf` holds; then `whenFlipped` runs.
+  //   flipIf keys: oppPlayedContentHere | oppContentCostMin N | oppDominating | oppHandMore | oppPersonaElsewhere | oppPersonaHere | oppMoreSubs
+  //                | noHand | moreStarsHere | oppPopMin N | oppPlayedAction | flippedAnother
+  // Other new types: needFaceUpPremium, onFlip (scope 'here'|'any'), atClashStart, losePop, lockContent, flipOne, findPremium, exhaustSelfDeleteOpp,
+  //   playTrashActionPay, pick filters faceUpPremium / faceDownPremium, then-do: exhaust | setZero | flipDown | flipUp.   "Exhaust" = set to 0 ⭐ until the next round.
+  'Wisdom of the Day': [{ type: 'premium', flipText: 'An opponent played 1 or more Content cards on this platform this round', flipIf: { oppPlayedContentHere: true }, whenFlipped: [{ type: 'playHandFree', costMax: 2, prompt: 'Wisdom of the Day: you may play a Content card with 🟡2 or less from your hand on this platform for free' }] }],
+  'Gamer Gene': [{ type: 'premium', flipText: 'An opponent has a Content card with 🟡4 or more on this platform', flipIf: { oppContentCostMin: 4 }, whenFlipped: [] }],
+  'Chat Control': [{ type: 'premium', flipText: 'An opponent is Dominating this platform', flipIf: { oppDominating: true }, whenFlipped: [{ type: 'pickCard', prompt: 'Chat Control: delete an opposing Content card on this platform', pick: { scope: 'here', owner: 'opp' }, then: { do: 'delete' } }] }],
+  'Child Support': [{ type: 'premium', flipText: 'An opponent has more cards in their hand than you', flipIf: { oppHandMore: true }, whenFlipped: [{ type: 'discard', target: 'opponent', amount: 2 }] }],
+  'Tier List': [{ type: 'premium', flipText: "An opponent's Persona is on another platform", flipIf: { oppPersonaElsewhere: true }, whenFlipped: [{ type: 'moveOwnContent', prompt: 'Tier List: you may move 1 of your Content cards from this platform to another platform' }] }],
+  'Against TOS': [{ type: 'premium', flipText: 'You have fewer Subscribers than an opponent', flipIf: { oppMoreSubs: true }, whenFlipped: [{ type: 'lockContent', target: 'opponent' }] }],
+  'Short Attention Span': [{ type: 'premium', flipText: 'You have no cards in your hand', flipIf: { noHand: true }, whenFlipped: [{ type: 'draw', target: 'self', amount: 2 }] }],
+  'Wardrobe Malfunction': [{ type: 'premium', flipText: 'You have more ⭐ than an opponent at this platform', flipIf: { moreStarsHere: true }, whenFlipped: [{ type: 'actionLock', target: 'opponent', if: { inClashHere: true } }] }],
+  'Spray Streamer': [{ type: 'premium', flipText: 'An opponent played a Content card on this platform this round', flipIf: { oppPlayedContentHere: true }, whenFlipped: [{ type: 'pickCard', prompt: "Spray Streamer: set an opposing Content card's ⭐ to 0 this round", pick: { scope: 'here', owner: 'opp' }, then: { do: 'setZero' } }] }],
+  'Sudden Stream Scuff': [{ type: 'premium', flipText: 'An opponent is Dominating this platform', flipIf: { oppDominating: true }, whenFlipped: [{ type: 'selfMod', amount: 10 }] }],
+  'Marketable Plushie': [{ type: 'premium', flipText: 'Your opponent has 2 or more 🌠 on this platform', flipIf: { oppPopMin: 2 }, whenFlipped: [{ type: 'bits', target: 'self', amount: 4 }] }],
+  'Powerpoint Presentation': [{ type: 'premium', flipText: 'An opponent played an Action card this clash', flipIf: { oppPlayedAction: true }, whenFlipped: [{ type: 'playTrashActionPay', reduce: 3 }] }],
+  'Show Feet': [{ type: 'premium', flipText: 'You flipped another Content card this round', flipIf: { flippedAnother: true }, whenFlipped: [{ type: 'personaInf', target: 'self', amount: 5 }] }],
+  'Bepis Tower': [{ type: 'premium', flipText: "An opponent's Persona is on this platform", flipIf: { oppPersonaHere: true }, whenFlipped: [] }],
+  'Single Life': [{ type: 'premium', flipText: "An opponent's Persona is on this platform", flipIf: { oppPersonaHere: true }, whenFlipped: [{ type: 'losePop', target: 'opponent', amount: 1 }] }],
+  'FIRED': [{ type: 'premium', flipText: 'An opponent played 1 or more Content cards on this platform this round', flipIf: { oppPlayedContentHere: true }, whenFlipped: [{ type: 'pickCard', prompt: "FIRED: return an opposing Content card with 🟡2 or less to its owner's hand", pick: { scope: 'here', owner: 'opp', costMax: 2 }, then: { do: 'return' } }] }],
+  'How to be a Femboy': [{ type: 'premium', flipText: 'An opponent has more Subscribers than you', flipIf: { oppMoreSubs: true }, whenFlipped: [{ type: 'playHand' }] }],
+  // ---- cards that work with Premium Content ----
+  '38+ Husbands': [{ type: 'deckOnly', persona: 'LineChu' }, { type: 'pickCard', optional: true, prompt: '38+ Husbands: you may flip a face-up Premium Content card on this platform face-down', pick: { scope: 'here', owner: 'mine', faceUpPremium: true }, then: { do: 'flipDown' } }],
+  'Parasocial Sunday': [{ type: 'onFlip', scope: 'any', then: [{ type: 'selfMod', amount: 3 }] }],
+  'Love the Nub': [{ type: 'selfStars', amount: 3, when: { faceUpPremiumHere: true } }],
+  'Friendship Tax': [{ type: 'activate', effects: [{ type: 'gainPop', target: 'self', amount: 1, atPersona: true, if: { faceUpPremiumHere: true } }] }],
+  'Mandatory Ball Crushing': [{ type: 'onFlip', scope: 'here', then: [{ type: 'exhaustSelfDeleteOpp' }] }],
+  'Community Art': [{ type: 'atClashStart', if: { faceUpPremiumHere: true }, then: [{ type: 'bits', target: 'self', amount: 1 }] }],
+  'Tax Evasion': [{ type: 'bits', target: 'self', amount: 3, if: { faceUpPremium: true } }, { type: 'returnInsteadOfDelete' }],
+  "It Should've Been Me!": [{ type: 'pickCard', prompt: "It Should've Been Me!: exhaust an opposing Content card or Persona on this platform (it is set to 0 ⭐ until the next round)", pick: { scope: 'here', owner: 'opp', persona: true }, then: { do: 'exhaust' } }],
+  'Find the Bepis': [{ type: 'deckOnly', persona: 'LineChu' }, { type: 'findPremium', prompt: 'Find the Bepis: choose a Premium Content card from your deck to play face-down for free' }],
+  'Powered by Bepis': [{ type: 'deckOnly', persona: 'LineChu' }, { type: 'flipOne', optional: true, personaPerFaceUp: 4, prompt: 'Powered by Bepis: you may flip one of your face-down Premium Content cards face-up' }],
+  'Permission to Swear': [{ type: 'flipOne', prompt: 'Permission to Swear: flip one of your face-down Premium Content cards face-up' }],
+  'Hydraulic Press': [{ type: 'needFaceUpPremium' }, { type: 'pickCard', prompt: 'Hydraulic Press: delete one of your face-up Premium Content cards (this is the cost)', pick: { scope: 'any', owner: 'mine', faceUpPremium: true }, then: { do: 'delete' } }, { type: 'bits', target: 'self', amount: 2 }],
+
+  // ================= GEN 2: THE LAST CONTENT CARDS =================
+  //   onOppPopGain (Children's Game), popRedirect (Bathing Suit Outfit), returnOnClashWin + costLessIfOppMorePop (Bad Pick Up Lines),
+  //   playFromTrash on Content + returnInsteadOfDelete to 'deckBottom' (Press Conference), platformPhase (So Baby),
+  //   millAny (Exposure Therapy), bottomEnergy (Bottom Energy), littleSister (Little Sister Energy)
+  "Children's Game": [{ type: 'onOppPopGain', amount: 1 }],
+  'Bathing Suit Outfit': [{ type: 'popRedirect' }],
+  'Exposure Therapy': [{ type: 'millAny', prompt: "Exposure Therapy: discard the top card of any player's deck" }],
+  'Press Conference': [{ type: 'playFromTrash' }, { type: 'returnInsteadOfDelete', to: 'deckBottom' }],
+  'So Baby': [{ type: 'platformPhase' }],
+  'Bad Pick Up Lines': [{ type: 'costLessIfOppMorePop', amount: 2 }, { type: 'returnOnClashWin' }],
+  'Bottom Energy': [{ type: 'activate', effects: [{ type: 'bottomEnergy' }] }],
+  'Little Sister Energy': [{ type: 'littleSister', amount: 5 }],
+
+  // ---- Gen 2 Personas / Upgrades that play with the top card of the deck revealed (the same text on all three) ----
+  //   revealTop: the top card of your deck is shown to both players.   topCostStars: this card gains ⭐ equal to the cost of the revealed card.
+  'La Avispa Nectarina': [{ type: 'revealTop' }, { type: 'topCostStars' }],
+  'Sweaty Tomboy': [{ type: 'revealTop' }, { type: 'topCostStars' }], // (its When Played, look at the top 3 and reorder them, is not built yet)
+  'Timeline B': [{ type: 'revealTop' }, { type: 'topCostStars' }], // (its When Played is not built yet)
 
   // ================= UPGRADE CARDS =================
   // Upgrades are played from your hand onto your Persona. Their abilities:

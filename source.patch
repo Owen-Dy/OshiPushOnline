@@ -1,0 +1,214 @@
+--- orig/OshiPushOnline/game.js	2026-11-21 21:48:05.000000000 +0000
++++ OshiPushOnline/game.js	2026-11-21 22:22:01.596255926 +0000
+@@ -288,6 +288,10 @@
+   const ups = G.players[id].upgrades;
+   return ups.length ? ups[ups.length - 1] : G.players[id].persona;
+ };
++// "Play with the top card of your deck revealed" (La Avispa Nectarina, Sweaty Tomboy, Timeline B): both players can see that player's top card.
++export const topRevealed = (G, id) => /top card of your deck revealed/i.test(activePersona(G, id)?.text || '');
++// "While this card is revealed as the top card of your deck: You may play this card for free" (AVId Gummy Worm Enjoyer)
++export const canPlayFromDeckTop = (G, id, card) => !!card && card.type === 'Action' && (card.effects || []).some((fx) => fx.type === 'playFromTopFree') && G.players[id].deck[0]?.id === card.id && topRevealed(G, id);
+ 
+ // Card effects (stars and bits only). "bits" is what the sheet calls 💎.
+ const conditionHolds = (G, me, idx, cond) =>
+@@ -542,18 +546,19 @@
+   if (discardNeed(G, playerID, false) > 0) return INVALID_MOVE; // choose your discards first
+   if (![0, 1, 2].includes(platformIndex)) return INVALID_MOVE;
+   const player = G.players[playerID];
+-  const fromTrash = from === 'trash';
+-  const zone = fromTrash ? player.trash : player.hand;
+-  const i = zone.findIndex((c) => c.id === cardId);
++  const fromTrash = from === 'trash', fromDeck = from === 'deck';
++  const zone = fromTrash ? player.trash : fromDeck ? player.deck : player.hand;
++  const i = fromDeck ? (player.deck[0]?.id === cardId ? 0 : -1) : zone.findIndex((c) => c.id === cardId); // from the deck: only the revealed top card
+   if (i === -1) return INVALID_MOVE;
+   const card = zone[i];
+   if (!canPlay(card)) return INVALID_MOVE;
+   if (fromTrash && !canPlayFromTrash(card)) return INVALID_MOVE;
++  if (fromDeck && !canPlayFromDeckTop(G, playerID, card)) return INVALID_MOVE; // it must say so and be revealed on top
+   if (!cardPlayable(card, player.persona, ctx.phase)) return INVALID_MOVE; // persona and timing restrictions
+   if (card.type === 'Upgrade' && !upgradeFits(card, G.players[playerID].persona)) return INVALID_MOVE;
+   if (card.type === 'Action' && G.actionLock[playerID]) return INVALID_MOVE; // e.g. Chew on Cables
+   const spent = card.xCost ? Math.max(0, Math.floor(Number(x) || 0)) : 0;
+-  const cost = card.xCost ? spent : playCost(G, playerID, card, platformIndex);
++  const cost = fromDeck ? 0 : card.xCost ? spent : playCost(G, playerID, card, platformIndex); // played from the top of the deck: free
+   if (player.bits < cost) return INVALID_MOVE;
+   // Cards can only be played on the platform where your Persona is (unless the card or Clip Out of Context says otherwise).
+   const anywhere = canPlayAnywhere(G, playerID, card);
+@@ -1493,7 +1498,8 @@
+     const copy = JSON.parse(JSON.stringify(G));
+     copy.choices = copy.choices.map((ch) => (ch.secret && ch.player !== playerID ? { ...ch, prompt: '', revealed: undefined, options: ch.options.map(() => ({ hidden: true })), stash: undefined, hold: undefined } : ch));
+     for (const id of ['0', '1']) {
+-      copy.players[id].deck = copy.players[id].deck.map(() => ({ hidden: true }));
++      const open = topRevealed(G, id) ? 1 : 0; // a revealed top card is visible to both players
++      copy.players[id].deck = copy.players[id].deck.map((c, k) => (k < open ? c : { hidden: true }));
+       if (id === playerID) continue;
+       copy.players[id].hand = copy.players[id].hand.map(() => ({ hidden: true }));
+       copy.players[id].platformCards = copy.players[id].platformCards.map(() => ({ hidden: true }));
+--- orig/OshiPushOnline/card-effects.js	2026-11-21 21:44:05.000000000 +0000
++++ OshiPushOnline/card-effects.js	2026-11-21 22:22:01.593878697 +0000
+@@ -50,13 +50,13 @@
+   // Effect types added for these (all in game.js): winClash (if: contentEverywhere | dominating), noPopThisClash, discardOppDraw,
+   //   personaInf (perContent | perPopPlatform | perOppHand), draw (perDominating | untilHand), revealPick (pickType, rest: 'trash'),
+   //   euclaseFrost, ashBlast, hardPivot, waifuWheel, beMoreCultured, playTop, pickCard then: modDelete | moveChosen, mod amountFrom 'trash'.
+-  // Partly built: AVId Gummy Worm Enjoyer (the free play from the top of your deck is missing).
++  // playFromTopFree: while this card is the revealed top card of your deck it may be played from there for free (AVId Gummy Worm Enjoyer).
+   'Euclase Frost': [{ type: 'deckOnly', persona: 'Eden' }, { type: 'euclaseFrost', costMax: 4, prompt: 'Euclase Frost: choose any number of your Content cards with 🟡4 or less on this platform to move to other platforms' }],
+   'Throbbing Egghead': [{ type: 'deckOnly', persona: 'Captain Camille' }, { type: 'personaInf', target: 'self', amount: 5 }, { type: 'draw', target: 'self', amount: 1, perDominating: true }],
+   'Bonus Three Inches': [{ type: 'deckOnly', persona: 'Porcelain Maid' }, { type: 'winClash', if: { contentEverywhere: true } }],
+   'Remove Ball-Jointed Head': [{ type: 'deckOnly', persona: 'Porcelain Maid' }, { type: 'discardOppDraw', amount: 1 }],
+   'Off the Raelz': [{ type: 'deckOnly', persona: 'Raelice' }, { type: 'revealPick', count: 3, n: 1, pickType: 'Content', rest: 'trash', prompt: 'Off the Raelz: draw 1 Content card from the revealed cards (the others are discarded)' }],
+-  'AVId Gummy Worm Enjoyer': [{ type: 'deckOnly', persona: 'La Avispa Nectarina' }, { type: 'personaInf', target: 'self', amount: 10 }],
++  'AVId Gummy Worm Enjoyer': [{ type: 'deckOnly', persona: 'La Avispa Nectarina' }, { type: 'playFromTopFree' }, { type: 'personaInf', target: 'self', amount: 10 }],
+   'Unique Laughing Sounds': [{ type: 'personaInf', target: 'self', perContent: 3 }],
+   'Pinata': [{ type: 'winClash', if: { dominating: true } }],
+   'Nose Pull': [{ type: 'pickCard', prompt: 'Nose Pull: delete an opposing Content card on this platform', pick: { scope: 'here', owner: 'opp' }, then: { do: 'delete' } }],
+--- orig/OshiPushOnline/src/client.js	2026-11-21 21:44:05.000000000 +0000
++++ OshiPushOnline/src/client.js	2026-11-21 22:22:27.765524437 +0000
+@@ -1,6 +1,6 @@
+ import { Client } from 'boardgame.io/client';
+ import { SocketIO } from 'boardgame.io/multiplayer';
+-import { OshiPush, upgradeFits, discardNeed, HAND_LIMIT, sideInf, WIN_SUBS, cardPlayable, playCost, effectsPlayable, fxOf, starsOf, contentBlocked, canPlayAnywhere, canPlayFromTrash, canDiscardAbility, canActivate, personaAbility, canPersonaActivate, canFlip, premiumOf, platformPhaseCard } from '../game.js';
++import { OshiPush, upgradeFits, discardNeed, HAND_LIMIT, sideInf, WIN_SUBS, cardPlayable, playCost, effectsPlayable, fxOf, starsOf, contentBlocked, canPlayAnywhere, canPlayFromTrash, canPlayFromDeckTop, topRevealed, canDiscardAbility, canActivate, personaAbility, canPersonaActivate, canFlip, premiumOf, platformPhaseCard } from '../game.js';
+ import { CARDS } from '../cards.js';
+ import { validateDeck } from '../deckRules.js';
+ 
+@@ -93,7 +93,7 @@
+   };
+ 
+   let selected = null; // card id chosen from hand (or from the Trash, see selectedZone)
+-  let selectedZone = 'hand'; // 'hand' | 'trash': Scary Story Writing can be played from the Trash
++  let selectedZone = 'hand'; // 'hand' | 'trash' | 'deck': Scary Story Writing can be played from the Trash, AVId Gummy Worm Enjoyer from the top of the deck
+   let picked = []; // options ticked in the current multi-pick decision
+   let lastChoiceId = null;
+   const savedDecks = () => { try { return JSON.parse(localStorage.getItem('oshi-decks') || '[]'); } catch { return []; } };
+@@ -114,15 +114,16 @@
+     const myLoc = G.personaLocations[playerID];
+     // Can this card be played on platform i right now? zone: 'hand', or 'trash' for cards that say they can be played from the Trash.
+     const playableAt = (c, i, zone = 'hand') => {
+-      if (need > 0 || busy || !myTurn || myLoc === null || !typeOK(c) || (zone === 'trash' && !canPlayFromTrash(c))) return false;
++      if (need > 0 || busy || !myTurn || myLoc === null || !typeOK(c) || (zone === 'trash' && !canPlayFromTrash(c)) || (zone === 'deck' && !canPlayFromDeckTop(G, playerID, c))) return false;
+       if (myLoc !== i && !canPlayAnywhere(G, playerID, c)) return false; // Guerrilla Stream, Drop In Call, Clip Out of Context
+       if (phase === 'clash' && (i !== curPlat || myLoc !== curPlat)) return false;
+-      const cost = playCost(G, playerID, c, i);
++      const cost = zone === 'deck' ? 0 : playCost(G, playerID, c, i); // from the top of the deck: free
+       return cost <= me.bits && cardPlayable(c, me.persona, phase) && !contentBlocked(G, playerID, c, i) &&
+         effectsPlayable(G, playerID, c, i, me.bits - cost) && !(c.type === 'Action' && G.actionLock[playerID]);
+     };
+     const canPlay = (c, zone = 'hand') => [0, 1, 2].some((i) => playableAt(c, i, zone));
+-    const chosen = (selectedZone === 'trash' ? me.trash : me.hand).find((c) => c.id === selected);
++    const zoneCards = (z) => z === 'trash' ? me.trash : z === 'deck' ? me.deck.slice(0, 1) : me.hand;
++    const chosen = zoneCards(selectedZone).find((c) => c.id === selected);
+     if (!chosen || !canPlay(chosen, selectedZone)) selected = null;
+     const myDeploy = phase === 'deployment' && ctx.currentPlayer === playerID && myLoc === null;
+ 
+@@ -234,7 +235,7 @@
+       const deploy = myDeploy
+         ? `<button data-deploy="${i}">Deploy persona here</button>` : '';
+       const slotBtn = phase === 'platformSetup' && ctx.currentPlayer === playerID && !p.card ? `<button data-slot="${i}">Put my platform here</button>` : '';
+-      const sel = chosen && playableAt(chosen, i, selectedZone) ? `<button data-play="${i}">Play ${esc(chosen.name)} here${selectedZone === 'trash' ? ' (from Trash)' : ''} · 🟡${playCost(G, playerID, chosen, i)}</button>` : '';
++      const sel = chosen && playableAt(chosen, i, selectedZone) ? `<button data-play="${i}">Play ${esc(chosen.name)} here${selectedZone === 'trash' ? ' (from Trash)' : selectedZone === 'deck' ? ' (from Deck)' : ''} · 🟡${selectedZone === 'deck' ? 0 : playCost(G, playerID, chosen, i)}</button>` : '';
+       const persona = (pid) => {
+         const per = activePersona(pid);
+         return `<div class="tile persona" title="${esc(per ? per.name : 'Persona')}${per && per.text ? ' - ' + esc(per.text) : ''}"><div class="artbox">${per ? img(per.art) : ''}</div><span>${esc(per ? per.name : 'Persona')}${p.pexh?.[pid] ? ' · exhausted' : ''}</span></div>`;
+@@ -274,6 +275,10 @@
+     const fromTrash = me.trash.filter(canPlayFromTrash);
+     $('trashrow').hidden = !fromTrash.length;
+     $('trashplay').innerHTML = fromTrash.map((c) => `<div class="cardwrap">${cardBtn(c, 'data-trashcard', c.id === selected && selectedZone === 'trash', canPlay(c, 'trash'))}</div>`).join('');
++    // Revealed top card (La Avispa Nectarina): shown face-up, and playable for free if it says so (AVId Gummy Worm Enjoyer)
++    const myTop = topRevealed(G, playerID) && me.deck[0] && !me.deck[0].hidden ? me.deck[0] : null;
++    $('deckrow').hidden = !myTop;
++    $('deckplay').innerHTML = myTop ? `<div class="cardwrap">${cardBtn(myTop, 'data-deckcard', myTop.id === selected && selectedZone === 'deck', canPlayFromDeckTop(G, playerID, myTop) && canPlay(myTop, 'deck'))}</div>` : '';
+     $('mydeck').innerHTML = pile(me.deck.length);
+     const opp = G.players[other];
+     $('opp').innerHTML = `<span class="meta">Opponent</span>${pile(opp.deck.length)}<div class="minihand">${opp.hand.map(() => img(CARD_BACK, 'cardback')).join('')}</div>`;
+@@ -328,20 +333,21 @@
+       if (discardNeed(st.G, playerID, st.ctx.phase === 'clashResults') > 0) client.moves.discardCard(t.dataset.card); // you choose what to discard
+       else { selected = selected === t.dataset.card && selectedZone === 'hand' ? null : t.dataset.card; selectedZone = 'hand'; render(st); }
+     }
++    if (t.dataset.deckcard) { selected = selected === t.dataset.deckcard && selectedZone === 'deck' ? null : t.dataset.deckcard; selectedZone = 'deck'; render(client.getState()); }
+     if (t.dataset.trashcard) { selected = selected === t.dataset.trashcard && selectedZone === 'trash' ? null : t.dataset.trashcard; selectedZone = 'trash'; render(client.getState()); }
+     if (t.dataset.discardab) client.moves.discardAbility(t.dataset.discardab);
+     if (t.dataset.activate) client.moves.activateCard(t.dataset.activate);
+     if (t.dataset.flip) client.moves.flipCard(t.dataset.flip); // flip a face-down Premium card face-up (your action for the turn)
+     if (t.dataset.play !== undefined) {
+       const st = client.getState();
+-      const zone = selectedZone, card = st.G.players[playerID][zone === 'trash' ? 'trash' : 'hand'].find((x) => x.id === selected);
++      const zone = selectedZone, card = (zone === 'trash' ? st.G.players[playerID].trash : zone === 'deck' ? st.G.players[playerID].deck.slice(0, 1) : st.G.players[playerID].hand).find((x) => x.id === selected);
+       let x;
+       if (card?.xCost) { // a cost of X: the player chooses how many Bits to spend
+         const v = prompt(`${card.name} costs X. How many Bits do you want to spend? (you have ${st.G.players[playerID].bits})`, '1');
+         if (v === null) return;
+         x = Math.max(0, Math.floor(Number(v) || 0));
+       }
+-      client.moves.playCard(selected, Number(t.dataset.play), x, zone === 'trash' ? 'trash' : undefined);
++      client.moves.playCard(selected, Number(t.dataset.play), x, zone === 'hand' ? undefined : zone);
+       selected = null; selectedZone = 'hand';
+     }
+   });
+--- orig/OshiPushOnline/public/index.html	2026-11-21 21:43:52.000000000 +0000
++++ OshiPushOnline/public/index.html	2026-11-21 22:22:27.766022330 +0000
+@@ -135,6 +135,7 @@
+   <div id="platforms"></div>
+   <h2>Your hand <small id="deck"></small></h2>
+   <div class="row" id="handrow"><div id="hand"></div><div id="mydeck"></div></div>
++  <div id="deckrow" hidden><h2>Top of your deck (revealed) <small class="meta">(if it can be played from there, pick it, then a platform)</small></h2><div id="deckplay"></div></div>
+   <div id="trashrow" hidden><h2>Playable from your Trash <small class="meta">(pick a card, then a platform)</small></h2><div id="trashplay"></div></div>
+   <div id="clash"></div>
+   <button id="pass">Pass turn</button>
+--- orig/OshiPushOnline/tests/gen2-actions.test.mjs	2026-11-21 21:43:52.000000000 +0000
++++ OshiPushOnline/tests/gen2-actions.test.mjs	2026-11-21 22:22:14.228423163 +0000
+@@ -1,8 +1,8 @@
+ // Headless tests for the Gen 2 Action card effects. Run: node tests/gen2-actions.test.mjs
+ import assert from 'assert';
+-import { mk, test, finish, card } from './harness.mjs';
++import { mk, test, finish, card, persona, PIPPA } from './harness.mjs';
+ import { CARDS } from '../cards.js';
+-import { sideInf, OshiPush } from '../game.js';
++import { sideInf, OshiPush, topRevealed, canPlayFromDeckTop } from '../game.js';
+ 
+ const SAFE = new Set(['discardAbility']); // a card whose only ability works from your hand is as good as a plain one on the board
+ const cheap = (cost) => (CARDS.find((c) => c.type === 'Content' && c.cost === cost && !(c.effects || []).length && !c.playOnly && !c.xCost)
+@@ -50,6 +50,42 @@
+   const t = mk(); t.bits('0', 10); const before = sideInf(t.G(), 0, '0'); t.play('0', 'AVId Gummy Worm Enjoyer', 0);
+   assert.equal(sideInf(t.G(), 0, '0'), before + 10);
+ });
++// ---- AVId Gummy Worm Enjoyer: "While this card is revealed as the top card of your deck: You may play this card for free." ----
++const NECTARINA = persona('La Avispa Nectarina');
++const WORM = 'AVId Gummy Worm Enjoyer';
++test('AVId Gummy Worm Enjoyer: Nectarina plays it free from the top of her deck (+10 ⭐, no 💎 spent)', () => {
++  const t = mk({ p0: NECTARINA }); t.bits('0', 0); t.as('0', 'testDeck', '0', [WORM, cheap(1)]); t.turn('0');
++  assert.ok(topRevealed(t.G(), '0')); assert.ok(canPlayFromDeckTop(t.G(), '0', t.G().players['0'].deck[0]));
++  const before = sideInf(t.G(), 0, '0'), id = t.G().players['0'].deck[0].id, hand = t.G().players['0'].hand.length;
++  t.as('0', 'playCard', id, 0, undefined, 'deck');
++  assert.equal(sideInf(t.G(), 0, '0'), before + 10); assert.equal(t.G().players['0'].bits, 0, 'free');
++  assert.equal(t.G().players['0'].deck[0].name, cheap(1), 'the next card is now on top'); assert.equal(t.G().players['0'].hand.length, hand, 'hand untouched');
++  assert.notEqual(t.cur(), '0', 'it used the turn');
++});
++test('AVId Gummy Worm Enjoyer: works during a clash too', () => {
++  const t = mk({ p0: NECTARINA }); t.clash(); t.as('0', 'dbgDeploy', '0', 0); t.as('0', 'dbgDeploy', '1', 0); t.bits('0', 0);
++  t.as('0', 'testDeck', '0', [WORM, cheap(1)]); t.turn('0'); const before = sideInf(t.G(), 0, '0');
++  t.as('0', 'playCard', t.G().players['0'].deck[0].id, 0, undefined, 'deck');
++  assert.equal(sideInf(t.G(), 0, '0'), before + 10);
++});
++test('AVId Gummy Worm Enjoyer: not playable from the deck when it is not the top card', () => {
++  const t = mk({ p0: NECTARINA }); t.bits('0', 0); t.as('0', 'testDeck', '0', [cheap(1), WORM]); t.turn('0');
++  const worm = t.G().players['0'].deck[1], before = sideInf(t.G(), 0, '0');
++  t.as('0', 'playCard', worm.id, 0, undefined, 'deck'); assert.equal(sideInf(t.G(), 0, '0'), before); assert.equal(t.G().players['0'].deck.length, 2);
++});
++test('AVId Gummy Worm Enjoyer: from the deck only while the top card is revealed (not with other Personas)', () => {
++  const t = mk({ p0: PIPPA }); t.bits('0', 10); t.as('0', 'testDeck', '0', [WORM, cheap(1)]); t.turn('0');
++  assert.ok(!topRevealed(t.G(), '0')); const before = sideInf(t.G(), 0, '0');
++  t.as('0', 'playCard', t.G().players['0'].deck[0].id, 0, undefined, 'deck'); assert.equal(sideInf(t.G(), 0, '0'), before); assert.equal(t.G().players['0'].deck.length, 2);
++});
++test('AVId Gummy Worm Enjoyer: an ordinary Action cannot be played from the top of the deck', () => {
++  const t = mk({ p0: NECTARINA }); t.bits('0', 10); t.as('0', 'testDeck', '0', ['Hype', cheap(1)]); t.turn('0');
++  t.as('0', 'playCard', t.G().players['0'].deck[0].id, 0, undefined, 'deck'); assert.equal(t.G().players['0'].deck.length, 2); assert.equal(t.G().platforms[0].actions['0'].length, 0);
++});
++test('AVId Gummy Worm Enjoyer: still playable from your hand for 🟡4', () => {
++  const t = mk({ p0: NECTARINA }); t.bits('0', 4); const before = sideInf(t.G(), 0, '0'); t.play('0', WORM, 0);
++  assert.equal(sideInf(t.G(), 0, '0'), before + 10); assert.equal(t.G().players['0'].bits, 0);
++});
+ test('Soulslike Notes: draw until you have 3 cards', () => {
+   const t = mk(); t.bits('0', 10); t.as('0', 'dbgClearHand', '0'); t.give('0', 'Soulslike Notes'); t.turn('0');
+   t.as('0', 'playCard', t.G().players['0'].hand[0].id, 0);

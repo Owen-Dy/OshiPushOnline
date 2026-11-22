@@ -4,7 +4,9 @@ import { mk, test, finish, card, persona, results } from './harness.mjs';
 import { CARDS } from '../cards.js';
 import { contentBlocked, playCost, sideInf } from '../game.js';
 
-const cheap = (cost) => CARDS.find((c) => c.type === 'Content' && c.cost === cost && !(c.effects || []).length && !c.playOnly && !c.xCost).name; // a plain card to play for free
+const SAFE = new Set(['discardAbility']); // a card whose only ability works from your hand is as good as a plain one on the board
+const cheap = (cost) => (CARDS.find((c) => c.type === 'Content' && c.cost === cost && !(c.effects || []).length && !c.playOnly && !c.xCost)
+  || CARDS.find((c) => c.type === 'Content' && c.cost === cost && (c.effects || []).every((e) => SAFE.has(e.type)) && !c.playOnly && !c.xCost)).name; // a plain card to play for free
 const at = (t, idx, id) => t.G().platforms[idx].cards[id].map((c) => c.name);
 
 // ---------- ⭐ from card text ----------

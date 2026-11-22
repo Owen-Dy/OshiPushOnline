@@ -11,7 +11,7 @@
 //   - answers card decisions, discards its weakest cards, and acknowledges the results screen
 import { Client } from 'boardgame.io/dist/cjs/client.js';
 import { SocketIO } from 'boardgame.io/dist/cjs/multiplayer.js';
-import { OshiPush, discardNeed, sideInf, playCost, cardPlayable, effectsPlayable, contentBlocked, canPlayAnywhere, upgradeFits } from './game.js';
+import { OshiPush, discardNeed, sideInf, playCost, cardPlayable, effectsPlayable, contentBlocked, canPlayAnywhere, upgradeFits, canFlip, premiumOf, platformPhaseCard, canPlayFromTop } from './game.js';
 
 const other = (id) => (id === '0' ? '1' : '0');
 const rand = (n) => Math.floor(Math.random() * n);
@@ -54,6 +54,11 @@ export function candidateMoves(state, me) {
     }
 
     case 'deployment': {
+      if (myTurn && G.platformHold === me) { // Platform Phase: play So Baby if it can be played, then say you are done
+        const loc = G.personaLocations[me];
+        const plays = you.hand.filter((c) => platformPhaseCard(c) && playCost(G, me, c, loc) <= you.bits).map((c) => ['playCard', c.id, loc]);
+        return [...plays, ['endPlatformTurn']];
+      }
       if (!myTurn || G.personaLocations[me] !== null) return [];
       return deployOrder(G, me).map((i) => ['deployPersona', i]);
     }
@@ -68,12 +73,12 @@ export function candidateMoves(state, me) {
 
     case 'content': {
       if (!myTurn) return [];
-      return [...contentPlays(G, me), ['passTurn']];
+      return [...flips(state, me), ...topPlays(G, me, phase), ...contentPlays(G, me), ['passTurn']];
     }
 
     case 'clash': {
       if (!myTurn) return [];
-      return [...clashPlays(G, me), ['passTurn']];
+      return [...flips(state, me), ...topPlays(G, me, phase), ...clashPlays(G, me), ['passTurn']];
     }
 
     case 'clashResults':
@@ -127,6 +132,21 @@ function deployOrder(G, me) {
   return [0, 1, 2].sort((a, b) => score(b) - score(a));
 }
 
+// ---------- Premium Content: flip a face-down card as soon as its condition is met ----------
+function flips(state, me) {
+  const { G, ctx } = state, out = [];
+  for (const pl of G.platforms) for (const c of pl.cards[me]) if (c.faceDown && premiumOf(c) && canFlip(G, ctx.phase, me, c.id)) out.push(['flipCard', c.id]);
+  return out;
+}
+
+// ---------- the revealed top card (AVId Gummy Worm Enjoyer): play it for free ----------
+function topPlays(G, me, phase) {
+  const top = G.players[me].deck[0], loc = G.personaLocations[me];
+  if (!top || loc === null || !canPlayFromTop(G, me, top)) return [];
+  if (phase === 'clash' && loc !== G.clashSequence[G.clashIndex]) return [];
+  return [['playCard', top.id, loc, undefined, 'deck']];
+}
+
 // ---------- Content phase ----------
 function contentPlays(G, me) {
   const you = G.players[me], at = G.personaLocations[me];
@@ -145,7 +165,7 @@ function contentPlays(G, me) {
       if (cost > you.bits || contentBlocked(G, me, card, i)) continue;
       if (!effectsPlayable(G, me, card, i, you.bits - cost)) continue;
       const afterBits = you.bits - cost;
-      let value = card.type === 'Upgrade' ? 6 : card.inf + 0.5;
+      let value = card.type === 'Upgrade' ? 6 : (premiumOf(card) ? 3 : card.inf) + 0.5;
       value += (card.effects || []).length * 0.5; // abilities are usually worth something
       value -= cost * 0.6;
       if (afterBits < reserve && cost > 0) value -= 4; // keep Bits for the clash

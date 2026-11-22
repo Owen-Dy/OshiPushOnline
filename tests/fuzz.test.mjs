@@ -1,6 +1,6 @@
 // Plays random games (random decks, random moves) to catch crashes or stuck games in the card effects. Run: node tests/fuzz.test.mjs [games]
 import { Client } from 'boardgame.io/dist/cjs/client.js';
-import { OshiPush } from '../game.js';
+import { OshiPush, platformPhaseCard } from '../game.js';
 const game = { ...OshiPush, playerView: ({ G }) => G };
 const rnd = (n) => Math.floor(Math.random() * n);
 const pick = (a) => a[rnd(a.length)];
@@ -29,7 +29,13 @@ for (let g = 0; g < GAMES; g++) {
     if (ph === 'mulligan') { for (const id of ids) as(id, 'keepHand'); continue; }
     if (ph === 'platformSetup') { as(cur, 'putPlatform', rnd(3)); continue; }
     if (G.choices.length) { const ch = G.choices[0]; const n = Math.min(ch.max || 1, ch.options.length); const keys = [...ch.options].sort(() => Math.random() - 0.5).slice(0, ch.min === 0 && Math.random() < 0.3 ? 0 : Math.max(ch.min ?? 1, 1)).map((o) => o.key); as(ch.player, 'makeChoice', keys); continue; }
-    if (ph === 'deployment') { as(cur, 'deployPersona', rnd(3)); continue; }
+    if (ph === 'deployment') {
+      if (G.platformHold === cur) { // Platform Phase: play So Baby (sometimes) or say you are done
+        const sb = G.players[cur].hand.find((c) => platformPhaseCard(c));
+        if (sb && Math.random() < 0.5) as(cur, 'playCard', sb.id, G.personaLocations[cur]); else as(cur, 'endPlatformTurn');
+      } else as(cur, 'deployPersona', rnd(3));
+      continue;
+    }
     if (ph === 'clashOrder') { as(cur, 'chooseClashOrder', pick(['LEFT_TO_RIGHT', 'RIGHT_TO_LEFT'])); continue; }
     if (ph === 'clashResults') {
       for (const id of ids) { // acknowledge; if the hand limit forces a discard first, discard instead

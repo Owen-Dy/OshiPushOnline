@@ -1083,7 +1083,7 @@ export const CARDS = [
     "inf": 8,
     "gems": 0,
     "text": "Play only if your Persona is Rinkou Ashelia.\r\n-\r\nClash Reward: If you have at least 5 more ⭐ than your opponents at this Platform, draw 2 cards.",
-    "art": "art/gen1/Feet- A Holy Deep Dive.png",
+    "art": "art/gen1/Feet A Holy Deep Dive.png",
     "class": "Yabai",
     "style": "⬛︎ Green",
     "genre": "✏️ Creatives",
@@ -1491,9 +1491,9 @@ export const CARDS = [
     "effects": [
       {
         "type": "pickCard",
-        "prompt": "Vomit Drawer: delete an opposing Content card with 6 ⭐ or less",
+        "prompt": "Vomit Drawer: delete an opposing Content card on this platform with 6 ⭐ or less",
         "pick": {
-          "scope": "any",
+          "scope": "here",
           "owner": "opp",
           "starsMax": 6
         },
@@ -1937,7 +1937,7 @@ export const CARDS = [
     "inf": 0,
     "gems": 0,
     "text": "Pippa Pipkin's deck only.\r\n\r\nWhile you have at least 1 Content card on every Platform: Your Persona gains +5 ⭐ on this Platform.",
-    "art": "art/gen1/Pippa_s Quarters.png",
+    "art": "art/gen1/Pippa's Quarters.png",
     "class": "Yabai",
     "set": "Gen 1",
     "tags": "Phase Connect",
@@ -1966,7 +1966,7 @@ export const CARDS = [
     "inf": 0,
     "gems": 0,
     "text": "Utatanae Nasa's deck only.\r\n\r\nWhen you play a Content card on this Platform: You may pay 2 💎 to draw 1 card.",
-    "art": "art/gen1/Nasa_s Dream.png",
+    "art": "art/gen1/Nasa's Dream.png",
     "class": "Yabai",
     "set": "Gen 1",
     "tags": "Phase Connect",
@@ -2007,7 +2007,7 @@ export const CARDS = [
     "inf": 0,
     "gems": 0,
     "text": "Hakushika Iori's deck only.\r\n\r\nThe first time you play an Action card while clashing at this Platform: Gain 1 💎.",
-    "art": "art/gen1/Iori_s Den.png",
+    "art": "art/gen1/Iori's Den.png",
     "class": "Yabai",
     "set": "Gen 1",
     "tags": "Phase Connect",
@@ -2042,7 +2042,7 @@ export const CARDS = [
     "inf": 0,
     "gems": 0,
     "text": "Shisui Michiru's deck only.\r\n\r\nContent cards with 🟡5 or more can't be played on this Platform.",
-    "art": "art/gen1/Michiru_s Cabin.png",
+    "art": "art/gen1/Michiru's Cabin.png",
     "class": "Yabai",
     "set": "Gen 1",
     "tags": "Phase Connect",
@@ -2068,7 +2068,7 @@ export const CARDS = [
     "inf": 0,
     "gems": 0,
     "text": "Fujikura Uruka's deck only.\r\n\r\nWhen you play a Content card on this Platform: Delete all of your other Content cards on this Platform.",
-    "art": "art/gen1/Uruka_s Lounge.png",
+    "art": "art/gen1/Uruka's Lounge.png",
     "class": "Yabai",
     "set": "Gen 1",
     "tags": "Phase Connect",
@@ -2102,7 +2102,7 @@ export const CARDS = [
     "inf": 0,
     "gems": 0,
     "text": "Rinkou Ashelia's deck only.\r\n\r\nContent cards cost 🟡1 less to play on this Platform.",
-    "art": "art/gen1/Lia_s Network.png",
+    "art": "art/gen1/Lia's Network.png",
     "class": "Yabai",
     "set": "Gen 1",
     "tags": "Phase Connect",
@@ -2128,7 +2128,7 @@ export const CARDS = [
     "inf": 0,
     "gems": 0,
     "text": "Tenma Maemi's deck only.\r\n\r\nWhen your Persona moves to this Platform: Draw 1 card.",
-    "art": "art/gen1/Tenma_s Basement.png",
+    "art": "art/gen1/Tenma's Basement.png",
     "class": "Yabai",
     "set": "Gen 1",
     "tags": "Phase Connect",
@@ -3511,7 +3511,7 @@ export const CARDS = [
     "inf": 13,
     "gems": 0,
     "text": "When Played: Delete all of your other Content cards on this Platform.",
-    "art": "art/gen1/Let _em Cook.png",
+    "art": "art/gen1/Let 'em Cook.png",
     "class": "Sugoi",
     "style": "◆︎ Red",
     "genre": "✏️ Creatives",
@@ -4889,7 +4889,18 @@ export const CARDS = [
     "genre": "🎮 Poggers",
     "set": "Gen 2",
     "flavour": "Without memories, the present moments lose their value.",
-    "source": "Artwork (Retail - Store), Photo (Retail - Stream)"
+    "source": "Artwork (Retail - Store), Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "deckOnly",
+        "persona": "Eden"
+      },
+      {
+        "type": "selfStars",
+        "amount": 4,
+        "per": "otherContentHere"
+      }
+    ]
   },
   {
     "id": "op02-005",
@@ -4905,7 +4916,18 @@ export const CARDS = [
     "genre": "💬 Zatsudan",
     "set": "Gen 2",
     "flavour": "I froze them all and I fled.",
-    "source": "Info (Stream), Photo (Stream)"
+    "source": "Info (Stream), Photo (Stream)",
+    "effects": [
+      {
+        "type": "deckOnly",
+        "persona": "Eden"
+      },
+      {
+        "type": "euclaseFrost",
+        "costMax": 4,
+        "prompt": "Euclase Frost: choose any number of your Content cards with 🟡4 or less on this platform to move to other platforms"
+      }
+    ]
   },
   {
     "id": "op02-006",
@@ -4965,7 +4987,20 @@ export const CARDS = [
     "genre": "💬 Zatsudan",
     "set": "Gen 2",
     "flavour": "It doesn't taste as bad as it sounds.",
-    "source": "Artwork (Retail - Store), Photo (Retail - Stream)"
+    "source": "Artwork (Retail - Store), Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "deckOnly",
+        "persona": "Captain Camille"
+      },
+      {
+        "type": "adjacentStars",
+        "amount": 3,
+        "when": {
+          "dominating": true
+        }
+      }
+    ]
   },
   {
     "id": "op02-010",
@@ -4981,7 +5016,24 @@ export const CARDS = [
     "genre": "🎮 Poggers",
     "set": "Gen 2",
     "flavour": "When I speak, it pulsates.",
-    "source": "Artwork (Retail - Social media), Photo (Retail - Stream)"
+    "source": "Artwork (Retail - Social media), Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "deckOnly",
+        "persona": "Captain Camille"
+      },
+      {
+        "type": "personaInf",
+        "target": "self",
+        "amount": 5
+      },
+      {
+        "type": "draw",
+        "target": "self",
+        "amount": 1,
+        "perDominating": true
+      }
+    ]
   },
   {
     "id": "op02-011",
@@ -5044,7 +5096,19 @@ export const CARDS = [
     "source": "Photo (Retail - Stream)",
     "playOnly": {
       "timing": "clash"
-    }
+    },
+    "effects": [
+      {
+        "type": "deckOnly",
+        "persona": "Porcelain Maid"
+      },
+      {
+        "type": "winClash",
+        "if": {
+          "contentEverywhere": true
+        }
+      }
+    ]
   },
   {
     "id": "op02-015",
@@ -5060,7 +5124,17 @@ export const CARDS = [
     "genre": "🎮 Poggers",
     "set": "Gen 2",
     "flavour": "My eyes are down here.",
-    "source": "Artwork (Retail - Store)"
+    "source": "Artwork (Retail - Store)",
+    "effects": [
+      {
+        "type": "deckOnly",
+        "persona": "Porcelain Maid"
+      },
+      {
+        "type": "discardOppDraw",
+        "amount": 1
+      }
+    ]
   },
   {
     "id": "op02-016",
@@ -5120,7 +5194,18 @@ export const CARDS = [
     "genre": "✏️ Creatives",
     "set": "Gen 2",
     "flavour": "*Uncontrollable Coughing*",
-    "source": "Artwork (Retail - Store), Photo (Retail - Stream)"
+    "source": "Artwork (Retail - Store), Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "deckOnly",
+        "persona": "Raelice"
+      },
+      {
+        "type": "selfStars",
+        "amount": 1,
+        "per": "trash"
+      }
+    ]
   },
   {
     "id": "op02-020",
@@ -5136,7 +5221,21 @@ export const CARDS = [
     "genre": "💬 Zatsudan",
     "set": "Gen 2",
     "flavour": "So about that tier list...",
-    "source": "Artwork (Retail - Store), Photo (Retail - Stream)"
+    "source": "Artwork (Retail - Store), Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "deckOnly",
+        "persona": "Raelice"
+      },
+      {
+        "type": "revealPick",
+        "count": 3,
+        "n": 1,
+        "pickType": "Content",
+        "rest": "trash",
+        "prompt": "Off the Raelz: draw 1 Content card from the revealed cards (the others are discarded)"
+      }
+    ]
   },
   {
     "id": "op02-021",
@@ -5196,7 +5295,16 @@ export const CARDS = [
     "genre": "❤️ Experience",
     "set": "Gen 2",
     "flavour": "Bugs are souless, so I can eat them without guilt!",
-    "source": "Artwork (Retail - Store), Photo (Retail - Stream)"
+    "source": "Artwork (Retail - Store), Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "deckOnly",
+        "persona": "La Avispa Nectarina"
+      },
+      {
+        "type": "selfStarsPersona"
+      }
+    ]
   },
   {
     "id": "op02-025",
@@ -5212,7 +5320,21 @@ export const CARDS = [
     "genre": "❤️ Experience",
     "set": "Gen 2",
     "flavour": "I eat them till it HURTS.",
-    "source": "Artwork (Retail - Stream), Photo (Retail - Stream)"
+    "source": "Artwork (Retail - Stream), Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "deckOnly",
+        "persona": "La Avispa Nectarina"
+      },
+      {
+        "type": "playFromTopFree"
+      },
+      {
+        "type": "personaInf",
+        "target": "self",
+        "amount": 10
+      }
+    ]
   },
   {
     "id": "op02-026",
@@ -5272,7 +5394,26 @@ export const CARDS = [
     "genre": "💬 Zatsudan",
     "set": "Gen 2",
     "flavour": "I don't know if I feel as special...",
-    "source": "Artwork (Retail - Store), Photo (Retail - Stream)"
+    "source": "Artwork (Retail - Store), Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "deckOnly",
+        "persona": "LineChu"
+      },
+      {
+        "type": "pickCard",
+        "optional": true,
+        "prompt": "38+ Husbands: you may flip a face-up Premium Content card on this platform face-down",
+        "pick": {
+          "scope": "here",
+          "owner": "mine",
+          "faceUpPremium": true
+        },
+        "then": {
+          "do": "flipDown"
+        }
+      }
+    ]
   },
   {
     "id": "op02-030",
@@ -5291,7 +5432,17 @@ export const CARDS = [
     "source": "Photo (Retail - Stream)",
     "playOnly": {
       "timing": "content"
-    }
+    },
+    "effects": [
+      {
+        "type": "deckOnly",
+        "persona": "LineChu"
+      },
+      {
+        "type": "findPremium",
+        "prompt": "Find the Bepis: choose a Premium Content card from your deck to play face-down for free"
+      }
+    ]
   },
   {
     "id": "op02-031",
@@ -5316,13 +5467,24 @@ export const CARDS = [
     "inf": 5,
     "gems": 0,
     "text": "Porcelain Maid's deck only.\r\n-\r\nThis card gains +3 ⭐ for each other Platform where you have 1 or more Content cards.",
-    "art": "art/gen2/Wanna Hear a Joel-ke-.png",
+    "art": "art/gen2/Wanna Hear a Joel-ke.png",
     "class": "Yabai",
     "style": "◆︎ Red",
     "genre": "💬 Zatsudan",
     "set": "Gen 2",
     "flavour": "What does 1 Joel say to another Joel?",
-    "source": "Photo (Retail Starter - Stream)"
+    "source": "Photo (Retail Starter - Stream)",
+    "effects": [
+      {
+        "type": "deckOnly",
+        "persona": "Porcelain Maid"
+      },
+      {
+        "type": "selfStars",
+        "amount": 3,
+        "per": "otherPlatformsContent"
+      }
+    ]
   },
   {
     "id": "op02-033",
@@ -5353,7 +5515,19 @@ export const CARDS = [
     "genre": "❤️ Experience",
     "set": "Gen 2",
     "flavour": "It's part of my diet.",
-    "source": "Photo (Retail Starter - Stream)"
+    "source": "Photo (Retail Starter - Stream)",
+    "effects": [
+      {
+        "type": "deckOnly",
+        "persona": "LineChu"
+      },
+      {
+        "type": "flipOne",
+        "optional": true,
+        "personaPerFaceUp": 4,
+        "prompt": "Powered by Bepis: you may flip one of your face-down Premium Content cards face-up"
+      }
+    ]
   },
   {
     "id": "op02-035",
@@ -5715,7 +5889,19 @@ export const CARDS = [
     "genre": "🎮 Poggers",
     "set": "Gen 2",
     "flavour": "She could if she calls me!",
-    "source": "Photo (Pre-Debut Promo - Stream, Retail - Stream)"
+    "source": "Photo (Pre-Debut Promo - Stream, Retail - Stream)",
+    "effects": [
+      {
+        "type": "onFlip",
+        "scope": "any",
+        "then": [
+          {
+            "type": "selfMod",
+            "amount": 3
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-058",
@@ -5731,7 +5917,23 @@ export const CARDS = [
     "genre": "🎮 Poggers",
     "set": "Gen 2",
     "flavour": "You can swim in lava, but only once.",
-    "source": "Photo (Pre-Debut Promo - Stream, Retail - Stream)"
+    "source": "Photo (Pre-Debut Promo - Stream, Retail - Stream)",
+    "effects": [
+      {
+        "type": "premium",
+        "flipText": "An opponent played 1 or more Content cards on this platform this round",
+        "flipIf": {
+          "oppPlayedContentHere": true
+        },
+        "whenFlipped": [
+          {
+            "type": "playHandFree",
+            "costMax": 2,
+            "prompt": "Wisdom of the Day: you may play a Content card with 🟡2 or less from your hand on this platform for free"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-059",
@@ -5747,7 +5949,17 @@ export const CARDS = [
     "genre": "🎮 Poggers",
     "set": "Gen 2",
     "flavour": "I play video games but you know, BADLY.",
-    "source": "Artwork (Retail - Social media), Photo (Pre-Debut Promo - Newsletter, Retail - Stream)"
+    "source": "Artwork (Retail - Social media), Photo (Pre-Debut Promo - Newsletter, Retail - Stream)",
+    "effects": [
+      {
+        "type": "premium",
+        "flipText": "An opponent has a Content card with 🟡4 or more on this platform",
+        "flipIf": {
+          "oppContentCostMin": 4
+        },
+        "whenFlipped": []
+      }
+    ]
   },
   {
     "id": "op02-060",
@@ -5763,7 +5975,14 @@ export const CARDS = [
     "genre": "🎮 Poggers",
     "set": "Gen 2",
     "flavour": "Chat says she fell in the toilet.",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "selfStars",
+        "amount": -1,
+        "per": "oppHand"
+      }
+    ]
   },
   {
     "id": "op02-061",
@@ -5779,7 +5998,16 @@ export const CARDS = [
     "genre": "🎮 Poggers",
     "set": "Gen 2",
     "flavour": "Made with Real Dehydrated Tomboy Sweat!",
-    "source": "Photo (Pre-Debut Promo - Stream)"
+    "source": "Photo (Pre-Debut Promo - Stream)",
+    "effects": [
+      {
+        "type": "selfStars",
+        "amount": 10,
+        "when": {
+          "firstPlayer": true
+        }
+      }
+    ]
   },
   {
     "id": "op02-062",
@@ -5795,7 +6023,23 @@ export const CARDS = [
     "genre": "🎮 Poggers",
     "set": "Gen 2",
     "flavour": "Pay your taxes or I'll cry!",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "activate",
+        "effects": [
+          {
+            "type": "gainPop",
+            "target": "self",
+            "amount": 1,
+            "atPersona": true,
+            "if": {
+              "faceUpPremiumHere": true
+            }
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-063",
@@ -5814,7 +6058,14 @@ export const CARDS = [
     "source": "Photo (Retail - Stream)",
     "playOnly": {
       "timing": "clash"
-    }
+    },
+    "effects": [
+      {
+        "type": "personaInf",
+        "target": "self",
+        "perContent": 3
+      }
+    ]
   },
   {
     "id": "op02-064",
@@ -5833,7 +6084,15 @@ export const CARDS = [
     "source": "Artwork (Retail - Social media)",
     "playOnly": {
       "timing": "clash"
-    }
+    },
+    "effects": [
+      {
+        "type": "winClash",
+        "if": {
+          "dominating": true
+        }
+      }
+    ]
   },
   {
     "id": "op02-065",
@@ -5865,7 +6124,29 @@ export const CARDS = [
     "genre": "🎮 Poggers",
     "set": "Gen 2",
     "flavour": "Welcome to my flower shop!... We only sell bread.",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "premium",
+        "flipText": "An opponent is Dominating this platform",
+        "flipIf": {
+          "oppDominating": true
+        },
+        "whenFlipped": [
+          {
+            "type": "pickCard",
+            "prompt": "Chat Control: delete an opposing Content card on this platform",
+            "pick": {
+              "scope": "here",
+              "owner": "opp"
+            },
+            "then": {
+              "do": "delete"
+            }
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-067",
@@ -5881,7 +6162,16 @@ export const CARDS = [
     "genre": "🎮 Poggers",
     "set": "Gen 2",
     "flavour": "I happen to be a joystick enjoyer.",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "gainPop",
+        "amount": 1,
+        "if": {
+          "popBehind": true
+        }
+      }
+    ]
   },
   {
     "id": "op02-068",
@@ -5897,7 +6187,12 @@ export const CARDS = [
     "genre": "🎮 Poggers",
     "set": "Gen 2",
     "flavour": "Guys, don't worry! I've got this!",
-    "source": "Photo (Pre-Debut Promo - Stream), Info (Discord), Photo (Retail - Stream)"
+    "source": "Photo (Pre-Debut Promo - Stream), Info (Discord), Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "protectOthers"
+      }
+    ]
   },
   {
     "id": "op02-069",
@@ -5913,7 +6208,21 @@ export const CARDS = [
     "genre": "🎮 Poggers",
     "set": "Gen 2",
     "flavour": "I wann knock on you.",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "pickCard",
+        "optional": true,
+        "prompt": "Knock Knock: you may move 1 of your Content cards from another platform to this one",
+        "pick": {
+          "scope": "other",
+          "owner": "mine"
+        },
+        "then": {
+          "do": "moveHere"
+        }
+      }
+    ]
   },
   {
     "id": "op02-070",
@@ -5929,7 +6238,21 @@ export const CARDS = [
     "genre": "🎮 Poggers",
     "set": "Gen 2",
     "flavour": "The biggest smooch I've ever given in my entire life.",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "pickCard",
+        "chooser": "opp",
+        "prompt": "Kiss, Marry, Kill: choose one of YOUR Content cards on this platform. It is deleted",
+        "pick": {
+          "scope": "here",
+          "owner": "opp"
+        },
+        "then": {
+          "do": "delete"
+        }
+      }
+    ]
   },
   {
     "id": "op02-071",
@@ -5939,13 +6262,19 @@ export const CARDS = [
     "inf": 15,
     "gems": 0,
     "text": "When an opponent gains a 🌠 on a Platform: Gain 1 🌠 at this Platform.",
-    "art": "art/gen2/Children_s Game.png",
+    "art": "art/gen2/Children's Game.png",
     "class": "Yabai",
     "style": "⬤︎ Purple",
     "genre": "🎮 Poggers",
     "set": "Gen 2",
     "flavour": "Most Humble VTuber.",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "onOppPopGain",
+        "amount": 1
+      }
+    ]
   },
   {
     "id": "op02-072",
@@ -5961,7 +6290,20 @@ export const CARDS = [
     "genre": "🎮 Poggers",
     "set": "Gen 2",
     "flavour": "I want the ugly one!!!",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "pickCard",
+        "prompt": "Gacha Pull: choose a Content card to delete (its controller then reveals cards until they find a Content card and plays it on the same platform)",
+        "pick": {
+          "scope": "any",
+          "owner": "any"
+        },
+        "then": {
+          "do": "gacha"
+        }
+      }
+    ]
   },
   {
     "id": "op02-073",
@@ -5980,7 +6322,20 @@ export const CARDS = [
     "source": "Photo (Retail - Stream)",
     "playOnly": {
       "timing": "clash"
-    }
+    },
+    "effects": [
+      {
+        "type": "pickCard",
+        "prompt": "Nose Pull: delete an opposing Content card on this platform",
+        "pick": {
+          "scope": "here",
+          "owner": "opp"
+        },
+        "then": {
+          "do": "delete"
+        }
+      }
+    ]
   },
   {
     "id": "op02-074",
@@ -6012,7 +6367,14 @@ export const CARDS = [
     "genre": "🎮 Poggers",
     "set": "Gen 2",
     "flavour": "How did you know I was my own fan?",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "playHandFree",
+        "costMax": 1,
+        "prompt": "Rampant Narcissim: you may play another Content card with 🟡1 from your hand on this platform for free"
+      }
+    ]
   },
   {
     "id": "op02-076",
@@ -6028,7 +6390,23 @@ export const CARDS = [
     "genre": "🎮 Poggers",
     "set": "Gen 2",
     "flavour": "My wife left me... I miss my Wife.",
-    "source": "Photo (Pre-Debut Promo - Stream, Retail - Stream)"
+    "source": "Photo (Pre-Debut Promo - Stream, Retail - Stream)",
+    "effects": [
+      {
+        "type": "premium",
+        "flipText": "An opponent has more cards in their hand than you",
+        "flipIf": {
+          "oppHandMore": true
+        },
+        "whenFlipped": [
+          {
+            "type": "discard",
+            "target": "opponent",
+            "amount": 2
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-077",
@@ -6044,7 +6422,13 @@ export const CARDS = [
     "genre": "🎮 Poggers",
     "set": "Gen 2",
     "flavour": "Call me a mean word!",
-    "source": "Photo (Pre-Debut Promo - Stream, Retail - Stream)"
+    "source": "Photo (Pre-Debut Promo - Stream, Retail - Stream)",
+    "effects": [
+      {
+        "type": "actionCostUp",
+        "amount": 2
+      }
+    ]
   },
   {
     "id": "op02-078",
@@ -6060,7 +6444,14 @@ export const CARDS = [
     "genre": "🎮 Poggers",
     "set": "Gen 2",
     "flavour": "The aesthetic fits beautifully.",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "playHandFree",
+        "costMax": 2,
+        "prompt": "Retro Games: you may play a Content card with 🟡2 or less from your hand on this platform for free"
+      }
+    ]
   },
   {
     "id": "op02-079",
@@ -6076,7 +6467,13 @@ export const CARDS = [
     "genre": "🎮 Poggers",
     "set": "Gen 2",
     "flavour": "Ignore the fact that I can go big and small.",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "selfCostPerContent",
+        "amount": 1
+      }
+    ]
   },
   {
     "id": "op02-080",
@@ -6108,7 +6505,14 @@ export const CARDS = [
     "genre": "🎮 Poggers",
     "set": "Gen 2",
     "flavour": "Amazing Chest Ahead.",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "draw",
+        "target": "self",
+        "untilHand": 3
+      }
+    ]
   },
   {
     "id": "op02-082",
@@ -6124,7 +6528,13 @@ export const CARDS = [
     "genre": "🎮 Poggers",
     "set": "Gen 2",
     "flavour": "I should be able to set this on fire safely!",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "ashBlast",
+        "prompt": "Ash Blasting: look at your opponent's hand and choose a card for them to discard"
+      }
+    ]
   },
   {
     "id": "op02-083",
@@ -6156,7 +6566,16 @@ export const CARDS = [
     "genre": "💬 Zatsudan",
     "set": "Gen 2",
     "flavour": "Why is that [earbud] in a dress?",
-    "source": "Photo (Pre-Debut Promo - Stream, Retail - Stream)"
+    "source": "Photo (Pre-Debut Promo - Stream, Retail - Stream)",
+    "effects": [
+      {
+        "type": "selfStars",
+        "amount": 3,
+        "when": {
+          "faceUpPremiumHere": true
+        }
+      }
+    ]
   },
   {
     "id": "op02-085",
@@ -6172,7 +6591,26 @@ export const CARDS = [
     "genre": "💬 Zatsudan",
     "set": "Gen 2",
     "flavour": "She took the PSP in the Divorce, but left behind Chat...",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "activate",
+        "effects": [
+          {
+            "type": "pickCard",
+            "prompt": "CUSTODY BATTLE: choose a Content card on an adjacent platform; it gains +3 ⭐ this round",
+            "pick": {
+              "scope": "adjacent",
+              "owner": "any"
+            },
+            "then": {
+              "do": "mod",
+              "amount": 3
+            }
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-086",
@@ -6182,7 +6620,7 @@ export const CARDS = [
     "inf": 8,
     "gems": 0,
     "text": "",
-    "art": "art/gen2/How_s Your Mom.png",
+    "art": "art/gen2/How's Your Mom.png",
     "class": "Basic",
     "style": "◆︎ Red",
     "genre": "💬 Zatsudan",
@@ -6204,7 +6642,12 @@ export const CARDS = [
     "genre": "💬 Zatsudan",
     "set": "Gen 2",
     "flavour": "This was NOT my idea for clothes... It was a sub goal.",
-    "source": "Photo (Pre-Debut Promo - Stream, Retail - Stream)"
+    "source": "Photo (Pre-Debut Promo - Stream, Retail - Stream)",
+    "effects": [
+      {
+        "type": "popRedirect"
+      }
+    ]
   },
   {
     "id": "op02-088",
@@ -6220,7 +6663,19 @@ export const CARDS = [
     "genre": "💬 Zatsudan",
     "set": "Gen 2",
     "flavour": "I need to rub that nub.",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "onPersonaMoveHere",
+        "then": [
+          {
+            "type": "moveSelf",
+            "optional": true,
+            "prompt": "VTuber HR: you may move this card to another platform"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-089",
@@ -6236,7 +6691,16 @@ export const CARDS = [
     "genre": "💬 Zatsudan",
     "set": "Gen 2",
     "flavour": "All women have hot girl IBS.",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "selfStars",
+        "amount": 10,
+        "when": {
+          "contentEverywhere": true
+        }
+      }
+    ]
   },
   {
     "id": "op02-090",
@@ -6252,7 +6716,12 @@ export const CARDS = [
     "genre": "💬 Zatsudan",
     "set": "Gen 2",
     "flavour": "She stinks, but she stinks kinda good.",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "anyPlatformThisRound"
+      }
+    ]
   },
   {
     "id": "op02-091",
@@ -6271,7 +6740,14 @@ export const CARDS = [
     "source": "Photo (Retail Starter - Stream)",
     "playOnly": {
       "timing": "clash"
-    }
+    },
+    "effects": [
+      {
+        "type": "personaInf",
+        "target": "self",
+        "perPopPlatform": 5
+      }
+    ]
   },
   {
     "id": "op02-092",
@@ -6290,7 +6766,14 @@ export const CARDS = [
     "source": "Photo (Retail - Stream)",
     "playOnly": {
       "timing": "clash"
-    }
+    },
+    "effects": [
+      {
+        "type": "playHandFree",
+        "costMax": 5,
+        "prompt": "Add Reverb: you may play a Content card with 🟡5 or less from your hand on this platform for free"
+      }
+    ]
   },
   {
     "id": "op02-093",
@@ -6322,7 +6805,14 @@ export const CARDS = [
     "genre": "💬 Zatsudan",
     "set": "Gen 2",
     "flavour": "I named him Ricardo.",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "moveOwnContent",
+        "excludeSelf": true,
+        "prompt": "Robot Vacuum: you may move another of your Content cards from this platform to another platform"
+      }
+    ]
   },
   {
     "id": "op02-095",
@@ -6338,7 +6828,22 @@ export const CARDS = [
     "genre": "💬 Zatsudan",
     "set": "Gen 2",
     "flavour": "Vodka is the empty piece of paper.",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "premium",
+        "flipText": "An opponent's Persona is on another platform",
+        "flipIf": {
+          "oppPersonaElsewhere": true
+        },
+        "whenFlipped": [
+          {
+            "type": "moveOwnContent",
+            "prompt": "Tier List: you may move 1 of your Content cards from this platform to another platform"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-096",
@@ -6354,7 +6859,22 @@ export const CARDS = [
     "genre": "💬 Zatsudan",
     "set": "Gen 2",
     "flavour": "I'm not manspreading.",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "premium",
+        "flipText": "You have fewer Subscribers than an opponent",
+        "flipIf": {
+          "oppMoreSubs": true
+        },
+        "whenFlipped": [
+          {
+            "type": "lockContent",
+            "target": "opponent"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-097",
@@ -6370,7 +6890,12 @@ export const CARDS = [
     "genre": "💬 Zatsudan",
     "set": "Gen 2",
     "flavour": "On it Boss! Throwing them in the Hydraulic Press!",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "oppMovePop"
+      }
+    ]
   },
   {
     "id": "op02-098",
@@ -6386,7 +6911,20 @@ export const CARDS = [
     "genre": "💬 Zatsudan",
     "set": "Gen 2",
     "flavour": "You're gonna destory my computer!",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "clashReward",
+        "text": "Delete all Content cards on this Platform with 6 ⭐ or less.",
+        "effects": [
+          {
+            "type": "deleteContent",
+            "scope": "here",
+            "starsMax": 6
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-099",
@@ -6402,7 +6940,18 @@ export const CARDS = [
     "genre": "💬 Zatsudan",
     "set": "Gen 2",
     "flavour": "I'm not mean to people, I just do it for money.",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "onFlip",
+        "scope": "here",
+        "then": [
+          {
+            "type": "exhaustSelfDeleteOpp"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-100",
@@ -6421,7 +6970,21 @@ export const CARDS = [
     "source": "Photo (Retail - Stream)",
     "playOnly": {
       "timing": "clash"
-    }
+    },
+    "effects": [
+      {
+        "type": "pickCard",
+        "prompt": "Cage Chat: choose a Content card; it loses -4 ⭐ this clash (it is deleted if it ends up with 0 ⭐)",
+        "pick": {
+          "scope": "any",
+          "owner": "any"
+        },
+        "then": {
+          "do": "modDelete",
+          "amount": -4
+        }
+      }
+    ]
   },
   {
     "id": "op02-101",
@@ -6437,7 +7000,21 @@ export const CARDS = [
     "genre": "💬 Zatsudan",
     "set": "Gen 2",
     "flavour": "Do they bounce?",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "movePop",
+        "from": "here",
+        "optional": true,
+        "prompt": "Accidental Flash: move an opposing 🌠 from this platform to which platform? (1 of 2)"
+      },
+      {
+        "type": "movePop",
+        "from": "here",
+        "optional": true,
+        "prompt": "Accidental Flash: move a second opposing 🌠 from this platform to which platform? (2 of 2)"
+      }
+    ]
   },
   {
     "id": "op02-102",
@@ -6469,7 +7046,14 @@ export const CARDS = [
     "genre": "💬 Zatsudan",
     "set": "Gen 2",
     "flavour": "It's made out of cardboard and love.",
-    "source": "Photo (Pre-Debut Promo - Stream, Retail - Stream)"
+    "source": "Photo (Pre-Debut Promo - Stream, Retail - Stream)",
+    "effects": [
+      {
+        "type": "bitsPer",
+        "amount": 1,
+        "other": true
+      }
+    ]
   },
   {
     "id": "op02-104",
@@ -6485,7 +7069,23 @@ export const CARDS = [
     "genre": "💬 Zatsudan",
     "set": "Gen 2",
     "flavour": "Look!! Keys! Keys!!",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "premium",
+        "flipText": "You have no cards in your hand",
+        "flipIf": {
+          "noHand": true
+        },
+        "whenFlipped": [
+          {
+            "type": "draw",
+            "target": "self",
+            "amount": 2
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-105",
@@ -6501,7 +7101,25 @@ export const CARDS = [
     "genre": "💬 Zatsudan",
     "set": "Gen 2",
     "flavour": "Give my a second, let me unzip.",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "premium",
+        "flipText": "You have more ⭐ than an opponent at this platform",
+        "flipIf": {
+          "moreStarsHere": true
+        },
+        "whenFlipped": [
+          {
+            "type": "actionLock",
+            "target": "opponent",
+            "if": {
+              "inClashHere": true
+            }
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-106",
@@ -6517,7 +7135,19 @@ export const CARDS = [
     "genre": "💬 Zatsudan",
     "set": "Gen 2",
     "flavour": "Wanna hold mouths?",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "bits",
+        "target": "self",
+        "amount": 1
+      },
+      {
+        "type": "draw",
+        "target": "self",
+        "amount": 1
+      }
+    ]
   },
   {
     "id": "op02-107",
@@ -6533,7 +7163,13 @@ export const CARDS = [
     "genre": "💬 Zatsudan",
     "set": "Gen 2",
     "flavour": "Man, I love Chat.",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "contentDiscountOther",
+        "amount": 1
+      }
+    ]
   },
   {
     "id": "op02-108",
@@ -6559,13 +7195,21 @@ export const CARDS = [
     "inf": 15,
     "gems": 0,
     "text": "When Played: You may play 1 Content card with 🟡6 or less onto another Platform for free.",
-    "art": "art/gen2/WHO ARE YOU-.png",
+    "art": "art/gen2/WHO ARE YOU.png",
     "class": "Yabai",
     "style": "⬛︎ Green",
     "genre": "💬 Zatsudan",
     "set": "Gen 2",
     "flavour": "Hi, I'm Joel!",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "playHandFree",
+        "costMax": 6,
+        "to": "other",
+        "prompt": "WHO ARE YOU?: you may play a Content card with 🟡6 or less from your hand on another platform for free"
+      }
+    ]
   },
   {
     "id": "op02-110",
@@ -6581,7 +7225,13 @@ export const CARDS = [
     "genre": "💬 Zatsudan",
     "set": "Gen 2",
     "flavour": "I wanna swear.",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "flipOne",
+        "prompt": "Permission to Swear: flip one of your face-down Premium Content cards face-up"
+      }
+    ]
   },
   {
     "id": "op02-111",
@@ -6613,7 +7263,16 @@ export const CARDS = [
     "genre": "✏️ Creatives",
     "set": "Gen 2",
     "flavour": "We a bunch of crackheads.",
-    "source": "Artwork (Retail - Social media), Photo (Pre-Debut Promo - Newsletter, Retail - Stream)"
+    "source": "Artwork (Retail - Social media), Photo (Pre-Debut Promo - Newsletter, Retail - Stream)",
+    "effects": [
+      {
+        "type": "selfStars",
+        "amount": 3,
+        "when": {
+          "onlyContent": true
+        }
+      }
+    ]
   },
   {
     "id": "op02-113",
@@ -6629,7 +7288,29 @@ export const CARDS = [
     "genre": "✏️ Creatives",
     "set": "Gen 2",
     "flavour": "Bee-Gone Spray. It's definitely for bees... probably.",
-    "source": "Photo (Pre-Debut Promo - Stream, Retail - Stream)"
+    "source": "Photo (Pre-Debut Promo - Stream, Retail - Stream)",
+    "effects": [
+      {
+        "type": "premium",
+        "flipText": "An opponent played a Content card on this platform this round",
+        "flipIf": {
+          "oppPlayedContentHere": true
+        },
+        "whenFlipped": [
+          {
+            "type": "pickCard",
+            "prompt": "Spray Streamer: set an opposing Content card's ⭐ to 0 this round",
+            "pick": {
+              "scope": "here",
+              "owner": "opp"
+            },
+            "then": {
+              "do": "setZero"
+            }
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-114",
@@ -6645,7 +7326,22 @@ export const CARDS = [
     "genre": "✏️ Creatives",
     "set": "Gen 2",
     "flavour": "I just tested this...",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "premium",
+        "flipText": "An opponent is Dominating this platform",
+        "flipIf": {
+          "oppDominating": true
+        },
+        "whenFlipped": [
+          {
+            "type": "selfMod",
+            "amount": 10
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-115",
@@ -6661,7 +7357,12 @@ export const CARDS = [
     "genre": "✏️ Creatives",
     "set": "Gen 2",
     "flavour": "Uh.... Hi.... Wassup.",
-    "source": "Photo (Pre-Debut Promo - Stream, Retail - Stream)"
+    "source": "Photo (Pre-Debut Promo - Stream, Retail - Stream)",
+    "effects": [
+      {
+        "type": "blockOtherContent"
+      }
+    ]
   },
   {
     "id": "op02-116",
@@ -6693,7 +7394,12 @@ export const CARDS = [
     "genre": "✏️ Creatives",
     "set": "Gen 2",
     "flavour": "Yes... this is my real voice.",
-    "source": "Photo (Pre-Debut Promo - Stream, Retail - Stream)"
+    "source": "Photo (Pre-Debut Promo - Stream, Retail - Stream)",
+    "effects": [
+      {
+        "type": "noPlayWithContent"
+      }
+    ]
   },
   {
     "id": "op02-118",
@@ -6712,7 +7418,21 @@ export const CARDS = [
     "source": "Photo (Pre-Debut Promo - Stream, Retail - Stream)",
     "playOnly": {
       "timing": "clash"
-    }
+    },
+    "effects": [
+      {
+        "type": "pickCard",
+        "prompt": "ARF ARF: choose one of your Content cards; it gains +1 ⭐ this clash for each card in your Trash",
+        "pick": {
+          "scope": "any",
+          "owner": "mine"
+        },
+        "then": {
+          "do": "mod",
+          "amountFrom": "trash"
+        }
+      }
+    ]
   },
   {
     "id": "op02-119",
@@ -6731,7 +7451,20 @@ export const CARDS = [
     "source": "Photo (Retail - Stream)",
     "playOnly": {
       "timing": "clash"
-    }
+    },
+    "effects": [
+      {
+        "type": "personaReward",
+        "text": "Steal 1 🌠 on this Platform.",
+        "effects": [
+          {
+            "type": "stealPop",
+            "target": "self",
+            "amount": 1
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-120",
@@ -6763,7 +7496,14 @@ export const CARDS = [
     "genre": "✏️ Creatives",
     "set": "Gen 2",
     "flavour": "Turns me on.",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "personaInf",
+        "target": "opponent",
+        "amount": -3
+      }
+    ]
   },
   {
     "id": "op02-122",
@@ -6779,7 +7519,14 @@ export const CARDS = [
     "genre": "✏️ Creatives",
     "set": "Gen 2",
     "flavour": "One day, you won't know where you're at.",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "moveOwnContent",
+        "excludeSelf": true,
+        "prompt": "In Your Walls: you may move another of your Content cards from this platform to another platform"
+      }
+    ]
   },
   {
     "id": "op02-123",
@@ -6795,7 +7542,12 @@ export const CARDS = [
     "genre": "✏️ Creatives",
     "set": "Gen 2",
     "flavour": "No idea what is happening but it's just chaos.",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "onePerRoundHere"
+      }
+    ]
   },
   {
     "id": "op02-124",
@@ -6811,7 +7563,14 @@ export const CARDS = [
     "genre": "✏️ Creatives",
     "set": "Gen 2",
     "flavour": "I was told you were painting toenails.",
-    "source": "Photo (Pre-Debut Promo - Stream, Retail - Stream)"
+    "source": "Photo (Pre-Debut Promo - Stream, Retail - Stream)",
+    "effects": [
+      {
+        "type": "blockPlay",
+        "costMax": 2,
+        "oppOnly": true
+      }
+    ]
   },
   {
     "id": "op02-125",
@@ -6827,7 +7586,13 @@ export const CARDS = [
     "genre": "✏️ Creatives",
     "set": "Gen 2",
     "flavour": "Grass... Grass... Bark... Bark...",
-    "source": "Photo (Pre-Debut Promo - Stream, Retail - Stream)"
+    "source": "Photo (Pre-Debut Promo - Stream, Retail - Stream)",
+    "effects": [
+      {
+        "type": "bearWithMe",
+        "prompt": "Touch Grass: choose 1 Content card on this platform to keep (all others are deleted)"
+      }
+    ]
   },
   {
     "id": "op02-126",
@@ -6859,7 +7624,21 @@ export const CARDS = [
     "genre": "✏️ Creatives",
     "set": "Gen 2",
     "flavour": "I'm a rabid catboy!",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "pickCard",
+        "prompt": "Aggressive Bite: choose an opposing Content card on this platform to lose -5 ⭐ this clash",
+        "pick": {
+          "scope": "here",
+          "owner": "opp"
+        },
+        "then": {
+          "do": "mod",
+          "amount": -5
+        }
+      }
+    ]
   },
   {
     "id": "op02-128",
@@ -6875,7 +7654,21 @@ export const CARDS = [
     "genre": "✏️ Creatives",
     "set": "Gen 2",
     "flavour": "Had this idea 10 minutes ago.",
-    "source": "Photo (Retail - Stream, Pre-Debut Promo - Stream)"
+    "source": "Photo (Retail - Stream, Pre-Debut Promo - Stream)",
+    "effects": [
+      {
+        "type": "pickCard",
+        "prompt": "No Prep, No Problem: choose a Content card on a platform with 2 or more Content cards",
+        "pick": {
+          "scope": "any",
+          "owner": "any",
+          "platformMinContent": 2
+        },
+        "then": {
+          "do": "moveChosen"
+        }
+      }
+    ]
   },
   {
     "id": "op02-129",
@@ -6907,7 +7700,22 @@ export const CARDS = [
     "genre": "✏️ Creatives",
     "set": "Gen 2",
     "flavour": "We're in this together!!",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "atClashStart",
+        "if": {
+          "faceUpPremiumHere": true
+        },
+        "then": [
+          {
+            "type": "bits",
+            "target": "self",
+            "amount": 1
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-131",
@@ -6923,7 +7731,23 @@ export const CARDS = [
     "genre": "✏️ Creatives",
     "set": "Gen 2",
     "flavour": "A new step dad for you daddy issues people.",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "premium",
+        "flipText": "Your opponent has 2 or more 🌠 on this platform",
+        "flipIf": {
+          "oppPopMin": 2
+        },
+        "whenFlipped": [
+          {
+            "type": "bits",
+            "target": "self",
+            "amount": 4
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-132",
@@ -6939,7 +7763,22 @@ export const CARDS = [
     "genre": "✏️ Creatives",
     "set": "Gen 2",
     "flavour": "Most Humble VTuber.",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "premium",
+        "flipText": "An opponent played an Action card this clash",
+        "flipIf": {
+          "oppPlayedAction": true
+        },
+        "whenFlipped": [
+          {
+            "type": "playTrashActionPay",
+            "reduce": 3
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-133",
@@ -6955,7 +7794,13 @@ export const CARDS = [
     "genre": "✏️ Creatives",
     "set": "Gen 2",
     "flavour": "If you are scared of something, draw it attractive.",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "millAny",
+        "prompt": "Exposure Therapy: discard the top card of any player's deck"
+      }
+    ]
   },
   {
     "id": "op02-134",
@@ -6971,7 +7816,13 @@ export const CARDS = [
     "genre": "✏️ Creatives",
     "set": "Gen 2",
     "flavour": "You found that in my closet?",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "oppContentCostRound",
+        "amount": 3
+      }
+    ]
   },
   {
     "id": "op02-135",
@@ -6987,7 +7838,16 @@ export const CARDS = [
     "genre": "✏️ Creatives",
     "set": "Gen 2",
     "flavour": "I am in fact announcing something.",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "playFromTrash"
+      },
+      {
+        "type": "returnInsteadOfDelete",
+        "to": "deckBottom"
+      }
+    ]
   },
   {
     "id": "op02-136",
@@ -7003,7 +7863,29 @@ export const CARDS = [
     "genre": "✏️ Creatives",
     "set": "Gen 2",
     "flavour": "The_Child_Gets_Crushed.mp4",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "needFaceUpPremium"
+      },
+      {
+        "type": "pickCard",
+        "prompt": "Hydraulic Press: delete one of your face-up Premium Content cards (this is the cost)",
+        "pick": {
+          "scope": "any",
+          "owner": "mine",
+          "faceUpPremium": true
+        },
+        "then": {
+          "do": "delete"
+        }
+      },
+      {
+        "type": "bits",
+        "target": "self",
+        "amount": 2
+      }
+    ]
   },
   {
     "id": "op02-137",
@@ -7019,7 +7901,13 @@ export const CARDS = [
     "genre": "✏️ Creatives",
     "set": "Gen 2",
     "flavour": "New Content. New Me.",
-    "source": "Artwork (Retail - Stream), Photo (Pre-Debut Promo - Stream, Retail - Stream)"
+    "source": "Artwork (Retail - Stream), Photo (Pre-Debut Promo - Stream, Retail - Stream)",
+    "effects": [
+      {
+        "type": "hardPivot",
+        "prompt": "Hard Pivot: choose any number of cards to discard (you draw that many)"
+      }
+    ]
   },
   {
     "id": "op02-138",
@@ -7051,7 +7939,16 @@ export const CARDS = [
     "genre": "❤️ Experience",
     "set": "Gen 2",
     "flavour": "Am I mentally ill?",
-    "source": "Photo (Pre-Debut Promo - Stream, Retail - Stream)"
+    "source": "Photo (Pre-Debut Promo - Stream, Retail - Stream)",
+    "effects": [
+      {
+        "type": "selfMod",
+        "amount": 3,
+        "if": {
+          "oppPersonaHere": true
+        }
+      }
+    ]
   },
   {
     "id": "op02-140",
@@ -7067,7 +7964,23 @@ export const CARDS = [
     "genre": "❤️ Experience",
     "set": "Gen 2",
     "flavour": "I'm gonna show my feet on the front page-",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "premium",
+        "flipText": "You flipped another Content card this round",
+        "flipIf": {
+          "flippedAnother": true
+        },
+        "whenFlipped": [
+          {
+            "type": "personaInf",
+            "target": "self",
+            "amount": 5
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-141",
@@ -7083,7 +7996,17 @@ export const CARDS = [
     "genre": "❤️ Experience",
     "set": "Gen 2",
     "flavour": "What's ur strat for maintaining a good weight?",
-    "source": "Photo (Retail Starter - Stream)"
+    "source": "Photo (Retail Starter - Stream)",
+    "effects": [
+      {
+        "type": "premium",
+        "flipText": "An opponent's Persona is on this platform",
+        "flipIf": {
+          "oppPersonaHere": true
+        },
+        "whenFlipped": []
+      }
+    ]
   },
   {
     "id": "op02-142",
@@ -7099,7 +8022,13 @@ export const CARDS = [
     "genre": "❤️ Experience",
     "set": "Gen 2",
     "flavour": "I fell into the ditch directly backwards.",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "returnOrDeleteSelf",
+        "prompt": "Boy Failure: return another of your Content cards on this platform to your hand"
+      }
+    ]
   },
   {
     "id": "op02-143",
@@ -7115,7 +8044,16 @@ export const CARDS = [
     "genre": "❤️ Experience",
     "set": "Gen 2",
     "flavour": "God is with me.",
-    "source": "Photo (Pre-Debut Promo - Stream, Retail - Stream)"
+    "source": "Photo (Pre-Debut Promo - Stream, Retail - Stream)",
+    "effects": [
+      {
+        "type": "selfStars",
+        "amount": 5,
+        "when": {
+          "handAtLeast": 5
+        }
+      }
+    ]
   },
   {
     "id": "op02-144",
@@ -7131,7 +8069,12 @@ export const CARDS = [
     "genre": "❤️ Experience",
     "set": "Gen 2",
     "flavour": "Baby's first manslaughter.",
-    "source": "Photo (Pre-Debut Promo - Stream)"
+    "source": "Photo (Pre-Debut Promo - Stream)",
+    "effects": [
+      {
+        "type": "platformPhase"
+      }
+    ]
   },
   {
     "id": "op02-145",
@@ -7166,7 +8109,22 @@ export const CARDS = [
     "source": "Photo (Retail - Stream)",
     "playOnly": {
       "timing": "clash"
-    }
+    },
+    "effects": [
+      {
+        "type": "pickCard",
+        "prompt": "Take a Shot: choose one of your Content cards to gain +6 ⭐ this clash",
+        "pick": {
+          "scope": "any",
+          "owner": "mine"
+        },
+        "then": {
+          "do": "mod",
+          "amount": 6,
+          "drawIfFaceUpPremium": true
+        }
+      }
+    ]
   },
   {
     "id": "op02-147",
@@ -7185,7 +8143,15 @@ export const CARDS = [
     "source": "Photo (Retail - Stream)",
     "playOnly": {
       "timing": "clash"
-    }
+    },
+    "effects": [
+      {
+        "type": "personaInf",
+        "target": "self",
+        "amount": 5,
+        "perOppHand": 1
+      }
+    ]
   },
   {
     "id": "op02-148",
@@ -7217,7 +8183,21 @@ export const CARDS = [
     "genre": "❤️ Experience",
     "set": "Gen 2",
     "flavour": "This random guy just gave me his ring.",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "pickCard",
+        "prompt": "It Should've Been Me!: exhaust an opposing Content card or Persona on this platform (it is set to 0 ⭐ until the next round)",
+        "pick": {
+          "scope": "here",
+          "owner": "opp",
+          "persona": true
+        },
+        "then": {
+          "do": "exhaust"
+        }
+      }
+    ]
   },
   {
     "id": "op02-150",
@@ -7233,7 +8213,23 @@ export const CARDS = [
     "genre": "❤️ Experience",
     "set": "Gen 2",
     "flavour": "When does it end bro?",
-    "source": "Photo (Pre-Debut Promo - Stream, Retail - Stream)"
+    "source": "Photo (Pre-Debut Promo - Stream, Retail - Stream)",
+    "effects": [
+      {
+        "type": "premium",
+        "flipText": "An opponent's Persona is on this platform",
+        "flipIf": {
+          "oppPersonaHere": true
+        },
+        "whenFlipped": [
+          {
+            "type": "losePop",
+            "target": "opponent",
+            "amount": 1
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-151",
@@ -7249,7 +8245,30 @@ export const CARDS = [
     "genre": "❤️ Experience",
     "set": "Gen 2",
     "flavour": "Surely I won't get laid off a 3rd time live on stream!",
-    "source": "Photo (Pre-Debut Promo - Stream, Retail - Stream)"
+    "source": "Photo (Pre-Debut Promo - Stream, Retail - Stream)",
+    "effects": [
+      {
+        "type": "premium",
+        "flipText": "An opponent played 1 or more Content cards on this platform this round",
+        "flipIf": {
+          "oppPlayedContentHere": true
+        },
+        "whenFlipped": [
+          {
+            "type": "pickCard",
+            "prompt": "FIRED: return an opposing Content card with 🟡2 or less to its owner's hand",
+            "pick": {
+              "scope": "here",
+              "owner": "opp",
+              "costMax": 2
+            },
+            "then": {
+              "do": "return"
+            }
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-152",
@@ -7281,7 +8300,13 @@ export const CARDS = [
     "genre": "❤️ Experience",
     "set": "Gen 2",
     "flavour": "Medically Thick Thighs.",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "pullOppPop",
+        "prompt": "Oversized Thighs: move 1 opposing 🌠 from which platform to this one?"
+      }
+    ]
   },
   {
     "id": "op02-154",
@@ -7297,7 +8322,16 @@ export const CARDS = [
     "genre": "❤️ Experience",
     "set": "Gen 2",
     "flavour": "Chat, rate my rizz.",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "costLessIfOppMorePop",
+        "amount": 2
+      },
+      {
+        "type": "returnOnClashWin"
+      }
+    ]
   },
   {
     "id": "op02-155",
@@ -7313,7 +8347,12 @@ export const CARDS = [
     "genre": "❤️ Experience",
     "set": "Gen 2",
     "flavour": "The Virgin Killer Sweater is way better than the Bee Movie.",
-    "source": "Artwork (Retail - Social media)"
+    "source": "Artwork (Retail - Social media)",
+    "effects": [
+      {
+        "type": "beMoreCultured"
+      }
+    ]
   },
   {
     "id": "op02-156",
@@ -7332,7 +8371,12 @@ export const CARDS = [
     "source": "Photo (Retail - Stream)",
     "playOnly": {
       "timing": "clash"
-    }
+    },
+    "effects": [
+      {
+        "type": "noPopThisClash"
+      }
+    ]
   },
   {
     "id": "op02-157",
@@ -7364,7 +8408,19 @@ export const CARDS = [
     "genre": "❤️ Experience",
     "set": "Gen 2",
     "flavour": "How do you feel about steak?",
-    "source": "Photo (Pre-Debut Promo - Stream, Retail - Stream)"
+    "source": "Photo (Pre-Debut Promo - Stream, Retail - Stream)",
+    "effects": [
+      {
+        "type": "draw",
+        "target": "self",
+        "amount": 1
+      },
+      {
+        "type": "discard",
+        "target": "self",
+        "amount": 1
+      }
+    ]
   },
   {
     "id": "op02-159",
@@ -7380,7 +8436,21 @@ export const CARDS = [
     "genre": "❤️ Experience",
     "set": "Gen 2",
     "flavour": "Be a boy. Be feminine.",
-    "source": "Photo (Pre-Debut Promo - Stream, Retail - Stream)"
+    "source": "Photo (Pre-Debut Promo - Stream, Retail - Stream)",
+    "effects": [
+      {
+        "type": "premium",
+        "flipText": "An opponent has more Subscribers than you",
+        "flipIf": {
+          "oppMoreSubs": true
+        },
+        "whenFlipped": [
+          {
+            "type": "playHand"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-160",
@@ -7396,7 +8466,17 @@ export const CARDS = [
     "genre": "❤️ Experience",
     "set": "Gen 2",
     "flavour": "I have to come clean...",
-    "source": "Photo (Pre-Debut Promo - Stream, Retail - Stream)"
+    "source": "Photo (Pre-Debut Promo - Stream, Retail - Stream)",
+    "effects": [
+      {
+        "type": "activate",
+        "effects": [
+          {
+            "type": "bottomEnergy"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-161",
@@ -7412,7 +8492,20 @@ export const CARDS = [
     "genre": "❤️ Experience",
     "set": "Gen 2",
     "flavour": "When I'm in jail, I can't make content.",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "bits",
+        "target": "self",
+        "amount": 3,
+        "if": {
+          "faceUpPremium": true
+        }
+      },
+      {
+        "type": "returnInsteadOfDelete"
+      }
+    ]
   },
   {
     "id": "op02-162",
@@ -7428,7 +8521,13 @@ export const CARDS = [
     "genre": "❤️ Experience",
     "set": "Gen 2",
     "flavour": "I hate horror games.",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "returnInsteadOfDelete",
+        "to": "deckTop"
+      }
+    ]
   },
   {
     "id": "op02-163",
@@ -7444,7 +8543,13 @@ export const CARDS = [
     "genre": "❤️ Experience",
     "set": "Gen 2",
     "flavour": "Why can't I just be Waifu? Why am I little sister?",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "littleSister",
+        "amount": 5
+      }
+    ]
   },
   {
     "id": "op02-164",
@@ -7460,7 +8565,17 @@ export const CARDS = [
     "genre": "❤️ Experience",
     "set": "Gen 2",
     "flavour": "The father has been dead for 5 years and the children neglect the mother.",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "personaInf",
+        "target": "self",
+        "amount": 2
+      },
+      {
+        "type": "playTop"
+      }
+    ]
   },
   {
     "id": "op02-165",
@@ -7476,7 +8591,17 @@ export const CARDS = [
     "genre": "❤️ Experience",
     "set": "Gen 2",
     "flavour": "I've created an Abomination but like, in a good way.",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "draw",
+        "target": "self",
+        "amount": 3
+      },
+      {
+        "type": "waifuWheel"
+      }
+    ]
   },
   {
     "id": "op02-166",

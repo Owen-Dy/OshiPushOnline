@@ -1,6 +1,6 @@
 import { Client } from 'boardgame.io/client';
 import { SocketIO } from 'boardgame.io/multiplayer';
-import { OshiPush, upgradeFits, discardNeed, HAND_LIMIT, sideInf, WIN_SUBS, cardPlayable, playCost, effectsPlayable, fxOf, starsOf, contentBlocked, canPlayAnywhere, canPlayFromTrash, canDiscardAbility, canActivate, personaAbility, canPersonaActivate } from '../game.js';
+import { OshiPush, upgradeFits, discardNeed, HAND_LIMIT, sideInf, WIN_SUBS, cardPlayable, playCost, effectsPlayable, fxOf, starsOf, contentBlocked, canPlayAnywhere, canPlayFromTrash, canDiscardAbility, canActivate, personaAbility, canPersonaActivate, canFlip, premiumOf, platformPhaseCard, canPlayFromTop, isTopRevealed } from '../game.js';
 import { CARDS } from '../cards.js';
 import { validateDeck } from '../deckRules.js';
 
@@ -14,7 +14,9 @@ const img = (src, cls = '') => {
   const fail = src === CARD_BACK ? `this.onerror=null;this.src='${CARD_BACK_FALLBACK}'` : "this.style.visibility='hidden'";
   return `<img class="${cls}" src="${url(src)}" alt="" onerror="${fail}">`;
 };
-const pile = (n) => `<div class="pile" title="Deck">${img(CARD_BACK)}<span class="count">${n}</span></div>`;
+const pile = (n, top) => (top && !top.hidden // a revealed top card (La Avispa Nectarina) is shown to both players
+  ? `<div class="pile revealed" title="Revealed top card: ${esc(top.name)} (🟡${top.cost}${top.text ? ' - ' + esc(top.text) : ''})">${img(top.art)}<span class="count">${n}</span><span class="top">${esc(top.name)}</span></div>`
+  : `<div class="pile" title="Deck">${img(CARD_BACK)}<span class="count">${n}</span></div>`);
 const params = new URLSearchParams(location.search);
 const matchID = params.get('match');
 let playerID = params.get('player') || '0';
@@ -93,7 +95,7 @@ function startGame() {
   };
 
   let selected = null; // card id chosen from hand (or from the Trash, see selectedZone)
-  let selectedZone = 'hand'; // 'hand' | 'trash': Scary Story Writing can be played from the Trash
+  let selectedZone = 'hand'; // 'hand' | 'trash' | 'deck': Scary Story Writing can be played from the Trash, AVId Gummy Worm Enjoyer from the top of your deck
   let picked = []; // options ticked in the current multi-pick decision
   let lastChoiceId = null;
   const savedDecks = () => { try { return JSON.parse(localStorage.getItem('oshi-decks') || '[]'); } catch { return []; } };
@@ -108,20 +110,21 @@ function startGame() {
     const need = discardNeed(G, playerID, phase === 'clashResults'); // cards you must still discard
     const busy = G.choices.length > 0; // a decision (pick a card or platform) is waiting
     const curPlat = phase === 'clash' ? G.clashSequence[G.clashIndex] : null; // the platform clashing right now
-    const myTurn = (phase === 'content' || phase === 'clash') && ctx.currentPlayer === playerID;
-    const typeOK = (c) => phase === 'clash' ? c.type === 'Action' : c.type === 'Content' || c.type === 'Action' || upgradeFits(c, me.persona);
+    const hold = phase === 'deployment' && G.platformHold === playerID; // Platform Phase: you may still play So Baby
+    const myTurn = ((phase === 'content' || phase === 'clash') && ctx.currentPlayer === playerID) || hold;
+    const typeOK = (c) => hold ? platformPhaseCard(c) : phase === 'clash' ? c.type === 'Action' : c.type === 'Content' || c.type === 'Action' || upgradeFits(c, me.persona);
     const myLoc = G.personaLocations[playerID];
     // Can this card be played on platform i right now? zone: 'hand', or 'trash' for cards that say they can be played from the Trash.
     const playableAt = (c, i, zone = 'hand') => {
-      if (need > 0 || busy || !myTurn || myLoc === null || !typeOK(c) || (zone === 'trash' && !canPlayFromTrash(c))) return false;
+      if (need > 0 || busy || !myTurn || myLoc === null || !typeOK(c) || (zone === 'trash' && !canPlayFromTrash(c)) || (zone === 'deck' && !canPlayFromTop(G, playerID, c))) return false;
       if (myLoc !== i && !canPlayAnywhere(G, playerID, c)) return false; // Guerrilla Stream, Drop In Call, Clip Out of Context
       if (phase === 'clash' && (i !== curPlat || myLoc !== curPlat)) return false;
-      const cost = playCost(G, playerID, c, i);
+      const cost = zone === 'deck' ? 0 : playCost(G, playerID, c, i); // free from the top of your deck
       return cost <= me.bits && cardPlayable(c, me.persona, phase) && !contentBlocked(G, playerID, c, i) &&
         effectsPlayable(G, playerID, c, i, me.bits - cost) && !(c.type === 'Action' && G.actionLock[playerID]);
     };
     const canPlay = (c, zone = 'hand') => [0, 1, 2].some((i) => playableAt(c, i, zone));
-    const chosen = (selectedZone === 'trash' ? me.trash : me.hand).find((c) => c.id === selected);
+    const chosen = (selectedZone === 'trash' ? me.trash : selectedZone === 'deck' ? me.deck.slice(0, 1) : me.hand).find((c) => c.id === selected);
     if (!chosen || !canPlay(chosen, selectedZone)) selected = null;
     const myDeploy = phase === 'deployment' && ctx.currentPlayer === playerID && myLoc === null;
 
@@ -163,7 +166,7 @@ function startGame() {
       : phase === 'mulligan' ? (me.mulliganDone ? 'Waiting for your opponent to decide…' : 'Keep your starting hand, or mulligan it (once)')
       : phase === 'clashOrder' ? (G.firstPlayer === playerID ? 'You are the turn player: choose which platform resolves first' : 'Your opponent (the turn player) is choosing which platform resolves first…')
       : phase === 'deployment'
-        ? (myDeploy ? 'Your turn: deploy your persona on a platform' : 'Opponent is deploying their persona…')
+        ? (myDeploy ? 'Your turn: deploy your persona on a platform' : hold ? 'Platform Phase: you may play a card that can be played now (So Baby), or press Done' : G.platformHold ? 'Your opponent is deciding whether to play a Platform Phase card…' : 'Opponent is deploying their persona…')
         : phase === 'content' || phase === 'clash'
           ? ((myTurn ? 'Your turn' : "Opponent's turn") + (phase === 'clash' ? ` - Clash ${G.clashIndex + 1} of 3 at ${G.platforms[curPlat].name}: ` + (G.personaLocations[playerID] === curPlat ? 'play an Action card here or pass' : 'your persona is not here, so you can only pass') : ' - Content phase') + (G.passed[other] ? ' (opponent has passed)' : '') + (G.passed[playerID] ? ' (you have passed)' : '') + (G.autoPass[playerID] ? ' (you are passing for the rest of this phase)' : '') + (G.autoPass[other] ? ' (opponent is passing for the rest of this phase)' : '') + (G.actionLock[playerID] ? ' (your Actions are locked this clash)' : ''))
           : phase === 'clashResults' ? 'Clash resolved' : '';
@@ -197,6 +200,13 @@ function startGame() {
         : `<h2>${esc(ch.source)}</h2><p>Waiting for ${ch.player === playerID ? 'you' : 'your opponent'} to choose…</p>`;
     }
 
+    // A public "revealed ..." event (Gacha Pull) that both players should see
+    const nt = G.notice;
+    $('notice').hidden = !nt;
+    if (nt) $('notice').textContent = nt.discarded ? `${nt.source}: ${nt.player === playerID ? 'your' : "your opponent's"} top card, ${nt.discarded}, was discarded.` : nt.flipped
+      ? `${nt.player === playerID ? 'You' : 'Your opponent'} flipped ${nt.flipped} face-up.`
+      : `${nt.source}: ${nt.player === playerID ? 'you' : 'your opponent'} revealed ${nt.revealed.length ? nt.revealed.join(', ') : 'nothing'}${nt.played ? ` and played ${nt.played}` : ''}.`;
+
     const orderPanel = G.firstPlayer === playerID
       ? '<h2>Choose the clash order</h2><p class="meta">The leftmost or rightmost platform resolves first, then the middle, then the other end.</p>' +
         '<button data-dir="LEFT_TO_RIGHT">Left platform first</button> <button data-dir="RIGHT_TO_LEFT">Right platform first</button>'
@@ -215,16 +225,21 @@ function startGame() {
         const stars = c.act ? null : starsOf(G, i, pid, c); // what it gives right now, including this round's changes and card text
         const ab = !c.act && pid === playerID ? fxOf(c, 'activate')[0] : null; // "Activate: ..." (once per round)
         const abBtn = ab ? `<button class="ability" data-activate="${esc(c.id)}" ${myTurn && canActivate(G, phase, playerID, c.id) ? '' : 'disabled'} title="${esc(c.text)}">${c.used ? 'Used this round' : `Activate${ab.bits ? ` (${ab.bits}💎)` : ''}`}</button>` : '';
-        return `<div class="tile${c.act ? ' act' : ''}${c.used ? ' used' : ''}" title="${esc(c.name)} (${c.act ? c.inf : stars + ' ⭐ now, printed ' + c.inf})${c.text ? ' - ' + esc(c.text) : ''}"><div class="artbox">${img(c.art)}</div><span>${esc(c.name)}</span>${stars !== null ? `<span class="stars">${stars} ⭐</span>` : ''}${abBtn}</div>`;
+        const prem = !c.act && pid === playerID ? premiumOf(c) : null; // your own Premium card: you can see it and flip it
+        const flipBtn = prem && c.faceDown ? `<button class="ability flip" data-flip="${esc(c.id)}" ${myTurn && canFlip(G, phase, playerID, c.id) ? '' : 'disabled'} title="Flip condition: ${esc(prem.flipText || '')}">Flip</button><span class="cond">${esc(prem.flipText || '')}</span>` : '';
+        const down = c.faceDown ? ' facedown' : '', ex = c.exhausted ? ' exhausted' : '';
+        const shown = c.faceDown && !c.art ? CARD_BACK : c.art; // an opponent's face-down card shows only its back
+        const tip = c.faceDown ? (pid === playerID ? `${c.name} (face-down: 3 ⭐ now; flips to ${c.inf} ⭐)` : 'Face-down Premium card (3 ⭐)') : `${c.name} (${c.act ? c.inf : stars + ' ⭐ now, printed ' + c.inf})${c.text ? ' - ' + c.text : ''}`;
+        return `<div class="tile${c.act ? ' act' : ''}${c.used ? ' used' : ''}${down}${ex}" title="${esc(tip)}"><div class="artbox">${img(shown)}</div><span>${esc(c.faceDown ? (pid === playerID ? `${c.name} (face-down)` : 'Face-down card') : c.name)}</span>${stars !== null ? `<span class="stars">${stars} ⭐${c.exhausted ? ' · exhausted' : ''}</span>` : ''}${flipBtn}${abBtn}</div>`;
       }).join('');
       const sum = (pid) => sideInf(G, i, pid);
       const deploy = myDeploy
         ? `<button data-deploy="${i}">Deploy persona here</button>` : '';
       const slotBtn = phase === 'platformSetup' && ctx.currentPlayer === playerID && !p.card ? `<button data-slot="${i}">Put my platform here</button>` : '';
-      const sel = chosen && playableAt(chosen, i, selectedZone) ? `<button data-play="${i}">Play ${esc(chosen.name)} here${selectedZone === 'trash' ? ' (from Trash)' : ''} · 🟡${playCost(G, playerID, chosen, i)}</button>` : '';
+      const sel = chosen && playableAt(chosen, i, selectedZone) ? `<button data-play="${i}">Play ${esc(chosen.name)} here${selectedZone === 'trash' ? ' (from Trash)' : selectedZone === 'deck' ? ' (from the top of your deck)' : ''} · 🟡${selectedZone === 'deck' ? 0 : playCost(G, playerID, chosen, i)}</button>` : '';
       const persona = (pid) => {
         const per = activePersona(pid);
-        return `<div class="tile persona" title="${esc(per ? per.name : 'Persona')}${per && per.text ? ' - ' + esc(per.text) : ''}"><div class="artbox">${per ? img(per.art) : ''}</div><span>${esc(per ? per.name : 'Persona')}</span></div>`;
+        return `<div class="tile persona" title="${esc(per ? per.name : 'Persona')}${per && per.text ? ' - ' + esc(per.text) : ''}"><div class="artbox">${per ? img(per.art) : ''}</div><span>${esc(per ? per.name : 'Persona')}${p.pexh?.[pid] ? ' · exhausted' : ''}</span></div>`;
       };
       const tot = { [playerID]: sum(playerID), [other]: sum(other) };
       const side = (pid, label) => {
@@ -250,7 +265,7 @@ function startGame() {
     const cardBtn = (c, attr, on, enabled, extra = '') =>
       `<button class="card${on ? ' on' : ''}${extra}" ${attr}="${esc(c.id)}" ${enabled ? '' : 'disabled'}>
         <div class="artbox">${img(c.art)}</div>
-        <b>${esc(c.name)}</b><span>${c.type}</span><span>Cost ${c.xCost ? 'X' : playCost(G, playerID, c, myLoc)}${playCost(G, playerID, c, myLoc) !== c.cost ? ` (was ${c.cost})` : ''} · Inf ${c.inf}</span>${c.text ? `<small class="txt">${esc(c.text)}</small>` : ''}</button>`;
+        <b>${esc(c.name)}</b><span>${c.type}</span><span>Cost ${c.xCost ? 'X' : playCost(G, playerID, c, myLoc)}${playCost(G, playerID, c, myLoc) !== c.cost ? ` (was ${c.cost})` : ''} · ${premiumOf(c) ? `PREMIUM: played face-down (3 ⭐), flips to ${c.inf} ⭐` : `Inf ${c.inf}`}</span>${premiumOf(c) ? `<span class="cond">Flip: ${esc(premiumOf(c).flipText || '')}</span>` : ''}${c.text ? `<small class="txt">${esc(c.text)}</small>` : ''}</button>`;
     $('hand').innerHTML = me.hand.map((c) => {
       const ab = fxOf(c, 'discardAbility')[0]; // "Discard: ..." (uses your turn; the card goes to your Trash)
       const abOK = ab && myTurn && canDiscardAbility(G, phase, playerID, c);
@@ -261,10 +276,13 @@ function startGame() {
     const fromTrash = me.trash.filter(canPlayFromTrash);
     $('trashrow').hidden = !fromTrash.length;
     $('trashplay').innerHTML = fromTrash.map((c) => `<div class="cardwrap">${cardBtn(c, 'data-trashcard', c.id === selected && selectedZone === 'trash', canPlay(c, 'trash'))}</div>`).join('');
-    $('mydeck').innerHTML = pile(me.deck.length);
+    const topPlay = me.deck.length && canPlayFromTop(G, playerID, me.deck[0]) ? [me.deck[0]] : []; // AVId Gummy Worm Enjoyer
+    $('trashplay').innerHTML += topPlay.map((c) => `<div class="cardwrap">${cardBtn(c, 'data-topcard', c.id === selected && selectedZone === 'deck', canPlay(c, 'deck'))}<span class="cond">Revealed top card: free to play</span></div>`).join('');
+    $('mydeck').innerHTML = pile(me.deck.length, me.deck[0]);
     const opp = G.players[other];
-    $('opp').innerHTML = `<span class="meta">Opponent</span>${pile(opp.deck.length)}<div class="minihand">${opp.hand.map(() => img(CARD_BACK, 'cardback')).join('')}</div>`;
+    $('opp').innerHTML = `<span class="meta">Opponent</span>${pile(opp.deck.length, opp.deck[0])}<div class="minihand">${opp.hand.map(() => img(CARD_BACK, 'cardback')).join('')}</div>`;
 
+    $('pass').textContent = hold ? 'Done (end my Platform Phase)' : 'Pass turn';
     $('pass').disabled = !myTurn || need > 0 || busy;
     const inPlay = phase === 'content' || phase === 'clash';
     const on = !!G.autoPass[playerID];
@@ -314,23 +332,25 @@ function startGame() {
       if (discardNeed(st.G, playerID, st.ctx.phase === 'clashResults') > 0) client.moves.discardCard(t.dataset.card); // you choose what to discard
       else { selected = selected === t.dataset.card && selectedZone === 'hand' ? null : t.dataset.card; selectedZone = 'hand'; render(st); }
     }
+    if (t.dataset.topcard) { selected = selected === t.dataset.topcard && selectedZone === 'deck' ? null : t.dataset.topcard; selectedZone = 'deck'; render(client.getState()); }
     if (t.dataset.trashcard) { selected = selected === t.dataset.trashcard && selectedZone === 'trash' ? null : t.dataset.trashcard; selectedZone = 'trash'; render(client.getState()); }
     if (t.dataset.discardab) client.moves.discardAbility(t.dataset.discardab);
     if (t.dataset.activate) client.moves.activateCard(t.dataset.activate);
+    if (t.dataset.flip) client.moves.flipCard(t.dataset.flip); // flip a face-down Premium card face-up (your action for the turn)
     if (t.dataset.play !== undefined) {
       const st = client.getState();
-      const zone = selectedZone, card = st.G.players[playerID][zone === 'trash' ? 'trash' : 'hand'].find((x) => x.id === selected);
+      const zone = selectedZone, card = (zone === 'trash' ? st.G.players[playerID].trash : zone === 'deck' ? st.G.players[playerID].deck.slice(0, 1) : st.G.players[playerID].hand).find((x) => x.id === selected);
       let x;
       if (card?.xCost) { // a cost of X: the player chooses how many Bits to spend
         const v = prompt(`${card.name} costs X. How many Bits do you want to spend? (you have ${st.G.players[playerID].bits})`, '1');
         if (v === null) return;
         x = Math.max(0, Math.floor(Number(v) || 0));
       }
-      client.moves.playCard(selected, Number(t.dataset.play), x, zone === 'trash' ? 'trash' : undefined);
+      client.moves.playCard(selected, Number(t.dataset.play), x, zone === 'trash' ? 'trash' : zone === 'deck' ? 'deck' : undefined);
       selected = null; selectedZone = 'hand';
     }
   });
-  $('pass').onclick = () => client.moves.passTurn();
+  $('pass').onclick = () => { const s = client.getState(); if (s && s.ctx.phase === 'deployment') client.moves.endPlatformTurn(); else client.moves.passTurn(); };
   $('passall').onclick = () => client.moves.togglePassAll();
   $('activate').onclick = () => client.moves.activate();
   // ---- Sandbox: a test match where you can set up any situation. The server only allows these moves in matches

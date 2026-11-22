@@ -9,7 +9,7 @@
     "start:prod": "node server.js",
     "optimize-art": "node scripts/optimize-art.js",
     "organize-art": "node scripts/organize-art.js",
-    "test": "node tests/smoke.test.js && node tests/actions.test.js && node tests/content-cards.test.mjs && node tests/upgrades.test.mjs && node tests/platforms.test.mjs && node tests/two-cards.test.mjs && node tests/gen2-content.test.mjs && node tests/bot.test.mjs 5",
+    "test": "node tests/smoke.test.js && node tests/actions.test.js && node tests/content-cards.test.mjs && node tests/upgrades.test.mjs && node tests/platforms.test.mjs && node tests/two-cards.test.mjs && node tests/gen2-content.test.mjs && node tests/gen2-actions.test.mjs && node tests/gen2-premium.test.mjs && node tests/gen2-last-content.test.mjs && node tests/gen2-avid.test.mjs && node tests/bot.test.mjs 5",
     "test:bot-server": "node tests/bot-server.test.mjs"
   },
   "dependencies": {
