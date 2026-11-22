@@ -60,8 +60,12 @@
   .chip { display:inline-flex; align-items:center; gap:4px; margin:2px 6px 2px 0; }
   .chip img { width:28px; height:20px; object-fit:cover; border-radius:3px; background:#4c3f7a; }
   #hand, #trashplay { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; margin:10px 0 16px; }
-  #trashrow { margin:14px 0; padding:10px 12px; background:var(--panel); border:1px solid var(--line); border-radius:8px; }
-  #trashrow h2 { margin:0; }
+  #trashrow { margin:0 0 14px; padding:10px 12px; background:var(--panel); border:1px solid var(--line); border-radius:8px; }
+  #trashrow[hidden] { display:none; }
+  #trashrow h2 { margin:0; font-size:17px; }
+  #trashplay { display:grid; grid-template-columns:repeat(auto-fit,minmax(105px,1fr)); justify-content:stretch; gap:8px; margin:10px 0 0; }
+  #trashplay .cardwrap { width:100%; min-width:0; }
+  #trashplay .card { width:100%; font-size:11px; padding:4px; }
   #trashplay .cond { display:block; text-align:center; }
   #hand { flex:1; min-width:0; }
   #handrow { flex-wrap:nowrap; }
@@ -111,18 +115,23 @@
   .card span { color:var(--dim); font-size:12px; }
   #invite { width:min(420px,100%); background:var(--panel); color:var(--text); border:1px solid var(--line); border-radius:6px; padding:6px; }
 
-  .game-layout { display:grid; grid-template-columns:minmax(0,1fr) 270px; gap:14px; align-items:start; }
+  .game-layout { display:grid; grid-template-columns:minmax(0,1fr) 300px; gap:14px; align-items:start; }
   #game-main { min-width:0; }
-  #history { position:sticky; top:12px; max-height:calc(100vh - 24px); overflow:auto; background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:10px; }
-  .history-head { display:flex; align-items:center; justify-content:space-between; gap:8px; padding-bottom:8px; border-bottom:1px solid var(--line); }
+  #game-sidebar { position:sticky; top:12px; max-height:calc(100vh - 24px); overflow:auto; min-width:0; }
+  #history { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:10px; }
+  #history summary { cursor:pointer; list-style:none; }
+  #history summary::-webkit-details-marker { display:none; }
+  #history summary::after { content:'＋'; float:right; color:var(--dim); }
+  #history[open] summary::after { content:'−'; }
+  .history-head { display:flex; align-items:center; justify-content:space-between; gap:8px; }
   #history-list { list-style:none; margin:0; padding:8px 0 0; display:flex; flex-direction:column; gap:8px; }
   #history-list li { padding:7px 8px; border-left:3px solid var(--line); background:#171426; border-radius:4px; font-size:12px; line-height:1.35; overflow-wrap:anywhere; }
   #history-list li[data-player="0"] { border-left-color:var(--pink); }
   #history-list li[data-player="1"] { border-left-color:#7dd3fc; }
   #history-list .history-time { color:var(--dim); font-size:10px; display:block; margin-bottom:2px; }
   #history-list .history-empty { color:var(--dim); border:0; background:transparent; text-align:center; }
-  @media (max-width:1050px) { .game-layout { grid-template-columns:minmax(0,1fr) 230px; } }
-  @media (max-width:760px) { .game-layout { grid-template-columns:minmax(0,1fr); } #history { position:static; max-height:260px; } }
+  @media (max-width:1050px) { .game-layout { grid-template-columns:minmax(0,1fr) 260px; } }
+  @media (max-width:760px) { .game-layout { grid-template-columns:minmax(0,1fr); } #game-sidebar { position:static; max-height:none; } #trashplay { grid-template-columns:repeat(auto-fit,minmax(95px,1fr)); } }
 
 </style>
 </head>
@@ -159,7 +168,6 @@
   <div id="platforms"></div>
   <h2>Your hand <small id="deck"></small></h2>
   <div class="row" id="handrow"><div id="hand"></div><div id="mydeck"></div></div>
-  <div id="trashrow" hidden><h2>Your Trash <small id="trashcount" class="meta"></small></h2><p class="meta">All discarded cards are shown here. Playable cards can be selected, then placed on a platform.</p><div id="trashplay"></div></div>
   <div id="clash"></div>
   <button id="pass">Pass turn</button>
   <button id="passall" title="Turn on to pass now and skip all your later turns until this phase ends. Turn off to act again.">Pass all: OFF</button>
@@ -170,9 +178,12 @@
   </div>
   <p id="botbox" class="meta" hidden><span id="botmsg">Nobody here yet?</span> <button id="addbot">Play against the bot instead</button></p>
   </div>
-  <aside id="history" aria-live="polite">
-    <div class="history-head"><b>Game history</b><span id="history-count" class="meta">0 actions</span></div>
-    <ol id="history-list"><li class="history-empty">Public actions will appear here.</li></ol>
+  <aside id="game-sidebar">
+    <div id="trashrow" hidden><h2>Your Trash <small id="trashcount" class="meta"></small></h2><p class="meta">All discarded cards are shown here. Playable cards can be selected, then placed on a platform.</p><div id="trashplay"></div></div>
+    <details id="history">
+      <summary class="history-head"><b>Game history</b><span id="history-count" class="meta">0 actions</span></summary>
+      <ol id="history-list"><li class="history-empty">Public actions will appear here.</li></ol>
+    </details>
   </aside>
   </div>
 </div>
