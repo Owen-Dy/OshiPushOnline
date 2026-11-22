@@ -36,7 +36,10 @@
   .tile .artbox { height:auto; aspect-ratio:5/7; }
   .tile .artbox img { object-fit:contain; }
   .tile.act { border-color:#7dd3fc; }
-  .tile.persona { width:98px; border-color:var(--pink); box-shadow:0 0 0 1px var(--pink); font-size:11px; }
+  .persona-pair { display:flex; align-items:flex-start; justify-content:space-between; gap:6px; width:100%; }
+  .tile.persona, .tile.cameo { width:74px; flex:0 0 74px; font-size:10px; }
+  .tile.persona { border-color:var(--pink); box-shadow:0 0 0 1px var(--pink); }
+  .tile.cameo { border-color:#a78bfa; box-shadow:0 0 0 1px #a78bfa; }
   .platart { --rot:90deg; container-type:size; position:relative; width:100%; aspect-ratio:7/5; margin-bottom:6px; }
   .platart img { width:100%; height:100%; object-fit:contain; display:block; border-radius:6px; }
   .platart img.rot { position:absolute; left:50%; top:50%; width:100cqh; height:100cqw; transform:translate(-50%,-50%) rotate(var(--rot)); }

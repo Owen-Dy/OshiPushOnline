@@ -239,7 +239,7 @@ function startGame() {
       const sel = chosen && playableAt(chosen, i, selectedZone) ? `<button data-play="${i}">Play ${esc(chosen.name)} here${selectedZone === 'trash' ? ' (from Trash)' : selectedZone === 'deck' ? ' (from the top of your deck)' : ''} · 🟡${selectedZone === 'deck' ? 0 : playCost(G, playerID, chosen, i)}</button>` : '';
       const persona = (pid) => {
         const per = activePersona(pid), cameo = G.players[pid].cameo;
-        return `<div class="tile persona" title="${esc(per ? per.name : 'Persona')}${per && per.text ? ' - ' + esc(per.text) : ''}"><div class="artbox">${per ? img(per.art) : ''}</div><span>${esc(per ? per.name : 'Persona')}${p.pexh?.[pid] ? ' · exhausted' : ''}</span>${cameo ? `<div class="cameo-attached" title="Attached Cameo: ${esc(cameo.name)} · +${cameo.inf || 0} ⭐ / +${cameo.gems || 0} 💎">${img(cameo.art)}<small>${esc(cameo.name)}</small></div>` : ''}</div>`;
+        return `<div class="persona-pair"><div class="tile persona" title="${esc(per ? per.name : 'Persona')}${per && per.text ? ' - ' + esc(per.text) : ''}"><div class="artbox">${per ? img(per.art) : ''}</div><span>${esc(per ? per.name : 'Persona')}${p.pexh?.[pid] ? ' · exhausted' : ''}</span></div>${cameo ? `<div class="tile cameo" title="Attached Cameo: ${esc(cameo.name)} · +${cameo.inf || 0} ⭐ / +${cameo.gems || 0} 💎"><div class="artbox">${img(cameo.art)}</div><span>${esc(cameo.name)}</span></div>` : ''}</div>`;
       };
       const tot = { [playerID]: sum(playerID), [other]: sum(other) };
       const side = (pid, label) => {
