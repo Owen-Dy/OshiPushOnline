@@ -121,4 +121,114 @@ test('a platform that replaces a captured one brings its rules with it', () => {
   const data = CARDS.find((c) => c.id === now.card.id); assert.deepEqual(now.card.effects, data.effects || [], `${now.card.name} has its own rules`);
 });
 
+
+// ===================== Gen 2 platform effects =====================
+test('Quickipedia: conditional Clash Reward only when you have fewer Subscribers', () => {
+  const t = withWin('Quickipedia'); t.as('0', 'dbgSet', '0', 0); t.as('0', 'dbgSet', '1', 0, 10); win(t);
+  assert.equal(t.G().players['0'].bits, baseline + 2);
+  const t2 = withWin('Quickipedia'); t2.as('0', 'dbgSet', '0', 10); t2.as('0', 'dbgSet', '1', 0, 10); win(t2);
+  assert.equal(t2.G().players['0'].bits, baseline, 'no reward when tied or ahead');
+});
+test('Goblet: each opponent owes one discard after the Clash Reward', () => {
+  const t = withWin('Goblet'); t.give('1', 'Rage Game'); win(t);
+  assert.equal(t.G().pendingDiscard['1'], 1);
+});
+test('Supreme Planet Lungs: gain 1 💎 per own Content card here', () => {
+  const t = withWin('Supreme Planet Lungs'); t.put('0', 0, 'Charity Event'); win(t);
+  assert.equal(t.G().players['0'].bits, baseline + 2, 'two Content cards = 2 💎');
+});
+test('Blue Butterfly: +3 ⭐ applies to the next clash only', () => {
+  const t = mk({ at0: 1 }); plat(t, 0, 'Blue Butterfly'); t.put('0', 0, 'Charity Event');
+  t.clash(); t.passBoth();
+  assert.equal(t.G().players['0'].nextClashStars, 3);
+  const before = sideInf(t.G(), 1, '0');
+  assert.equal(before, 7, 'Persona plus next-clash bonus');
+  t.passBoth();
+  assert.equal(t.G().players['0'].nextClashStars, 0, 'consumed after next clash');
+});
+test('Off Kai Expo Gen 5: may pay 3 💎 to gain 1 🌠 here', () => {
+  const t = withWin('Off Kai Expo Gen 5'); t.bits('0', 10); win(t);
+  assert.equal(t.ch().options[0].name, 'Spend 3 💎 to gain 1 Popularity on this Platform');
+  t.pick('0', 'yes');
+  assert.equal(t.G().players['0'].bits, 10 - 3 + 1, 'pays 3; Pippa reward still applies');
+  assert.equal(t.G().platforms[0].pop['0'], 2, 'clash +1 and reward +1');
+});
+test('MediaFlame: may return a Content card costing 2 or less to its owner', () => {
+  const t = withWin('MediaFlame'); t.put('1', 1, 'Charity Event'); win(t);
+  const target = t.ch().options.find((o) => o.owner === '1'); assert.ok(target);
+  t.pick('0', target.key);
+  assert.ok(t.G().players['1'].hand.some((c) => c.name === 'Charity Event'));
+  assert.equal(t.G().platforms[1].cards['1'].length, 0);
+});
+test('Blotify: may mill the top card of either player deck or decline', () => {
+  const t = withWin('Blotify'); t.as('0', 'testDeck', '0', ['Charity Event']); t.as('0', 'testDeck', '1', ['Rage Game']); win(t);
+  assert.ok(t.ch().options.some((o) => o.key === 'no'), 'optional decline is offered');
+  t.pick('0', 'opp');
+  assert.deepEqual(t.names(t.G().players['1'].trash), ['Rage Game']);
+});
+test('CopyStrike: deletes all of your Content on this Platform', () => {
+  const t = withWin('CopyStrike'); t.put('0', 0, 'Marshmallows'); win(t);
+  assert.equal(t.G().platforms[0].cards['0'].length, 0);
+  assert.deepEqual(t.names(t.G().players['0'].trash), ['Charity Event', 'Marshmallows']);
+});
+test('Garden of Euclase Castle: +5 Persona ⭐ while dominating', () => {
+  const t = mk({ p0: persona('Eden') }); plat(t, 0, 'Garden of Euclase Castle');
+  const a = sideInf(t.G(), 0, '0'); t.put('0', 0, 'Charity Event');
+  assert.equal(sideInf(t.G(), 0, '0') - a, 4 + 5, 'Content plus dominating platform bonus');
+  t.put('1', 0, 'Marshmallows');
+  assert.equal(sideInf(t.G(), 0, '0') - a, 4, 'bonus stops when no longer dominating');
+});
+test('B.B. Nightingale: gain 1 💎 when an opposing Content card leaves this Platform', () => {
+  const t = withWin('B.B. Nightingale'); t.put('1', 0, 'Charity Event'); t.give('0', 'Vomit Drawer'); t.play('0', 'Vomit Drawer', 0);
+  const target = t.ch().options.find((o) => o.owner === '1'); assert.ok(target); t.pick('0', target.key);
+  assert.equal(t.G().players['0'].bits, 2, 'the platform owner pays 2 💎 for the Action, then gains 1 💎 when opposing Content leaves');
+});
+test('Porcelain Parlor: first Content played here each round moves to another Platform', () => {
+  const t = withWin('Porcelain Parlor'); t.play('0', 'Charity Event', 0);
+  assert.equal(t.ch().options.length, 2);
+  t.pick('0', '1');
+  assert.equal(t.G().platforms[1].cards['0'][0].name, 'Charity Event');
+  assert.equal(t.G().platforms[0].cards['0'].length, 0);
+});
+test('Infinite Library: capture discards the top 4 cards of both decks', () => {
+  const t = withWin('Infinite Library');
+  t.as('0', 'testDeck', '0', ['Charity Event', 'Rage Game', 'Marshmallows', 'Cover Song', 'Instant Replay']);
+  t.as('0', 'testDeck', '1', ['Marshmallows', 'Charity Event', 'Rage Game', 'Cover Song', 'Instant Replay']);
+  t.as('0', 'dbgSetPop', 0, '0', 8); win(t);
+  assert.equal(t.G().players['0'].trash.length, 4);
+  assert.equal(t.G().players['1'].trash.length, 4);
+  assert.equal(t.G().players['0'].deck.length, 1);
+  assert.equal(t.G().players['1'].deck.length, 1);
+});
+test('The Wasp Bunker: each player may discard their revealed top card at clash start', () => {
+  const t = withWin('The Wasp Bunker');
+  t.as('0', 'testDeck', '0', ['Charity Event']); t.as('0', 'testDeck', '1', ['Rage Game']);
+  t.as('0', 'dbgPhase', 'clashOrder'); t.as('0', 'chooseClashOrder', 'LEFT_TO_RIGHT');
+  assert.equal(t.G().choices.length, 2);
+  assert.ok(t.G().choices.some((ch) => ch.player === '0' && ch.revealed[0] === 'Charity Event'));
+  assert.ok(t.G().choices.some((ch) => ch.player === '1' && ch.revealed[0] === 'Rage Game'));
+  t.pick('0', 'yes'); t.pick('1', 'no');
+  assert.deepEqual(t.names(t.G().players['0'].trash), ['Charity Event']);
+  assert.equal(t.G().players['1'].deck[0].name, 'Rage Game');
+});
+test('Bepis Pad: first Premium Content each player plays here each round is free', () => {
+  const t = withWin('Bepis Pad');
+  const premium = CARDS.find((c) => c.type === 'Content' && (c.effects || []).some((fx) => fx.type === 'premium'));
+  assert.ok(premium, 'a Premium Content card exists');
+  const start0 = t.G().players['0'].bits;
+  t.give('0', premium.name); t.play('0', premium.name, 0);
+  assert.equal(t.G().players['0'].bits, start0, 'player 0 pays no cost');
+  const start1 = t.G().players['1'].bits;
+  t.give('1', premium.name); t.play('1', premium.name, 0);
+  assert.equal(t.G().players['1'].bits, start1, 'player 1 also gets their first free Premium');
+});
+
+test('every Platform with rules text has a non-empty structured effect; blank-text platforms are intentional vanilla cards', () => {
+  const platforms = CARDS.filter((c) => c.type === 'Platform');
+  const missing = platforms.filter((c) => c.text.trim() && !(c.effects || []).length).map((c) => c.name);
+  assert.deepEqual(missing, [], `platform text without effects: ${missing.join(', ')}`);
+  const blank = platforms.filter((c) => !c.text.trim()).map((c) => c.name).sort();
+  assert.deepEqual(blank, ['Click Clock', 'CollabCast', 'Convention Circuit', 'Festive', 'Gamble Punch', 'Heartbreaker Hotline', 'Phase Weekly', 'RapidTele', 'Sad Girl Company', 'Scuff Pod', 'String', 'U-JORTS', 'U-TOOB', 'Webflip'].sort());
+});
+
 finish();

@@ -1,4 +1,4 @@
-// Hand-written effects for Action cards that need a player to make a choice (or that the text parser can't read).
+// Hand-written effects for cards that need a player choice or mechanics the text importer cannot infer.
 // The importer (npm run cards) uses these instead of parsing the card's text. Keys are exact card names.
 //
 // pickCard: the player picks card(s) on the board, then `then` happens to them.
@@ -10,6 +10,58 @@
 const hereAny = { scope: 'here', owner: 'any' };
 
 export default {
+  // ================= GEN 2 CAMEOS =================
+  // Cameos attach to a Persona (one at a time). Their printed Bits/Influence are
+  // added to the active Persona; their non-Discard text remains active while attached.
+  'Blobin': [{ type: 'discardAbility', timing: 'clash', effects: [{ type: 'personaInf', target: 'self', amount: 2 }] }],
+  'CeriYun': [
+    { type: 'personaWhile', condition: 'dominatingHere', amount: 2 },
+    { type: 'discardAbility', timing: 'clash', effects: [{ type: 'movePersonaHere' }] },
+  ],
+  'Blockheads': [
+    { type: 'discardOppOnPlay', amount: 1 },
+    { type: 'discardAbility', effects: [{ type: 'bits', target: 'self', amount: 1 }] },
+  ],
+  'Bellyr Adsala': [
+    { type: 'personaWhile', condition: 'perContentPlatform', amount: 2 },
+    { type: 'discardAbility', timing: 'clash', effects: [{ type: 'personaInf', target: 'self', amount: 2 }] },
+  ],
+  'Minky(e)': [
+    { type: 'movePersona', prompt: 'Minky(e): you may move your Persona to another Platform' },
+    { type: 'discardAbility', timing: 'clash', effects: [{ type: 'movePersonaHere' }] },
+  ],
+  'Alter Ego': [{ type: 'discardAbility', effects: [{ type: 'bits', target: 'self', amount: 1 }] }],
+  'Grubbies': [
+    { type: 'aura', affects: 'opp', amount: -3, when: { personaHere: true } },
+    { type: 'discardAbility', timing: 'clash', effects: [{ type: 'personaInf', target: 'self', amount: 2 }] },
+  ],
+  'D.A.I.S.Y.': [{ type: 'discardAbility', timing: 'clash', effects: [{ type: 'movePersonaHere' }] }],
+  'VTuberSenpai': [
+    { type: 'personaWhile', condition: 'contentFewerHere', amount: 3 },
+    { type: 'discardAbility', effects: [{ type: 'bits', target: 'self', amount: 1 }] },
+  ],
+  'Captain Chia': [
+    { type: 'personaInfPerOppPop', amount: 2 },
+    { type: 'discardAbility', timing: 'clash', effects: [{ type: 'personaInf', target: 'self', amount: 2 }] },
+  ],
+  'Beko Genning': [
+    { type: 'negateOppPersona' },
+    { type: 'discardAbility', timing: 'clash', effects: [{ type: 'movePersonaHere' }] },
+  ],
+  'Pengu': [{ type: 'discardAbility', effects: [{ type: 'bits', target: 'self', amount: 1 }] }],
+
+  // ================= GEN 2 PERSONA ABILITIES =================
+  // These are native Persona abilities, represented in the same effect schema used by Upgrades.
+  'Eden': [{ type: 'aura', affects: 'otherOwn', amount: 1, costMax: 4 }],
+  'Captain Camille': [{ type: 'personaWhile', condition: 'dominatingAny', amount: 2 }],
+  'Porcelain Maid': [{ type: 'clashReward', text: 'Draw 1 for each Platform where you have 1 or more Content cards. Then, discard that many cards.', effects: [
+    { type: 'draw', target: 'self', amount: 1, perContentPlatform: true },
+    { type: 'discard', target: 'self', perContentPlatform: true },
+  ] }],
+  'Raelice': [{ type: 'clashReward', text: 'You may discard the top 2 cards of your deck.', effects: [
+    { type: 'millTopOptional', amount: 2, prompt: 'Raelice: you may discard the top 2 cards of your deck' },
+  ] }],
+  'LineChu': [{ type: 'personaBonus', amount: 2, when: { faceUpPremium: true } }],
   'Hype': [{ type: 'pickCard', prompt: 'Hype: choose a Content card on this platform to gain +5 ⭐ this clash', pick: hereAny, then: { do: 'mod', amount: 5 } }],
   'Diss Track': [{ type: 'pickCard', prompt: 'Diss Track: choose an opposing Content card on this platform; its ⭐ becomes 0 this clash', pick: { scope: 'here', owner: 'opp' }, then: { do: 'zero' } }],
   'Brother Lover': [{ type: 'pickCard', prompt: 'Brother Lover: choose a Content card; its printed ⭐ is doubled this clash', pick: { scope: 'any', owner: 'any' }, then: { do: 'double' } }],
@@ -58,7 +110,7 @@ export default {
   'AVId Gummy Worm Enjoyer': [{ type: 'deckOnly', persona: 'La Avispa Nectarina' }, { type: 'playFromTop' }, { type: 'personaInf', target: 'self', amount: 10 }], // playFromTop: free while it is the revealed top card of your deck
   'Unique Laughing Sounds': [{ type: 'personaInf', target: 'self', perContent: 3 }],
   'Pinata': [{ type: 'winClash', if: { dominating: true } }],
-  'Nose Pull': [{ type: 'pickCard', prompt: 'Nose Pull: delete an opposing Content card on this platform', pick: { scope: 'here', owner: 'opp' }, then: { do: 'delete' } }],
+  'Nose Pull': [{ type: 'pickCard', prompt: 'Nose Pull: delete an opposing Content card or Cameo attached to a Persona on this platform', pick: { scope: 'here', owner: 'opp', includeCameo: true }, then: { do: 'delete' } }],
   'Soulslike Notes': [{ type: 'draw', target: 'self', untilHand: 3 }],
   'Ash Blasting': [{ type: 'ashBlast', prompt: "Ash Blasting: look at your opponent's hand and choose a card for them to discard" }],
   'Sniffa': [{ type: 'anyPlatformThisRound' }],
@@ -321,6 +373,59 @@ export default {
       { type: 'pickCard', prompt: 'Witch Half Cat: delete a Content card with 🟡5 or more on this platform', pick: { scope: 'here', owner: 'any', costMin: 5 }, then: { do: 'delete' } }] }],
   'Rinkou Ashelia, Lia': [{ type: 'discardAbility', timing: 'clash', effects: [{ type: 'movePersonaHere' }] }],
   'Rinkou Ashelia, Cheerful Virus': [{ type: 'discardAbility', timing: 'clash', effects: [{ type: 'movePersonaHere' }] }],
+
+
+  // ================= GEN 2 UPGRADE CARDS =================
+  // Effects for the Gen 2 Upgrade cycle. Passive effects are evaluated continuously;
+  // onPlay effects resolve immediately after the Upgrade is attached.
+  'Edenia Euclase': [{ type: 'aura', affects: 'otherOwn', amount: 2, costMax: 4 }, { type: 'discardAbility', timing: 'clash', effects: [{ type: 'personaInf', target: 'self', amount: 2 }] }],
+  'Fluffy Crystal Dragon': [
+    { type: 'aura', affects: 'otherOwn', amount: 3, costMax: 4 },
+    { type: 'draw', target: 'self', perContentHere: true, amount: 1 },
+    { type: 'discardAbility', timing: 'clash', effects: [{ type: 'personaInf', target: 'self', amount: 2 }] }],
+  'Not a Vampire': [
+    { type: 'pickCard', optional: true, prompt: 'Not a Vampire: you may delete an opposing Content card with 🟡2 or less', pick: { scope: 'here', owner: 'opp', costMax: 2 }, then: { do: 'delete' } },
+    { type: 'personaWhile', condition: 'dominatingAny', amount: 2 },
+    { type: 'discardAbility', timing: 'clash', effects: [{ type: 'movePersonaHere' }] }],
+  'Retired Captain': [
+    { type: 'pickCard', optional: true, prompt: 'Retired Captain: you may delete an opposing Content card with 🟡4 or less', pick: { scope: 'here', owner: 'opp', costMax: 4 }, then: { do: 'delete' } },
+    { type: 'personaWhile', condition: 'dominatingAny', amount: 4 },
+    { type: 'discardAbility', timing: 'clash', effects: [{ type: 'movePersonaHere' }] }],
+  'Jowol the Caretaker': [
+    { type: 'clashReward', text: 'Draw 1 for each Platform where you have 1 or more Content cards. Then, discard that many cards minus 1.', effects: [{ type: 'draw', target: 'self', perContentPlatform: true, amount: 1 }, { type: 'discard', target: 'self', perContentPlatformMinusOne: true, amount: 1 }] },
+    { type: 'discardAbility', effects: [{ type: 'bits', target: 'self', amount: 1 }] }],
+  'Damiya The Maternal': [
+    { type: 'clashReward', text: 'Draw 1 for each Platform where you have 1 or more Content cards.', effects: [{ type: 'draw', target: 'self', perContentPlatform: true, amount: 1 }] },
+    { type: 'discardAbility', effects: [{ type: 'bits', target: 'self', amount: 1 }] }],
+  'Scuff Cat': [
+    { type: 'playTrashEmpty', reduce: 3, prompt: 'Scuff Cat: you may play a Content card from your Trash on a Platform where you have no Content cards, reducing its cost by 🟡3' },
+    { type: 'clashReward', text: 'You may discard the top 2 cards of your deck.', effects: [{ type: 'millTopOptional', amount: 2 }] },
+    { type: 'discardAbility', effects: [{ type: 'bits', target: 'self', amount: 1 }] }],
+  'Lore Cat': [
+    { type: 'playTrashEmpty', reduce: 7, prompt: 'Lore Cat: you may play a Content card from your Trash on a Platform where you have no Content cards, reducing its cost by 🟡7' },
+    { type: 'clashReward', text: 'You may discard the top 2 cards of your deck.', effects: [{ type: 'millTopOptional', amount: 2 }] },
+    { type: 'discardAbility', effects: [{ type: 'bits', target: 'self', amount: 1 }] }],
+  'Sweaty Tomboy': [
+    { type: 'revealTop' }, { type: 'topCostStars' },
+    { type: 'reorderTop', count: 3 }],
+  'Timeline B': [
+    { type: 'revealTop' }, { type: 'topCostStars' },
+    { type: 'reorderTop', count: 3, drawOptional: true }],
+  'The Bottom Line': [
+    { type: 'personaBonus', when: { faceUpPremiumHere: true }, amount: 2 },
+    { type: 'protectPremiumHere' },
+    { type: 'discardAbility', timing: 'clash', effects: [{ type: 'movePersonaHere' }] }],
+  'Femboy Princess': [
+    { type: 'personaBonus', when: { faceUpPremiumHere: true }, amount: 4 },
+    { type: 'protectPremiumHere' },
+    { type: 'discardAbility', timing: 'clash', effects: [{ type: 'movePersonaHere' }] }],
+  'Dad That Stepped Up': [
+    { type: 'clashReward', text: 'Draw 1 for each Platform where you have 1 or more Content cards. Then, discard that many cards minus 1.', effects: [{ type: 'draw', target: 'self', perContentPlatform: true, amount: 1 }, { type: 'discard', target: 'self', perContentPlatformMinusOne: true, amount: 1 }] },
+    { type: 'discardAbility', effects: [{ type: 'bits', target: 'self', amount: 1 }] }],
+  'Bepis Addict': [
+    { type: 'personaBonus', when: { faceUpPremiumHere: true }, amount: 3 },
+    { type: 'protectPremiumHere' },
+    { type: 'discardAbility', timing: 'clash', effects: [{ type: 'movePersonaHere' }] }],
 
   // ================= PLATFORM CARDS =================
   // Platform rules (game.js runs them for whichever platform card is in a slot):

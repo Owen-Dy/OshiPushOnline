@@ -169,6 +169,23 @@ function parseAbilities(raw) {
   }
   return out;
 }
+const PLATFORM_EFFECTS = {
+  'Quickipedia': [{ type: 'platformReward', if: { subsLess: true }, text: 'If you have less Subscribers than your opponents, gain 2 💎.', effects: [{ type: 'bits', target: 'self', amount: 2 }] }],
+  'Goblet': [{ type: 'platformReward', text: 'Each opponent discards 1 card from their hand.', effects: [{ type: 'discard', target: 'opponent', amount: 1 }] }],
+  'Supreme Planet Lungs': [{ type: 'platformReward', text: 'Gain 1 💎 for each Content card you have on this Platform.', effects: [{ type: 'bitsPerContentHere', target: 'self', amount: 1 }] }],
+  'Blue Butterfly': [{ type: 'platformReward', text: 'You gain +3 ⭐ during the next clash this round.', effects: [{ type: 'nextClashStars', amount: 3 }] }],
+  'Off Kai Expo Gen 5': [{ type: 'platformReward', text: 'You may spend 3 💎 to gain 1 Popularity on this Platform.', effects: [{ type: 'payThen', bits: 3, label: 'Spend 3 💎 to gain 1 Popularity on this Platform', prompt: 'Off Kai Expo Gen 5: you may spend 3 💎 to gain 1 Popularity on this Platform', effects: [{ type: 'gainPop', amount: 1 }] }] }],
+  'MediaFlame': [{ type: 'platformReward', text: 'You may return a Content card with 🟡2 or less in play to its owner\'s hand.', effects: [{ type: 'pickCard', optional: true, prompt: 'MediaFlame: you may return a Content card with 🟡2 or less in play to its owner\'s hand', pick: { scope: 'any', owner: 'any', costMax: 2 }, then: { do: 'return' } }] }],
+  'Blotify': [{ type: 'platformReward', text: 'You may discard the top card of any player\'s deck.', effects: [{ type: 'millAny', optional: true, prompt: 'Blotify: you may discard the top card of any player\'s deck' }] }],
+  'CopyStrike': [{ type: 'platformReward', text: 'Delete all of your Content cards on this Platform.', effects: [{ type: 'deleteContent', scope: 'here', owner: 'mine' }] }],
+  'Garden of Euclase Castle': [{ type: 'deckOnly', persona: 'Eden' }, { type: 'platformStars', amount: 5, when: { dominating: true } }],
+  'B.B. Nightingale': [{ type: 'deckOnly', persona: 'Captain Camille' }, { type: 'onOppContentLeaves', amount: 1 }],
+  'Porcelain Parlor': [{ type: 'deckOnly', persona: 'Porcelain Maid' }, { type: 'onPlayHere', event: 'content', once: 'porcelainParlor', then: [{ type: 'moveSelf' }] }],
+  'Infinite Library': [{ type: 'deckOnly', persona: 'Raelice' }, { type: 'onCaptured', mill: 4 }],
+  'The Wasp Bunker': [{ type: 'deckOnly', persona: 'La Avispa Nectarina' }, { type: 'atClashStart', millTopOptional: 1 }],
+  'Bepis Pad': [{ type: 'deckOnly', persona: 'LineChu' }, { type: 'premiumFreeOnce' }],
+};
+
 const abilityStats = [];
 const restrictionNames = [];
 const skippedActions = [];
@@ -249,6 +266,7 @@ body.forEach((r, n) => {
     abilityStats.push({ name, type, parsed: res.parsed, total: res.total });
   }
   if (CARD_EFFECTS[name]) { card.effects = CARD_EFFECTS[name]; handWritten++; unusedEffects.delete(name); }
+  else if (type === 'Platform' && PLATFORM_EFFECTS[name]) { card.effects = PLATFORM_EFFECTS[name]; }
   else if (type === 'Action') {
     const fx = parseEffects(card.text, { draw: true });
     if (fx) { card.effects = fx; parsedActions++; } else if (fx === null) skippedActions.push(name);
@@ -361,14 +379,22 @@ if (!artFiles) {
   console.log(`"Play only if your Persona is X" restrictions: ${used} cards${bad.length ? `. UNKNOWN persona names (these cards can never be played): ${bad.map(([c, p]) => `${c} -> "${p}"`).join('; ')}` : ', all name a real persona'}`);
 }
 {
-  const personas = abilityStats.filter((a) => a.type === 'Persona');
-  const notFull = personas.filter((a) => a.parsed < a.total).map((a) => a.name);
-  console.log(`Persona abilities fully understood: ${personas.length - notFull.length} of ${personas.length}${notFull.length ? ' (not yet: ' + notFull.join(', ') + ')' : ''}`);
-  const ups = abilityStats.filter((a) => a.type === 'Upgrade');
-  console.log(`Upgrades with at least one working ability: ${ups.filter((a) => a.parsed > 0).length} of ${ups.length} (their Discard:/Activate: abilities are still text-only)`);
+  const personas = cards.filter((c) => c.type === 'Persona');
+  const personaReady = personas.filter((c) => (c.effects || []).length || (c.passives || []).length || (c.clashReward || []).length || c.activate).length;
+  console.log(`Persona abilities with structured effects: ${personaReady} of ${personas.length}`);
+  const ups = cards.filter((c) => c.type === 'Upgrade');
+  const upgradeReady = ups.filter((c) => (c.effects || []).length || (c.passives || []).length || (c.clashReward || []).length || c.activate).length;
+  console.log(`Upgrades with structured effects: ${upgradeReady} of ${ups.length}`);
 }
-console.log(`Persona/Upgrade Clash Rewards understood: ${parsedRewards} | text-only: ${skippedRewards.length}${skippedRewards.length ? ' (' + skippedRewards.join(', ') + ')' : ''}`);
+{
+  const rewardCards = cards.filter((c) => ['Persona', 'Upgrade'].includes(c.type) && /clash reward/i.test(c.text || ''));
+  const rewardReady = rewardCards.filter((c) => (c.clashReward || []).length || (c.effects || []).some((fx) => fx.type === 'clashReward')).length;
+  console.log(`Persona/Upgrade Clash Rewards with structured effects: ${rewardReady} of ${rewardCards.length}`);
+}
+{
+  const actions = cards.filter((c) => c.type === 'Action' && (c.text || '').trim());
+  const actionReady = actions.filter((c) => (c.effects || []).length).length;
+  console.log(`Action cards with structured effects: ${actionReady} of ${actions.length}`);
+}
 console.log(`Hand-written effects used (card-effects.js): ${handWritten}${unusedEffects.size ? ' | NOT FOUND in the sheet: ' + [...unusedEffects].join(', ') : ''}`);
-console.log(`Action effects understood: ${parsedActions} | text-only (other effects): ${skippedActions.length}`);
-if (skippedActions.length) console.log('  Text-only Actions: ' + skippedActions.slice(0, 25).join(', ') + (skippedActions.length > 25 ? ', …' : ''));
 if (warnings.length) console.log(`\n${warnings.length} warning(s):\n` + warnings.slice(0, 20).map((w) => '  ' + w).join('\n') + (warnings.length > 20 ? '\n  …' : ''));

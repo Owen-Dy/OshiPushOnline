@@ -15,7 +15,7 @@ const game = {
   phases: Object.fromEntries(Object.entries(OshiPush.phases).map(([k, ph]) => [k, ph.moves ? { ...ph, moves: { ...ph.moves,
     testDeck: ({ G }, id, names) => { G.players[id].deck = names.map((n, i) => ({ ...card(n), id: `t${i}_${card(n).id}` })); },
     testTrash: ({ G }, id, n) => { G.players[id].trash.push({ ...card(n), id: `tt${G.players[id].trash.length}_${card(n).id}` }); },
-    testPlatform: ({ G }, idx, name) => { const c = CARDS.find((x) => x.type === 'Platform' && x.name === name); const p = G.platforms[idx]; p.name = c.name; p.type = c.tags || p.type; p.threshold = 9; p.card = { id: c.id, name: c.name, art: c.art, text: c.text, effects: c.effects || [] }; },
+    testPlatform: ({ G }, idx, name) => { const c = CARDS.find((x) => x.type === 'Platform' && x.name === name); const p = G.platforms[idx]; p.name = c.name; p.type = c.tags || p.type; p.threshold = 9; p.cardOwner = '0'; p.card = { id: c.id, name: c.name, art: c.art, text: c.text, effects: c.effects || [] }; },
     testText: ({ G }, idx, text) => { G.platforms[idx].card = { ...(G.platforms[idx].card || {}), text, effects: [] }; G.platforms[idx].threshold = 9; }, // 9: nothing gets captured by accident
   } } : ph])),
 };

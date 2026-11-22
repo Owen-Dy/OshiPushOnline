@@ -85,11 +85,20 @@ const cardBonus = (G, idx, owner, c) => {
     else if (fx.per === 'otherPlatformsGenre') n = G.platforms.filter((pl, j) => j !== idx && pl.cards[owner].some((o) => genreIs(o, fx.genre))).length;
     total += fx.amount * n;
   }
-  if (fxOf(c, 'selfStarsPersona').length) total += personaStarsOf(G, owner); // Bug Burger Cooking Stream: this card's ⭐ equal your Persona's
-  for (const oid of ['0', '1']) for (const a of p.cards[oid]) for (const fx of fxOf(a, 'aura')) {
+  for (const fx of fxOf(c, 'selfStarsPersona')) {
+    const w = fx.when || {};
+    if (w.faceUpPremiumHere && !hasFaceUpPremium(G, owner, idx)) continue;
+    total += (fx.amount || 1) * personaStarsOf(G, owner);
+  }
+  for (const oid of ['0', '1']) {
+    const auraSources = [...p.cards[oid], activePersona(G, oid)];
+    for (const a of auraSources) for (const fx of fxOf(a, 'aura')) {
+    if (fx.when?.personaHere && locOfPersona(G, oid) !== idx) continue;
+    if (fx.costMax !== undefined && c.cost > fx.costMax) continue;
     if (fx.affects === 'otherAll' && a.id !== c.id) total += fx.amount;
     else if (fx.affects === 'opp' && oid !== owner) total += fx.amount;
     else if (fx.affects === 'otherOwn' && oid === owner && a.id !== c.id) total += fx.amount;
+    }
   }
   return total;
 };
@@ -120,6 +129,12 @@ const shuffled = (list) => (RNG ? RNG.Shuffle([...list]) : [...list]);
 const leaveCard = (G, owner, idx, card, dest = 'trash') => {
   const arr = G.platforms[idx].cards[owner], k = arr.findIndex((c) => c.id === card.id);
   if (k === -1) return false;
+  if (card.type === 'Content') {
+    const platformOwner = G.platforms[idx].cardOwner;
+    if (platformOwner !== undefined && owner !== platformOwner) {
+      for (const fx of platformFx(G, idx, 'onOppContentLeaves')) G.players[platformOwner].bits += fx.amount || 1;
+    }
+  }
   const [c] = arr.splice(k, 1);
   delete c.mod; delete c.used; delete c.faceDown; delete c.exhausted;
   const pl = G.players[owner];
@@ -131,6 +146,8 @@ const leaveCard = (G, owner, idx, card, dest = 'trash') => {
 const deleteCard = (G, owner, idx, card, by) => {
   if (fxOf(card, 'undeletable').length && G.platforms.every((pl) => pl.cards[owner].length > 0)) return false;
   if (by !== undefined && by !== owner && G.platforms[idx].cards[owner].some((o) => o.id !== card.id && fxOf(o, 'protectOthers').length)) return false;
+  if (by !== undefined && by !== owner && premiumOf(card) && G.personaLocations[owner] === idx &&
+      fxOf(activePersona(G, owner), 'protectPremiumHere').length > 0) return false;
   const back = fxOf(card, 'returnInsteadOfDelete')[0]; // to: 'deckTop' (Horror Game Stream); otherwise it goes back to its owner's hand
   return leaveCard(G, owner, idx, card, back ? back.to || 'hand' : 'trash');
 };
@@ -144,11 +161,25 @@ const passiveHolds = (G, id, idx, cond) => {
   if (cond.handAtLeast !== undefined) return player.hand.length >= cond.handAtLeast;
   return false;
 };
+const locOfPersona = (G, id) => G.personaLocations[id];
 const passiveBonus = (G, id, idx) => {
   let total = 0;
   for (const ps of activePersona(G, id)?.passives || []) {
     if (ps.kind === 'while' && passiveHolds(G, id, idx, ps.cond)) total += ps.amount;
     else if (ps.kind === 'perContentPlatform') total += ps.amount * G.platforms.filter((pl) => pl.cards[id].length > 0).length;
+  }
+  for (const fx of fxOf(activePersona(G, id), 'personaBonus')) {
+    if (!fx.when?.faceUpPremiumHere || (locOfPersona(G, id) != null && hasFaceUpPremium(G, id, locOfPersona(G, id)))) total += fx.amount;
+  }
+  for (const fx of fxOf(activePersona(G, id), 'personaWhile')) {
+    const condition = fx.condition;
+    if (condition === 'dominatingAny' && G.platforms.some((pl, j) => dominating(G, id, j))) total += fx.amount;
+    else if (condition === 'dominatingHere' && idx === locOfPersona(G, id) && dominating(G, id, idx)) total += fx.amount;
+    else if (condition === 'contentFewerHere' && idx === locOfPersona(G, id) && G.platforms[idx].cards[id].length < G.platforms[idx].cards[other(id)].length) total += fx.amount;
+    else if (condition === 'perContentPlatform') total += fx.amount * G.platforms.filter((pl) => pl.cards[id].length > 0).length;
+  }
+  for (const fx of fxOf(activePersona(G, id), 'personaInfPerOppPop')) {
+    if (idx === locOfPersona(G, id)) total += fx.amount * G.platforms[idx].pop[other(id)];
   }
   for (const fx of fxOf(activePersona(G, id), 'topCostStars')) total += G.players[id].deck[0]?.cost || 0; // gains ⭐ equal to the cost of the revealed card
   return total;
@@ -169,7 +200,7 @@ const personaStarsOf = (G, id) => {
 // Stars `id` has on platform `idx`: persona (stars + passives + this-round changes) plus Content and Action cards.
 export const sideInf = (G, idx, id) => {
   const p = G.platforms[idx];
-  const persona = G.personaLocations[id] === idx && !p.pexh?.[id] ? Math.max(0, (activePersona(G, id)?.inf || 0) + passiveBonus(G, id, idx) + platformBonus(G, idx, id) + p.pmods[id]) : 0;
+  const persona = G.personaLocations[id] === idx && !p.pexh?.[id] ? Math.max(0, (activePersona(G, id)?.inf || 0) + passiveBonus(G, id, idx) + platformBonus(G, idx, id) + p.pmods[id] + (G.players[id].nextClashStars || 0)) : 0;
   const content = p.cards[id].reduce((t, c) => t + starsOf(G, idx, id, c), 0); // c.mod: stars added this round; plus the card's own text
   // "While you are Dominating this Platform: you gain +3 ⭐ at each adjacent Platform" (Vaseline On Toast): LEFT-CENTER-RIGHT are neighbours in a row
   let adjacent = 0;
@@ -178,10 +209,15 @@ export const sideInf = (G, idx, id) => {
 };
 
 // "While you have at least 1 Content card on every Platform: your Persona gains +5 ⭐ on this Platform" (Pippa's Quarters)
-const platformBonus = (G, idx, id) => platformFx(G, idx, 'platformStars').reduce((t, fx) => (fx.when?.contentEverywhere && !G.platforms.every((pl) => pl.cards[id].length > 0) ? t : t + fx.amount), 0);
+const platformBonus = (G, idx, id) => platformFx(G, idx, 'platformStars').reduce((t, fx) => {
+  if (fx.when?.contentEverywhere && !G.platforms.every((pl) => pl.cards[id].length > 0)) return t;
+  if (fx.when?.dominating && !dominating(G, id, idx)) return t;
+  return t + fx.amount;
+}, 0);
 
 // Put a Platform card into a platform slot (its threshold, subscriber value and art).
-const applyPlatformCard = (p, card) => {
+const applyPlatformCard = (p, card, owner) => {
+  if (owner !== undefined) p.cardOwner = owner;
   if (!p.slot) p.slot = p.name; // remember LEFT / CENTER / RIGHT
   p.name = card.name;
   p.type = card.tags || card.genre || p.type;
@@ -212,6 +248,9 @@ const captureIfReady = (G, idx, id) => {
   const p = G.platforms[idx];
   if (p.pop[id] < p.threshold) return false;
   const loser = other(id);
+  for (const fx of platformFx(G, idx, 'onCaptured')) {
+    if (fx.mill) for (const who of ['0', '1']) G.players[who].trash.push(...G.players[who].deck.splice(0, fx.mill));
+  }
   G.players[id].subs += p.subValue;
   G.players[loser].bits += p.pop[loser]; // loser compensation
   p.pop = { 0: 0, 1: 0 };
@@ -222,7 +261,7 @@ const captureIfReady = (G, idx, id) => {
   // The captured platform is replaced by a random card from the side deck of the player who did NOT get the subscribers
   // (the side decks are shuffled when the game starts, so the top card is a random one). With none left, it stays.
   const next = G.players[loser].platformCards.shift();
-  if (next) applyPlatformCard(p, next);
+  if (next) applyPlatformCard(p, next, loser);
   return true;
 };
 
@@ -231,6 +270,8 @@ function resolveOne(G, idx) {
   const p = G.platforms[idx];
   const sum = (id) => sideInf(G, idx, id);
   const entry = { name: p.name, inf: { 0: sum('0'), 1: sum('1') }, winner: null, captured: false, pop: null };
+  // A Blue Butterfly reward applies to exactly the next clash of the round. Its stars are included above.
+  for (const id of ['0', '1']) G.players[id].nextClashStars = 0;
 
   if (p.forceWin || entry.inf[0] !== entry.inf[1]) {
     const winner = p.forceWin || (entry.inf[0] > entry.inf[1] ? '0' : '1'); // forceWin: "you win this clash" (Pinata, Bonus Three Inches)
@@ -268,6 +309,7 @@ function resolveOne(G, idx) {
     }
     const granted = [];
     for (const r of platformFx(G, idx, 'platformReward')) { // the Platform's own Clash Reward goes to whoever won the clash here
+      if (!conditionHolds(G, winner, idx, r.if)) continue;
       for (const fx of r.effects) applyEffect(G, winner, idx, fx, { source: p.name });
       granted.push(`${p.name}: ${r.text || ''}`);
     }
@@ -294,8 +336,25 @@ function resolveOne(G, idx) {
 // The persona's current card: the most recent Upgrade played on it, or the base Persona card.
 // Upgrades replace the persona's stars and abilities (the base persona's NAME is still used for "If your Persona is X").
 const activePersona = (G, id) => {
-  const ups = G.players[id].upgrades;
-  return ups.length ? ups[ups.length - 1] : G.players[id].persona;
+  const player = G.players[id];
+  const base = player.upgrades.length ? player.upgrades[player.upgrades.length - 1] : player.persona;
+  if (!base) return base;
+  const cameo = player.cameo;
+  const loc = G.personaLocations?.[id];
+  const opp = other(id);
+  const opposingBeko = G.players?.[opp]?.cameo?.effects?.some((fx) => fx.type === 'negateOppPersona') && loc != null && G.personaLocations?.[opp] === loc;
+  // Beko Genning suppresses the opposing Persona/Upgrade's abilities, not the
+  // attached Cameo's own abilities. Cameo stats and effects remain active.
+  const effects = [...(opposingBeko ? [] : (base.effects || [])), ...(cameo?.effects || [])];
+  return {
+    ...base,
+    inf: (Number(base.inf) || 0) + (Number(cameo?.inf) || 0),
+    gems: (Number(base.gems) || 0) + (Number(cameo?.gems) || 0),
+    effects,
+    passives: opposingBeko ? [] : base.passives,
+    activate: opposingBeko ? null : base.activate,
+    cameo,
+  };
 };
 
 // Card effects (stars and bits only). "bits" is what the sheet calls 💎.
@@ -312,6 +371,7 @@ const conditionHolds = (G, me, idx, cond) =>
     (!cond.faceUpPremiumHere || (idx != null && hasFaceUpPremium(G, me, idx))) && // Friendship Tax
     (!cond.inClashHere || (idx != null && clashingNow(G) === idx)) && // Wardrobe Malfunction
     (!cond.contentEverywhere || G.platforms.every((pl) => pl.cards[me].length > 0)) && // Bonus Three Inches
+    (!cond.subsLess || G.players[me].subs < G.players[other(me)].subs) && // Quickipedia
     (!cond.oppPersonaHere || (idx != null && G.personaLocations[other(me)] === idx)) && // Queen Status
     (cond.starsLead === undefined || (idx != null && sideInf(G, idx, me) - sideInf(G, idx, other(me)) >= cond.starsLead)));
 
@@ -321,6 +381,10 @@ const applyEffect = (G, me, idx, fx, extra) => {
   const who = fx.target === 'opponent' ? (me === '0' ? '1' : '0') : me;
   if (fx.type === 'bits') {
     G.players[who].bits = Math.max(0, G.players[who].bits + fx.amount);
+  } else if (fx.type === 'bitsPerContentHere') {
+    G.players[who].bits = Math.max(0, G.players[who].bits + fx.amount * G.platforms[idx].cards[who].length);
+  } else if (fx.type === 'nextClashStars') {
+    G.players[who].nextClashStars = (G.players[who].nextClashStars || 0) + fx.amount;
   } else if (fx.type === 'personaInf') {
     const loc = G.personaLocations[who];
     let amt = fx.upgradedAmount !== undefined && G.players[who].upgrades.length ? fx.upgradedAmount : fx.amount || 0; // e.g. In Character
@@ -336,10 +400,12 @@ const applyEffect = (G, me, idx, fx, extra) => {
       p.pmods[who] += fx.value - Math.max(0, (activePersona(G, who)?.inf || 0) + p.pmods[who]);
     }
   } else if (fx.type === 'discard') {
-    requireDiscard(G, who, fx.amount);
+    const n = fx.perContentPlatform ? G.platforms.filter((pl) => pl.cards[who].length > 0).length : fx.perContentPlatformMinusOne ? Math.max(0, G.platforms.filter((pl) => pl.cards[who].length > 0).length - 1) : fx.amount;
+    requireDiscard(G, who, n);
   } else if (fx.type === 'draw') {
-    let n = fx.perContentPlatform ? fx.amount * G.platforms.filter((pl) => pl.cards[who].length > 0).length : fx.amount;
+    let n = fx.perContentHere ? fx.amount * G.platforms[idx].cards[who].length : fx.perContentPlatform ? fx.amount * G.platforms.filter((pl) => pl.cards[who].length > 0).length : fx.amount;
     if (fx.perDominating) n = fx.amount * G.platforms.filter((pl, j) => dominating(G, who, j)).length; // Throbbing Egghead
+    if (fx.perContentPlatformMinusOne) n = Math.max(0, G.platforms.filter((pl) => pl.cards[who].length > 0).length - 1);
     if (fx.untilHand !== undefined) n = Math.max(0, fx.untilHand - G.players[who].hand.length); // Soulslike Notes: draw until you have N cards
     for (let i = 0; i < n; i++) {
       const drawn = G.players[who].deck.shift();
@@ -461,6 +527,7 @@ export const effectsPlayable = (G, id, card, idx, bitsAfter) => {
 export const playCost = (G, id, card, idx) => {
   let cost = card.cost;
   const at = idx ?? G.personaLocations[id];
+  if (card.type === 'Content' && premiumOf(card) && at != null && platformFx(G, at, 'premiumFreeOnce').length && !G.platforms[at].used?.[`premiumFreeOnce:${id}`]) return 0;
   for (const fx of card.effects || []) if (fx.type === 'costReduction' && conditionHolds(G, id, at, fx.if)) cost -= fx.amount;
   if (card.type === 'Content') {
     cost -= G.players[id].contentDiscount;
@@ -518,10 +585,20 @@ export const canPlatformPlay = (G, id) => {
 const placeCard = (G, playerID, card, platformIndex, extra) => {
   if (card.type === 'Content' && premiumOf(card)) card.faceDown = true; // Premium Content is always played face-down
   if (card.type === 'Upgrade') G.players[playerID].upgrades.push(card); // goes on top of your persona
-  else G.platforms[platformIndex][card.type === 'Content' ? 'cards' : 'actions'][playerID].push(card);
-  if (card.type === 'Content') { const ph = (G.platforms[platformIndex].playedHere ||= { 0: 0, 1: 0 }); ph[playerID] += 1; } // Brain Rot
+  else if (card.type === 'Cameo') {
+    const player = G.players[playerID];
+    if (player.cameo) player.trash.push(player.cameo); // a new Cameo replaces the previous one
+    player.cameo = card;
+  } else G.platforms[platformIndex][card.type === 'Content' ? 'cards' : 'actions'][playerID].push(card);
+  if (card.type === 'Content') {
+    const ph = (G.platforms[platformIndex].playedHere ||= { 0: 0, 1: 0 }); ph[playerID] += 1; // Brain Rot
+    if (premiumOf(card) && platformFx(G, platformIndex, 'premiumFreeOnce').length) { G.platforms[platformIndex].used ||= {}; G.platforms[platformIndex].used[`premiumFreeOnce:${playerID}`] = true; }
+  }
   if (card.type === 'Action' && G.phase === 'clash') { const ap = (G.platforms[platformIndex].actionsPlayed ||= { 0: 0, 1: 0 }); ap[playerID] += 1; } // Powerpoint Presentation
-  if (!card.faceDown) for (const fx of card.effects || []) applyEffect(G, playerID, platformIndex, fx, { ...extra, self: card });
+  if (!card.faceDown) for (const fx of card.effects || []) {
+    if (fx.type === 'discardOppOnPlay') requireDiscard(G, other(playerID), fx.amount || 1);
+    else applyEffect(G, playerID, platformIndex, fx, { ...extra, self: card });
+  }
   if (card.type === 'Action' || card.type === 'Content') {
     const played = G.players[playerID].played;
     const first = played[card.type] === 0;
@@ -686,7 +763,7 @@ const feasible = (G, me, idx, fx, card) => {
   switch (fx.type) {
     case 'revealTopCost': case 'lookTrashHand': return G.players[me].deck.length > 0;
     case 'oppMovePop': return G.platforms[idx].pop[opp] >= 1;
-    case 'personaInf': return G.personaLocations[me] !== null;
+    case 'personaInf': return G.personaLocations[me] === idx;
     case 'movePersonaHere': return G.personaLocations[me] !== null && G.personaLocations[me] !== idx;
     case 'pickCard': return cardOptions(G, me, idx, { ...fx.pick, selfId: card?.id }).length > 0;
     case 'playTrashSpend': return trashSpendOptions(G, me, G.personaLocations[me] ?? idx, fx).length > 0;
@@ -782,8 +859,13 @@ const flipCard = ({ G, ctx, playerID, events, random }, cardId) => {
 };
 // "At the start of a clash at this Platform" (Community Art)
 const startOfClash = (G, idx) => {
-  for (const id of ['0', '1']) for (const c of [...G.platforms[idx].cards[id]]) for (const fx of fxOf(c, 'atClashStart')) {
-    if (conditionHolds(G, id, idx, fx.if)) for (const t of fx.then) applyEffect(G, id, idx, t, { source: c.name, self: c });
+  for (const id of ['0', '1']) {
+    for (const fx of platformFx(G, idx, 'atClashStart')) {
+      if (fx.millTopOptional && G.players[id].deck.length) startChoice(G, id, idx, { type: 'millTopOptional', amount: fx.millTopOptional, prompt: `The Wasp Bunker: you look at ${G.players[id].deck[0].name}. You may discard it.` });
+    }
+    for (const c of [...G.platforms[idx].cards[id]]) for (const fx of fxOf(c, 'atClashStart')) {
+      if (conditionHolds(G, id, idx, fx.if)) for (const t of fx.then) applyEffect(G, id, idx, t, { source: c.name, self: c });
+    }
   }
 };
 
@@ -834,6 +916,10 @@ const cardOptions = (G, me, idx, pick) => {
         if (key === pick.exclude) continue;
         out.push({ key, kind: 'card', name: hidden ? 'Face-down card' : c.name, art: hidden ? undefined : c.art, owner: id, platform: i, cost, stars });
       }
+      if (pick.includeCameo && G.personaLocations[id] === i && G.players[id].cameo) {
+        const c = G.players[id].cameo;
+        if (`m|${id}` !== pick.exclude) out.push({ key: `m|${id}`, kind: 'card', name: c.name, art: c.art, owner: id, platform: i, cost: c.cost, stars: c.inf });
+      }
       if (pick.persona && G.personaLocations[id] === i && `p|${id}` !== pick.exclude) {
         const per = activePersona(G, id);
         out.push({ key: `p|${id}`, kind: 'persona', name: per.name, art: per.art, owner: id, platform: i });
@@ -845,11 +931,20 @@ const cardOptions = (G, me, idx, pick) => {
 const refOf = (G, key) => {
   const [t, a, b, c] = key.split('|');
   if (t === 'p') return { persona: true, owner: a };
+  if (t === 'm') return G.players[a]?.cameo ? { cameo: true, card: G.players[a].cameo, owner: a, idx: G.personaLocations[a] } : null;
   if (t !== 'c') return null;
   const card = G.platforms[Number(a)]?.cards[b].find((x) => x.id === c);
   return card ? { card, idx: Number(a), owner: b } : null;
 };
-const removeFromPlatform = (G, ref) => { const arr = G.platforms[ref.idx].cards[ref.owner]; arr.splice(arr.indexOf(ref.card), 1); };
+const removeFromPlatform = (G, ref) => {
+  const arr = G.platforms[ref.idx].cards[ref.owner], at = arr.indexOf(ref.card);
+  if (at < 0) return;
+  if (ref.card.type === 'Content') {
+    const platformOwner = G.platforms[ref.idx].cardOwner;
+    if (platformOwner !== undefined && ref.owner !== platformOwner) for (const fx of platformFx(G, ref.idx, 'onOppContentLeaves')) G.players[platformOwner].bits += fx.amount || 1;
+  }
+  arr.splice(at, 1);
+};
 // Move a Content card (or a Persona, taking its this-round star changes with it) to another platform.
 const moveRef = (G, ref, dest) => {
   if (ref.persona) {
@@ -874,6 +969,9 @@ const lookDests = (G, id, card) => [0, 1, 2].filter((i) => playCost(G, id, card,
 const finishLook = (G, actor, idx, source, ordered, held) => {
   const player = G.players[actor];
   player.deck.unshift(...ordered); // first in the list ends up on top
+  if (source === 'Timeline B') pushChoice(G, { actor, player: actor, idx, source, kind: 'option',
+    options: [{ key: 'yes', kind: 'option', name: 'Draw 1 card' }, { key: 'no', kind: 'option', name: 'Do not draw' }],
+    min: 1, max: 1, action: { do: 'drawOptional' } }, true);
   if (!held) return;
   const dests = lookDests(G, actor, held);
   if (!dests.length) { player.deck.unshift(held); return; } // can't be paid for anywhere: it stays on top
@@ -900,6 +998,26 @@ const startChoice = (G, me, idx, fx, extra = {}) => {
   const base = { actor: me, player: me, idx, source: extra.source || '', prompt: fx.prompt || 'Choose' };
   const ask = (more, front) => pushChoice(G, { ...base, ...more }, front);
   switch (fx.type) {
+    case 'millTopOptional': {
+      const top = player.deck[0];
+      ask({ kind: 'option', secret: true, revealed: top ? [top.name] : [], options: [{ key: 'yes', kind: 'option', name: `Discard the top ${fx.amount || 2} card${(fx.amount || 2) === 1 ? '' : 's'} of your deck` }, { key: 'no', kind: 'option', name: 'Keep your deck as it is' }], min: 1, max: 1, action: { do: 'millTopOptional', amount: fx.amount || 2 } });
+      break;
+    }
+    case 'reorderTop': {
+      const revealed = player.deck.splice(0, fx.count || 3);
+      if (revealed.length > 1) askOrder(G, me, idx, base.source || 'Reorder the top cards', revealed, [], null);
+      else {
+        player.deck.unshift(...revealed);
+        if (fx.drawOptional) ask({ kind: 'option', options: [{ key: 'yes', kind: 'option', name: 'Draw 1 card' }, { key: 'no', kind: 'option', name: 'Do not draw' }], min: 1, max: 1, action: { do: 'drawOptional' } });
+      }
+      break;
+    }
+    case 'playTrashEmpty': {
+      const hasEmptyPlatform = [0, 1, 2].some((i) => G.platforms[i].cards[me].length === 0);
+      const options = hasEmptyPlatform ? player.trash.filter((c) => c.type === 'Content' && !c.xCost && c.cost <= player.bits + fx.reduce && cardPlayable(c, persona, 'content')) : [];
+      if (options.length) ask({ kind: 'card', options: options.map((c) => zoneOption('t', c)), min: 0, action: { do: 'playTrashEmpty1', reduce: fx.reduce } });
+      break;
+    }
     case 'pickCard': { const options = cardOptions(G, me, idx, { ...fx.pick, selfId: extra.self?.id }); if (options.length) ask({ ...(fx.chooser === 'opp' ? { player: opp } : {}), kind: 'card', options, min: fx.optional ? 0 : 1, action: fx.then }); break; } // chooser: 'opp' = your opponent makes the choice (Kiss, Marry, Kill)
     case 'pullOppPop': { // Oversized Thighs: move 1 opposing 🌠 from another platform to this one
       const from = [0, 1, 2].filter((i) => i !== idx && G.platforms[i].pop[opp] >= 1);
@@ -1041,7 +1159,7 @@ const startChoice = (G, me, idx, fx, extra = {}) => {
       const options = [];
       if (player.deck.length) options.push({ key: 'me', kind: 'option', name: 'Discard the top card of YOUR deck' });
       if (G.players[opp].deck.length) options.push({ key: 'opp', kind: 'option', name: "Discard the top card of your OPPONENT'S deck" });
-      if (options.length) ask({ kind: 'option', options, action: { do: 'millAny' } });
+      if (options.length) ask({ kind: 'option', options: [...options, ...(fx.optional ? [{ key: 'no', kind: 'option', name: 'Do not discard a card' }] : [])], min: 1, max: 1, action: { do: 'millAny' } });
       break;
     }
     case 'bottomEnergy': { // Bottom Energy: put 1 card from any player's Trash onto the bottom of their deck
@@ -1124,7 +1242,7 @@ const startChoice = (G, me, idx, fx, extra = {}) => {
     default: break;
   }
 };
-const CHOICE_EFFECTS = ['millAny', 'bottomEnergy', 'flipOne', 'findPremium', 'exhaustSelfDeleteOpp', 'playTrashActionPay', 'euclaseFrost', 'ashBlast', 'hardPivot', 'waifuWheel', 'beMoreCultured', 'playTop', 'pullOppPop', 'returnOrDeleteSelf', 'pickCard', 'lookPlay', 'payThen', 'merchStars', 'copyPlatformReward', 'moveOwnContent', 'moveSelf', 'oppMovePop', 'gainPopOther', 'moveOppAll', 'playHandFree', 'playTrashSpend', 'playTrashAction', 'lookTrashHand', 'bearWithMe', 'potion', 'noShow', 'revealPick', 'playHand', 'playTrash', 'trashToHand', 'discardDraw', 'movePersona', 'movePop', 'moveAll'];
+const CHOICE_EFFECTS = ['millAny', 'bottomEnergy', 'flipOne', 'findPremium', 'exhaustSelfDeleteOpp', 'playTrashActionPay', 'euclaseFrost', 'ashBlast', 'hardPivot', 'waifuWheel', 'beMoreCultured', 'playTop', 'pullOppPop', 'returnOrDeleteSelf', 'pickCard', 'lookPlay', 'payThen', 'merchStars', 'copyPlatformReward', 'moveOwnContent', 'moveSelf', 'oppMovePop', 'gainPopOther', 'moveOppAll', 'playHandFree', 'playTrashSpend', 'playTrashAction', 'lookTrashHand', 'bearWithMe', 'potion', 'noShow', 'revealPick', 'playHand', 'playTrash', 'trashToHand', 'discardDraw', 'movePersona', 'movePop', 'moveAll', 'reorderTop', 'playTrashEmpty', 'millTopOptional'];
 
 // Carry out the player's answer.
 const runChoice = (G, ch, keys) => {
@@ -1133,6 +1251,30 @@ const runChoice = (G, ch, keys) => {
   const ask = (more, front = true) => pushChoice(G, { actor, player: actor, idx: ch.idx, source: ch.source, ...more }, front);
   const take = (list, id) => { const i = list.findIndex((c) => c.id === id); return i === -1 ? null : list.splice(i, 1)[0]; };
   switch (a.do) {
+    case 'drawOptional':
+      if (keys[0] === 'yes') applyEffect(G, actor, ch.idx, { type: 'draw', target: 'self', amount: 1 });
+      break;
+    case 'millTopOptional':
+      if (keys[0] === 'yes') player.trash.push(...player.deck.splice(0, a.amount || 2));
+      break;
+    case 'playTrashEmpty1': {
+      if (!keys.length) break;
+      const card = take(player.trash, keys[0].slice(2));
+      if (!card) break;
+      const dests = [0, 1, 2].filter((i) => G.platforms[i].cards[actor].length === 0 &&
+        cardPlayable(card, player.persona, 'content') && !contentBlocked(G, actor, card, i));
+      if (dests.length) ask({ kind: 'platform', options: platformOptions(G, dests), prompt: `${card.name}: choose an empty Platform`, action: { do: 'playTrashEmpty2', card, reduce: a.reduce } });
+      else player.trash.push(card);
+      break;
+    }
+    case 'playTrashEmpty2': {
+      const dest = Number(keys[0]), card = a.card;
+      if (card && [0,1,2].includes(dest) && G.platforms[dest].cards[actor].length === 0) {
+        player.bits -= Math.max(0, card.cost - a.reduce);
+        placeCard(G, actor, card, dest, { source: ch.source });
+      } else if (card) player.trash.push(card);
+      break;
+    }
     case 'mod': {
       const amt = a.amountPer ? a.amountPer * G.platforms.filter((p) => p.cards[actor].length > 0).length : a.amountFrom === 'hand' ? player.hand.length : a.amountFrom === 'trash' ? player.trash.length : a.amount;
       for (const r of refs()) {
@@ -1147,7 +1289,11 @@ const runChoice = (G, ch, keys) => {
     case 'double': for (const r of refs()) r.card.mod = (r.card.mod || 0) + r.card.inf; break;
     case 'delete': { // payCost: Toxic Gaming spends the card's 🟡. draw: only if something was deleted (Gomi Kuma)
       let gone = 0;
-      for (const r of refs()) { if (a.payCost) player.bits -= Math.min(player.bits, r.card.cost); if (deleteCard(G, r.owner, r.idx, r.card, actor)) gone++; }
+      for (const r of refs()) {
+        if (r.cameo) { G.players[r.owner].cameo = null; G.players[r.owner].trash.push(r.card); gone++; continue; }
+        if (a.payCost) player.bits -= Math.min(player.bits, r.card.cost);
+        if (deleteCard(G, r.owner, r.idx, r.card, actor)) gone++;
+      }
       if (a.draw && gone) for (let k = 0; k < a.draw; k++) { const d = player.deck.shift(); if (d) player.hand.push(d); }
       break;
     }
@@ -1201,6 +1347,7 @@ const runChoice = (G, ch, keys) => {
       break;
     }
     case 'millAny': {
+      if (keys[0] === 'no') break;
       const who = keys[0] === 'me' ? actor : opp, top = G.players[who].deck.shift();
       if (top) { G.players[who].trash.push(top); G.notice = { n: (G.notice?.n || 0) + 1, source: ch.source, player: who, discarded: top.name }; }
       break;
@@ -1415,7 +1562,7 @@ const debugMoves = {
     G.players[id].deck.unshift(copyCard(G, card));
   }),
   dbgAddHandType: sandboxOnly(({ G }, id, type) => {
-    if (!isPlayer(id) || !['Content', 'Action', 'Upgrade'].includes(type)) return INVALID_MOVE;
+    if (!isPlayer(id) || !['Content', 'Action', 'Upgrade', 'Cameo'].includes(type)) return INVALID_MOVE;
     for (const card of CARDS) if (card.type === type) G.players[id].hand.push(copyCard(G, card));
   }),
   dbgClearHand: sandboxOnly(({ G }, id) => {
@@ -1494,8 +1641,8 @@ export const OshiPush = {
     ],
     personaLocations: { 0: null, 1: null },
     players: {
-      0: { bits: 7, subs: 0, hand: [], deck: [], persona: null, upgrades: [], trash: [], played: { Action: 0, Content: 0 }, activations: 0, activationsTotal: 0, merch: null, contentDiscount: 0, platformCards: [], deckReady: false, mulliganDone: false, mulliganed: false },
-      1: { bits: 7, subs: 0, hand: [], deck: [], persona: null, upgrades: [], trash: [], played: { Action: 0, Content: 0 }, activations: 0, activationsTotal: 0, merch: null, contentDiscount: 0, platformCards: [], deckReady: false, mulliganDone: false, mulliganed: false },
+      0: { bits: 7, subs: 0, hand: [], deck: [], persona: null, upgrades: [], cameo: null, trash: [], played: { Action: 0, Content: 0 }, activations: 0, activationsTotal: 0, merch: null, contentDiscount: 0, nextClashStars: 0, platformCards: [], deckReady: false, mulliganDone: false, mulliganed: false },
+      1: { bits: 7, subs: 0, hand: [], deck: [], persona: null, upgrades: [], cameo: null, trash: [], played: { Action: 0, Content: 0 }, activations: 0, activationsTotal: 0, merch: null, contentDiscount: 0, nextClashStars: 0, platformCards: [], deckReady: false, mulliganDone: false, mulliganed: false },
     },
   }),
 
@@ -1578,7 +1725,7 @@ export const OshiPush = {
           if (![0, 1, 2].includes(slot) || G.platforms[slot].card) return INVALID_MOVE; // the slot must be empty
           const deck = G.players[playerID].platformCards;
           if (!deck.length) return INVALID_MOVE;
-          applyPlatformCard(G.platforms[slot], deck.shift());
+          applyPlatformCard(G.platforms[slot], deck.shift(), playerID);
           if (!G.platforms.every((p) => p.card)) events.endTurn(); // otherwise the field is full and the phase ends
         },
       },
@@ -1630,7 +1777,7 @@ export const OshiPush = {
       turn: inPlayTurns(contentPass),
       moves: {
         ...debugMoves,
-        playCard: playCard((c) => c.type === 'Content' || c.type === 'Upgrade' || c.type === 'Action'),
+        playCard: playCard((c) => c.type === 'Content' || c.type === 'Upgrade' || c.type === 'Action' || c.type === 'Cameo'),
         passTurn: contentPass(false),
         togglePassAll: togglePassAll(contentPass),
         makeChoice,
@@ -1693,7 +1840,7 @@ export const OshiPush = {
         }));
         // Round income and draw, so the hand limit is checked with the new card included.
         for (const pId of ['0', '1']) {
-          G.players[pId].bits += 3;
+          G.players[pId].bits += Number(activePersona(G, pId)?.gems) || 0;
           const drawn = G.players[pId].deck.shift();
           if (drawn) G.players[pId].hand.push(drawn);
         }
@@ -1724,7 +1871,7 @@ export const OshiPush = {
         for (const p of G.platforms) { p.actions = { 0: [], 1: [] }; p.mods = { 0: 0, 1: 0 }; p.pmods = { 0: 0, 1: 0 }; }
         G.actionLock = { 0: false, 1: false }; // action cards, star changes and locks last one clash
         for (const pl of G.platforms) for (const id of ['0', '1']) for (const c of pl.cards[id]) delete c.mod; // this-round star changes on Content cards
-        for (const id of ['0', '1']) G.players[id].contentDiscount = 0;
+        for (const id of ['0', '1']) { G.players[id].contentDiscount = 0; G.players[id].nextClashStars = 0; }
         G.personaLocations = { 0: null, 1: null };
         G.pendingDiscard = { 0: 0, 1: 0 };
         for (const pId of ['0', '1']) { G.players[pId].played = { Action: 0, Content: 0 }; G.players[pId].activations = 0; }

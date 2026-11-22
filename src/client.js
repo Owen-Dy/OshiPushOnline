@@ -105,14 +105,14 @@ function startGame() {
     const { G, ctx } = state;
     const me = G.players[playerID];
     if (me.hand.some((x) => x.hidden)) return; // a state meant for the other player's view
-    const activePersona = (pid) => { const u = G.players[pid].upgrades; return u.length ? u[u.length - 1] : G.players[pid].persona; };
+    const activePersona = (pid) => { const u = G.players[pid].upgrades, base = u.length ? u[u.length - 1] : G.players[pid].persona, cameo = G.players[pid].cameo; return base ? { ...base, inf: (base.inf || 0) + (cameo?.inf || 0), gems: (base.gems || 0) + (cameo?.gems || 0) } : base; };
     const phase = ctx.phase;
     const need = discardNeed(G, playerID, phase === 'clashResults'); // cards you must still discard
     const busy = G.choices.length > 0; // a decision (pick a card or platform) is waiting
     const curPlat = phase === 'clash' ? G.clashSequence[G.clashIndex] : null; // the platform clashing right now
     const hold = phase === 'deployment' && G.platformHold === playerID; // Platform Phase: you may still play So Baby
     const myTurn = ((phase === 'content' || phase === 'clash') && ctx.currentPlayer === playerID) || hold;
-    const typeOK = (c) => hold ? platformPhaseCard(c) : phase === 'clash' ? c.type === 'Action' : c.type === 'Content' || c.type === 'Action' || upgradeFits(c, me.persona);
+    const typeOK = (c) => hold ? platformPhaseCard(c) : phase === 'clash' ? c.type === 'Action' : c.type === 'Content' || c.type === 'Action' || c.type === 'Cameo' || upgradeFits(c, me.persona);
     const myLoc = G.personaLocations[playerID];
     // Can this card be played on platform i right now? zone: 'hand', or 'trash' for cards that say they can be played from the Trash.
     const playableAt = (c, i, zone = 'hand') => {
@@ -238,8 +238,8 @@ function startGame() {
       const slotBtn = phase === 'platformSetup' && ctx.currentPlayer === playerID && !p.card ? `<button data-slot="${i}">Put my platform here</button>` : '';
       const sel = chosen && playableAt(chosen, i, selectedZone) ? `<button data-play="${i}">Play ${esc(chosen.name)} here${selectedZone === 'trash' ? ' (from Trash)' : selectedZone === 'deck' ? ' (from the top of your deck)' : ''} · 🟡${selectedZone === 'deck' ? 0 : playCost(G, playerID, chosen, i)}</button>` : '';
       const persona = (pid) => {
-        const per = activePersona(pid);
-        return `<div class="tile persona" title="${esc(per ? per.name : 'Persona')}${per && per.text ? ' - ' + esc(per.text) : ''}"><div class="artbox">${per ? img(per.art) : ''}</div><span>${esc(per ? per.name : 'Persona')}${p.pexh?.[pid] ? ' · exhausted' : ''}</span></div>`;
+        const per = activePersona(pid), cameo = G.players[pid].cameo;
+        return `<div class="tile persona" title="${esc(per ? per.name : 'Persona')}${per && per.text ? ' - ' + esc(per.text) : ''}"><div class="artbox">${per ? img(per.art) : ''}</div><span>${esc(per ? per.name : 'Persona')}${p.pexh?.[pid] ? ' · exhausted' : ''}</span>${cameo ? `<div class="cameo-attached" title="Attached Cameo: ${esc(cameo.name)} · +${cameo.inf || 0} ⭐ / +${cameo.gems || 0} 💎">${img(cameo.art)}<small>${esc(cameo.name)}</small></div>` : ''}</div>`;
       };
       const tot = { [playerID]: sum(playerID), [other]: sum(other) };
       const side = (pid, label) => {

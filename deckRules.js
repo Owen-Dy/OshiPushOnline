@@ -96,7 +96,7 @@ export function validateDeck(deck, byId) {
 export function randomDeck(cards, shuffle, personaId) {
   const ofType = (t) => shuffle(cards.filter((c) => c.type === t));
   const persona = personaId ? cards.find((c) => c.id === personaId) : ofType('Persona')[0];
-  const pool = shuffle(cards.filter((c) => (c.type === 'Content' || c.type === 'Action') && fitsPersona(c, persona)));
+  const pool = shuffle(cards.filter((c) => (c.type === 'Content' || c.type === 'Action' || c.type === 'Cameo') && fitsPersona(c, persona)));
   const main = [], copies = {};
   for (let pass = 1; pass <= RULES.MAX_COPIES; pass++) {
     for (const c of pool) {

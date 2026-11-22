@@ -4843,7 +4843,15 @@ export const CARDS = [
     "style": "◆︎ Red",
     "genre": "🎮 Poggers",
     "set": "Gen 2",
-    "source": "Artwork (Retail - Store)"
+    "source": "Artwork (Retail - Store)",
+    "effects": [
+      {
+        "type": "aura",
+        "affects": "otherOwn",
+        "amount": 1,
+        "costMax": 4
+      }
+    ]
   },
   {
     "id": "op02-002",
@@ -4858,7 +4866,26 @@ export const CARDS = [
     "style": "◆︎ Red",
     "genre": "🎮 Poggers",
     "set": "Gen 2",
-    "source": "Artwork (Retail - Store), Photo (Clash Promo - Stream, Retail - Stream)"
+    "source": "Artwork (Retail - Store), Photo (Clash Promo - Stream, Retail - Stream)",
+    "effects": [
+      {
+        "type": "aura",
+        "affects": "otherOwn",
+        "amount": 2,
+        "costMax": 4
+      },
+      {
+        "type": "discardAbility",
+        "timing": "clash",
+        "effects": [
+          {
+            "type": "personaInf",
+            "target": "self",
+            "amount": 2
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-003",
@@ -4873,7 +4900,32 @@ export const CARDS = [
     "style": "◆︎ Red",
     "genre": "🎮 Poggers",
     "set": "Gen 2",
-    "source": "Photo (KAMI sample - Stream, Retail - Stream)"
+    "source": "Photo (KAMI sample - Stream, Retail - Stream)",
+    "effects": [
+      {
+        "type": "aura",
+        "affects": "otherOwn",
+        "amount": 3,
+        "costMax": 4
+      },
+      {
+        "type": "draw",
+        "target": "self",
+        "perContentHere": true,
+        "amount": 1
+      },
+      {
+        "type": "discardAbility",
+        "timing": "clash",
+        "effects": [
+          {
+            "type": "personaInf",
+            "target": "self",
+            "amount": 2
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-004",
@@ -4941,7 +4993,14 @@ export const CARDS = [
     "style": "⬤︎ Purple",
     "genre": "🎮 Poggers",
     "set": "Gen 2",
-    "source": "Artwork (Retail - Store), Photo (Retail PON - Stream, Retail SUPA - Stream)"
+    "source": "Artwork (Retail - Store), Photo (Retail PON - Stream, Retail SUPA - Stream)",
+    "effects": [
+      {
+        "type": "personaWhile",
+        "condition": "dominatingAny",
+        "amount": 2
+      }
+    ]
   },
   {
     "id": "op02-007",
@@ -4956,7 +5015,36 @@ export const CARDS = [
     "style": "⬤︎ Purple",
     "genre": "🎮 Poggers",
     "set": "Gen 2",
-    "source": "Artwork (Retail - Store), Photo (Clash Promo - Stream, Retail - Stream)"
+    "source": "Artwork (Retail - Store), Photo (Clash Promo - Stream, Retail - Stream)",
+    "effects": [
+      {
+        "type": "pickCard",
+        "optional": true,
+        "prompt": "Not a Vampire: you may delete an opposing Content card with 🟡2 or less",
+        "pick": {
+          "scope": "here",
+          "owner": "opp",
+          "costMax": 2
+        },
+        "then": {
+          "do": "delete"
+        }
+      },
+      {
+        "type": "personaWhile",
+        "condition": "dominatingAny",
+        "amount": 2
+      },
+      {
+        "type": "discardAbility",
+        "timing": "clash",
+        "effects": [
+          {
+            "type": "movePersonaHere"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-008",
@@ -4971,7 +5059,36 @@ export const CARDS = [
     "style": "⬤︎ Purple",
     "genre": "🎮 Poggers",
     "set": "Gen 2",
-    "source": "Photo (KAMI sample - Stream, Retail LB - Stream)"
+    "source": "Photo (KAMI sample - Stream, Retail LB - Stream)",
+    "effects": [
+      {
+        "type": "pickCard",
+        "optional": true,
+        "prompt": "Retired Captain: you may delete an opposing Content card with 🟡4 or less",
+        "pick": {
+          "scope": "here",
+          "owner": "opp",
+          "costMax": 4
+        },
+        "then": {
+          "do": "delete"
+        }
+      },
+      {
+        "type": "personaWhile",
+        "condition": "dominatingAny",
+        "amount": 4
+      },
+      {
+        "type": "discardAbility",
+        "timing": "clash",
+        "effects": [
+          {
+            "type": "movePersonaHere"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-009",
@@ -5047,7 +5164,26 @@ export const CARDS = [
     "style": "⬛︎ Green",
     "genre": "💬 Zatsudan",
     "set": "Gen 2",
-    "source": "Artwork (Retail - Store), Photo (Retail PON - Stream, Retail SUPA - Stream)"
+    "source": "Artwork (Retail - Store), Photo (Retail PON - Stream, Retail SUPA - Stream)",
+    "effects": [
+      {
+        "type": "clashReward",
+        "text": "Draw 1 for each Platform where you have 1 or more Content cards. Then, discard that many cards.",
+        "effects": [
+          {
+            "type": "draw",
+            "target": "self",
+            "amount": 1,
+            "perContentPlatform": true
+          },
+          {
+            "type": "discard",
+            "target": "self",
+            "perContentPlatform": true
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-012",
@@ -5062,7 +5198,37 @@ export const CARDS = [
     "style": "⬛︎ Green",
     "genre": "💬 Zatsudan",
     "set": "Gen 2",
-    "source": "Artwork (Retail - Store), Photo (Clash Promo - Stream, Retail - Stream)"
+    "source": "Artwork (Retail - Store), Photo (Clash Promo - Stream, Retail - Stream)",
+    "effects": [
+      {
+        "type": "clashReward",
+        "text": "Draw 1 for each Platform where you have 1 or more Content cards. Then, discard that many cards minus 1.",
+        "effects": [
+          {
+            "type": "draw",
+            "target": "self",
+            "perContentPlatform": true,
+            "amount": 1
+          },
+          {
+            "type": "discard",
+            "target": "self",
+            "perContentPlatformMinusOne": true,
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "type": "discardAbility",
+        "effects": [
+          {
+            "type": "bits",
+            "target": "self",
+            "amount": 1
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-013",
@@ -5077,7 +5243,31 @@ export const CARDS = [
     "style": "⬛︎ Green",
     "genre": "💬 Zatsudan",
     "set": "Gen 2",
-    "source": "Photo (KAMI sample - Stream)"
+    "source": "Photo (KAMI sample - Stream)",
+    "effects": [
+      {
+        "type": "clashReward",
+        "text": "Draw 1 for each Platform where you have 1 or more Content cards.",
+        "effects": [
+          {
+            "type": "draw",
+            "target": "self",
+            "perContentPlatform": true,
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "type": "discardAbility",
+        "effects": [
+          {
+            "type": "bits",
+            "target": "self",
+            "amount": 1
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-014",
@@ -5148,7 +5338,20 @@ export const CARDS = [
     "style": "⬛︎ Green",
     "genre": "✏️ Creatives",
     "set": "Gen 2",
-    "source": "Artwork (Retail - Store), Photo (Retail PON - Stream, Retail SUPA - Stream)"
+    "source": "Artwork (Retail - Store), Photo (Retail PON - Stream, Retail SUPA - Stream)",
+    "effects": [
+      {
+        "type": "clashReward",
+        "text": "You may discard the top 2 cards of your deck.",
+        "effects": [
+          {
+            "type": "millTopOptional",
+            "amount": 2,
+            "prompt": "Raelice: you may discard the top 2 cards of your deck"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-017",
@@ -5163,7 +5366,34 @@ export const CARDS = [
     "style": "⬛︎ Green",
     "genre": "✏️ Creatives",
     "set": "Gen 2",
-    "source": "Artwork (Retail - Store), Photo (Clash Promo - Stream, Retail - Stream)"
+    "source": "Artwork (Retail - Store), Photo (Clash Promo - Stream, Retail - Stream)",
+    "effects": [
+      {
+        "type": "playTrashEmpty",
+        "reduce": 3,
+        "prompt": "Scuff Cat: you may play a Content card from your Trash on a Platform where you have no Content cards, reducing its cost by 🟡3"
+      },
+      {
+        "type": "clashReward",
+        "text": "You may discard the top 2 cards of your deck.",
+        "effects": [
+          {
+            "type": "millTopOptional",
+            "amount": 2
+          }
+        ]
+      },
+      {
+        "type": "discardAbility",
+        "effects": [
+          {
+            "type": "bits",
+            "target": "self",
+            "amount": 1
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-018",
@@ -5178,7 +5408,34 @@ export const CARDS = [
     "style": "⬛︎ Green",
     "genre": "✏️ Creatives",
     "set": "Gen 2",
-    "source": "Photo (KAMI sample - Stream, Retail LB - Stream)"
+    "source": "Photo (KAMI sample - Stream, Retail LB - Stream)",
+    "effects": [
+      {
+        "type": "playTrashEmpty",
+        "reduce": 7,
+        "prompt": "Lore Cat: you may play a Content card from your Trash on a Platform where you have no Content cards, reducing its cost by 🟡7"
+      },
+      {
+        "type": "clashReward",
+        "text": "You may discard the top 2 cards of your deck.",
+        "effects": [
+          {
+            "type": "millTopOptional",
+            "amount": 2
+          }
+        ]
+      },
+      {
+        "type": "discardAbility",
+        "effects": [
+          {
+            "type": "bits",
+            "target": "self",
+            "amount": 1
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-019",
@@ -5249,7 +5506,15 @@ export const CARDS = [
     "style": "◆︎ Red",
     "genre": "❤️ Experience",
     "set": "Gen 2",
-    "source": "Artwork (Retail - Store)"
+    "source": "Artwork (Retail - Store)",
+    "effects": [
+      {
+        "type": "revealTop"
+      },
+      {
+        "type": "topCostStars"
+      }
+    ]
   },
   {
     "id": "op02-022",
@@ -5264,7 +5529,19 @@ export const CARDS = [
     "style": "◆︎ Red",
     "genre": "❤️ Experience",
     "set": "Gen 2",
-    "source": "Artwork (Retail - Store), Photo (Clash Promo - Stream, Retail - Stream)"
+    "source": "Artwork (Retail - Store), Photo (Clash Promo - Stream, Retail - Stream)",
+    "effects": [
+      {
+        "type": "revealTop"
+      },
+      {
+        "type": "topCostStars"
+      },
+      {
+        "type": "reorderTop",
+        "count": 3
+      }
+    ]
   },
   {
     "id": "op02-023",
@@ -5279,7 +5556,20 @@ export const CARDS = [
     "style": "◆︎ Red",
     "genre": "❤️ Experience",
     "set": "Gen 2",
-    "source": "Photo (KAMI sample - Stream, Retail LB - Stream), Artwork (KAMI - Newsletter)"
+    "source": "Photo (KAMI sample - Stream, Retail LB - Stream), Artwork (KAMI - Newsletter)",
+    "effects": [
+      {
+        "type": "revealTop"
+      },
+      {
+        "type": "topCostStars"
+      },
+      {
+        "type": "reorderTop",
+        "count": 3,
+        "drawOptional": true
+      }
+    ]
   },
   {
     "id": "op02-024",
@@ -5327,7 +5617,7 @@ export const CARDS = [
         "persona": "La Avispa Nectarina"
       },
       {
-        "type": "playFromTopFree"
+        "type": "playFromTop"
       },
       {
         "type": "personaInf",
@@ -5348,7 +5638,16 @@ export const CARDS = [
     "style": "⬤︎ Purple",
     "genre": "❤️ Experience",
     "set": "Gen 2",
-    "source": "Artwork (Retail - Store), Photo (Retail MID - Stream)"
+    "source": "Artwork (Retail - Store), Photo (Retail MID - Stream)",
+    "effects": [
+      {
+        "type": "personaBonus",
+        "amount": 2,
+        "when": {
+          "faceUpPremium": true
+        }
+      }
+    ]
   },
   {
     "id": "op02-027",
@@ -5363,7 +5662,28 @@ export const CARDS = [
     "style": "⬤︎ Purple",
     "genre": "❤️ Experience",
     "set": "Gen 2",
-    "source": "Photo (Clash Promo -  Newsletter), Artwork (Retail - Store), Photo (Clash Promo - Stream, Retail - Stream)"
+    "source": "Photo (Clash Promo -  Newsletter), Artwork (Retail - Store), Photo (Clash Promo - Stream, Retail - Stream)",
+    "effects": [
+      {
+        "type": "personaBonus",
+        "when": {
+          "faceUpPremiumHere": true
+        },
+        "amount": 2
+      },
+      {
+        "type": "protectPremiumHere"
+      },
+      {
+        "type": "discardAbility",
+        "timing": "clash",
+        "effects": [
+          {
+            "type": "movePersonaHere"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-028",
@@ -5378,7 +5698,28 @@ export const CARDS = [
     "style": "⬤︎ Purple",
     "genre": "❤️ Experience",
     "set": "Gen 2",
-    "source": "Photo (KAMI sample - Stream, Retail LB - Stream)"
+    "source": "Photo (KAMI sample - Stream, Retail LB - Stream)",
+    "effects": [
+      {
+        "type": "personaBonus",
+        "when": {
+          "faceUpPremiumHere": true
+        },
+        "amount": 4
+      },
+      {
+        "type": "protectPremiumHere"
+      },
+      {
+        "type": "discardAbility",
+        "timing": "clash",
+        "effects": [
+          {
+            "type": "movePersonaHere"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-029",
@@ -5457,7 +5798,37 @@ export const CARDS = [
     "style": "⬛︎ Green",
     "genre": "💬 Zatsudan",
     "set": "Gen 2",
-    "source": "Photo (Retail Starter - Stream & Store)"
+    "source": "Photo (Retail Starter - Stream & Store)",
+    "effects": [
+      {
+        "type": "clashReward",
+        "text": "Draw 1 for each Platform where you have 1 or more Content cards. Then, discard that many cards minus 1.",
+        "effects": [
+          {
+            "type": "draw",
+            "target": "self",
+            "perContentPlatform": true,
+            "amount": 1
+          },
+          {
+            "type": "discard",
+            "target": "self",
+            "perContentPlatformMinusOne": true,
+            "amount": 1
+          }
+        ]
+      },
+      {
+        "type": "discardAbility",
+        "effects": [
+          {
+            "type": "bits",
+            "target": "self",
+            "amount": 1
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-032",
@@ -5499,7 +5870,28 @@ export const CARDS = [
     "style": "⬤︎ Purple",
     "genre": "❤️ Experience",
     "set": "Gen 2",
-    "source": "Photo (Retail Starter - Stream & Store)"
+    "source": "Photo (Retail Starter - Stream & Store)",
+    "effects": [
+      {
+        "type": "personaBonus",
+        "when": {
+          "faceUpPremiumHere": true
+        },
+        "amount": 3
+      },
+      {
+        "type": "protectPremiumHere"
+      },
+      {
+        "type": "discardAbility",
+        "timing": "clash",
+        "effects": [
+          {
+            "type": "movePersonaHere"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-034",
@@ -5575,7 +5967,23 @@ export const CARDS = [
     "tags": "Networking",
     "source": "Photo (Retail - Stream)",
     "threshold": 2,
-    "subValue": 300000
+    "subValue": 300000,
+    "effects": [
+      {
+        "type": "platformReward",
+        "if": {
+          "subsLess": true
+        },
+        "text": "If you have less Subscribers than your opponents, gain 2 💎.",
+        "effects": [
+          {
+            "type": "bits",
+            "target": "self",
+            "amount": 2
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-038",
@@ -5607,7 +6015,20 @@ export const CARDS = [
     "tags": "Image Sharing",
     "source": "Photo (Retail - Stream)",
     "threshold": 2,
-    "subValue": 300000
+    "subValue": 300000,
+    "effects": [
+      {
+        "type": "platformReward",
+        "text": "Each opponent discards 1 card from their hand.",
+        "effects": [
+          {
+            "type": "discard",
+            "target": "opponent",
+            "amount": 1
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-040",
@@ -5671,7 +6092,20 @@ export const CARDS = [
     "tags": "Streaming",
     "source": "Photo (Retail - Stream)",
     "threshold": 3,
-    "subValue": 400000
+    "subValue": 400000,
+    "effects": [
+      {
+        "type": "platformReward",
+        "text": "Gain 1 💎 for each Content card you have on this Platform.",
+        "effects": [
+          {
+            "type": "bitsPerContentHere",
+            "target": "self",
+            "amount": 1
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-044",
@@ -5687,7 +6121,19 @@ export const CARDS = [
     "tags": "Networking",
     "source": "Photo (Retail - Stream)",
     "threshold": 3,
-    "subValue": 400000
+    "subValue": 400000,
+    "effects": [
+      {
+        "type": "platformReward",
+        "text": "You gain +3 ⭐ during the next clash this round.",
+        "effects": [
+          {
+            "type": "nextClashStars",
+            "amount": 3
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-045",
@@ -5703,7 +6149,27 @@ export const CARDS = [
     "tags": "Networking",
     "source": "Photo (Retail - Stream)",
     "threshold": 3,
-    "subValue": 400000
+    "subValue": 400000,
+    "effects": [
+      {
+        "type": "platformReward",
+        "text": "You may spend 3 💎 to gain 1 Popularity on this Platform.",
+        "effects": [
+          {
+            "type": "payThen",
+            "bits": 3,
+            "label": "Spend 3 💎 to gain 1 Popularity on this Platform",
+            "prompt": "Off Kai Expo Gen 5: you may spend 3 💎 to gain 1 Popularity on this Platform",
+            "effects": [
+              {
+                "type": "gainPop",
+                "amount": 1
+              }
+            ]
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-046",
@@ -5735,7 +6201,28 @@ export const CARDS = [
     "tags": "Image Sharing",
     "source": "Photo (Retail - Stream)",
     "threshold": 3,
-    "subValue": 500000
+    "subValue": 500000,
+    "effects": [
+      {
+        "type": "platformReward",
+        "text": "You may return a Content card with 🟡2 or less in play to its owner's hand.",
+        "effects": [
+          {
+            "type": "pickCard",
+            "optional": true,
+            "prompt": "MediaFlame: you may return a Content card with 🟡2 or less in play to its owner's hand",
+            "pick": {
+              "scope": "any",
+              "owner": "any",
+              "costMax": 2
+            },
+            "then": {
+              "do": "return"
+            }
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-048",
@@ -5751,7 +6238,20 @@ export const CARDS = [
     "tags": "Podcasting",
     "source": "Photo (Retail - Stream)",
     "threshold": 3,
-    "subValue": 500000
+    "subValue": 500000,
+    "effects": [
+      {
+        "type": "platformReward",
+        "text": "You may discard the top card of any player's deck.",
+        "effects": [
+          {
+            "type": "millAny",
+            "optional": true,
+            "prompt": "Blotify: you may discard the top card of any player's deck"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-049",
@@ -5783,7 +6283,20 @@ export const CARDS = [
     "tags": "Streaming",
     "source": "Photo (Retail - Stream)",
     "threshold": 4,
-    "subValue": 600000
+    "subValue": 600000,
+    "effects": [
+      {
+        "type": "platformReward",
+        "text": "Delete all of your Content cards on this Platform.",
+        "effects": [
+          {
+            "type": "deleteContent",
+            "scope": "here",
+            "owner": "mine"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-051",
@@ -5798,7 +6311,20 @@ export const CARDS = [
     "set": "Gen 2",
     "source": "Photo (Retail - Stream)",
     "threshold": 3,
-    "subValue": 400000
+    "subValue": 400000,
+    "effects": [
+      {
+        "type": "deckOnly",
+        "persona": "Eden"
+      },
+      {
+        "type": "platformStars",
+        "amount": 5,
+        "when": {
+          "dominating": true
+        }
+      }
+    ]
   },
   {
     "id": "op02-052",
@@ -5813,7 +6339,17 @@ export const CARDS = [
     "set": "Gen 2",
     "source": "Photo (Retail - Stream)",
     "threshold": 3,
-    "subValue": 400000
+    "subValue": 400000,
+    "effects": [
+      {
+        "type": "deckOnly",
+        "persona": "Captain Camille"
+      },
+      {
+        "type": "onOppContentLeaves",
+        "amount": 1
+      }
+    ]
   },
   {
     "id": "op02-053",
@@ -5828,7 +6364,23 @@ export const CARDS = [
     "set": "Gen 2",
     "source": "Photo (Retail - Stream)",
     "threshold": 3,
-    "subValue": 400000
+    "subValue": 400000,
+    "effects": [
+      {
+        "type": "deckOnly",
+        "persona": "Porcelain Maid"
+      },
+      {
+        "type": "onPlayHere",
+        "event": "content",
+        "once": "porcelainParlor",
+        "then": [
+          {
+            "type": "moveSelf"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-054",
@@ -5843,7 +6395,17 @@ export const CARDS = [
     "set": "Gen 2",
     "source": "Photo (Retail - Stream)",
     "threshold": 3,
-    "subValue": 400000
+    "subValue": 400000,
+    "effects": [
+      {
+        "type": "deckOnly",
+        "persona": "Raelice"
+      },
+      {
+        "type": "onCaptured",
+        "mill": 4
+      }
+    ]
   },
   {
     "id": "op02-055",
@@ -5858,7 +6420,17 @@ export const CARDS = [
     "set": "Gen 2",
     "source": "Photo (Retail - Stream)",
     "threshold": 3,
-    "subValue": 400000
+    "subValue": 400000,
+    "effects": [
+      {
+        "type": "deckOnly",
+        "persona": "La Avispa Nectarina"
+      },
+      {
+        "type": "atClashStart",
+        "millTopOptional": 1
+      }
+    ]
   },
   {
     "id": "op02-056",
@@ -5873,7 +6445,16 @@ export const CARDS = [
     "set": "Gen 2",
     "source": "Photo (Retail - Stream)",
     "threshold": 3,
-    "subValue": 400000
+    "subValue": 400000,
+    "effects": [
+      {
+        "type": "deckOnly",
+        "persona": "LineChu"
+      },
+      {
+        "type": "premiumFreeOnce"
+      }
+    ]
   },
   {
     "id": "op02-057",
@@ -6108,7 +6689,20 @@ export const CARDS = [
     "genre": "🎮 Poggers",
     "set": "Gen 2",
     "flavour": "Crystal Crackheads.",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "discardAbility",
+        "timing": "clash",
+        "effects": [
+          {
+            "type": "personaInf",
+            "target": "self",
+            "amount": 2
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-066",
@@ -6326,10 +6920,11 @@ export const CARDS = [
     "effects": [
       {
         "type": "pickCard",
-        "prompt": "Nose Pull: delete an opposing Content card on this platform",
+        "prompt": "Nose Pull: delete an opposing Content card or Cameo attached to a Persona on this platform",
         "pick": {
           "scope": "here",
-          "owner": "opp"
+          "owner": "opp",
+          "includeCameo": true
         },
         "then": {
           "do": "delete"
@@ -6351,7 +6946,23 @@ export const CARDS = [
     "genre": "🎮 Poggers",
     "set": "Gen 2",
     "flavour": "Even the brightest flame needs her Ashling by her side.",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "personaWhile",
+        "condition": "dominatingHere",
+        "amount": 2
+      },
+      {
+        "type": "discardAbility",
+        "timing": "clash",
+        "effects": [
+          {
+            "type": "movePersonaHere"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-075",
@@ -6550,7 +7161,23 @@ export const CARDS = [
     "genre": "🎮 Poggers",
     "set": "Gen 2",
     "flavour": "If Joel likes annoying things, does that mean we're annoying?",
-    "source": "Photo (Pre-Debut Promo - Stream, Retail - Stream)"
+    "source": "Photo (Pre-Debut Promo - Stream, Retail - Stream)",
+    "effects": [
+      {
+        "type": "discardOppOnPlay",
+        "amount": 1
+      },
+      {
+        "type": "discardAbility",
+        "effects": [
+          {
+            "type": "bits",
+            "target": "self",
+            "amount": 1
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-084",
@@ -6789,7 +7416,25 @@ export const CARDS = [
     "genre": "💬 Zatsudan",
     "set": "Gen 2",
     "flavour": "Run, and I'll beat you with my chloroform bat.",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "personaWhile",
+        "condition": "perContentPlatform",
+        "amount": 2
+      },
+      {
+        "type": "discardAbility",
+        "timing": "clash",
+        "effects": [
+          {
+            "type": "personaInf",
+            "target": "self",
+            "amount": 2
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-094",
@@ -7030,7 +7675,22 @@ export const CARDS = [
     "genre": "💬 Zatsudan",
     "set": "Gen 2",
     "flavour": "There's only Minkye.",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "movePersona",
+        "prompt": "Minky(e): you may move your Persona to another Platform"
+      },
+      {
+        "type": "discardAbility",
+        "timing": "clash",
+        "effects": [
+          {
+            "type": "movePersonaHere"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-103",
@@ -7247,7 +7907,19 @@ export const CARDS = [
     "genre": "💬 Zatsudan",
     "set": "Gen 2",
     "flavour": "She's more popular than I am.",
-    "source": "Photo (Pre-Debut Promo - Stream)"
+    "source": "Photo (Pre-Debut Promo - Stream)",
+    "effects": [
+      {
+        "type": "discardAbility",
+        "effects": [
+          {
+            "type": "bits",
+            "target": "self",
+            "amount": 1
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-112",
@@ -7480,7 +8152,28 @@ export const CARDS = [
     "genre": "✏️ Creatives",
     "set": "Gen 2",
     "flavour": "G.R.U.B.S. are expendable broadcasting units... or food.",
-    "source": "Photo (Pre-Debut Promo - Stream), Info (Discord), Photo (Retail - Stream)"
+    "source": "Photo (Pre-Debut Promo - Stream), Info (Discord), Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "aura",
+        "affects": "opp",
+        "amount": -3,
+        "when": {
+          "personaHere": true
+        }
+      },
+      {
+        "type": "discardAbility",
+        "timing": "clash",
+        "effects": [
+          {
+            "type": "personaInf",
+            "target": "self",
+            "amount": 2
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-121",
@@ -7684,7 +8377,18 @@ export const CARDS = [
     "genre": "✏️ Creatives",
     "set": "Gen 2",
     "flavour": "(aDorable Airship Improvement System)",
-    "source": "Photo (Pre-Debut Promo - Stream, Retail - Stream)"
+    "source": "Photo (Pre-Debut Promo - Stream, Retail - Stream)",
+    "effects": [
+      {
+        "type": "discardAbility",
+        "timing": "clash",
+        "effects": [
+          {
+            "type": "movePersonaHere"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-130",
@@ -7923,7 +8627,24 @@ export const CARDS = [
     "genre": "✏️ Creatives",
     "set": "Gen 2",
     "flavour": "I will protect my students at all costs.",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "personaWhile",
+        "condition": "contentFewerHere",
+        "amount": 3
+      },
+      {
+        "type": "discardAbility",
+        "effects": [
+          {
+            "type": "bits",
+            "target": "self",
+            "amount": 1
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-139",
@@ -8167,7 +8888,24 @@ export const CARDS = [
     "genre": "❤️ Experience",
     "set": "Gen 2",
     "flavour": "See you, Space Captain.",
-    "source": "Photo (Retail - Stream)"
+    "source": "Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "personaInfPerOppPop",
+        "amount": 2
+      },
+      {
+        "type": "discardAbility",
+        "timing": "clash",
+        "effects": [
+          {
+            "type": "personaInf",
+            "target": "self",
+            "amount": 2
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-149",
@@ -8392,7 +9130,21 @@ export const CARDS = [
     "genre": "❤️ Experience",
     "set": "Gen 2",
     "flavour": "Unlucky Maneki-neko by day, Jelly Donlette all the time.",
-    "source": "Artwork (Retail - Stream), Photo (Retail - Stream)"
+    "source": "Artwork (Retail - Stream), Photo (Retail - Stream)",
+    "effects": [
+      {
+        "type": "negateOppPersona"
+      },
+      {
+        "type": "discardAbility",
+        "timing": "clash",
+        "effects": [
+          {
+            "type": "movePersonaHere"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "op02-158",
@@ -8617,6 +9369,18 @@ export const CARDS = [
     "genre": "❤️ Experience",
     "set": "Gen 2",
     "flavour": "1.5 brain cells left.",
-    "source": "Photo (Pre-Debut Promo - Stream, Retail - Stream)"
+    "source": "Photo (Pre-Debut Promo - Stream, Retail - Stream)",
+    "effects": [
+      {
+        "type": "discardAbility",
+        "effects": [
+          {
+            "type": "bits",
+            "target": "self",
+            "amount": 1
+          }
+        ]
+      }
+    ]
   }
 ];
