@@ -19,7 +19,10 @@ export const copyLimit = (card) => {
 export const nameKey = (s = '') => s.toLowerCase().split(/\W+/).filter(Boolean).sort().join(' ');
 // An Upgrade named "Pipkin Pippa, Filippa" belongs to the persona "Pipkin Pippa" and to no other.
 export const upgradeFits = (card, persona) =>
-  !!persona && card.type === 'Upgrade' && nameKey(card.name.split(',')[0]) === nameKey(persona.name);
+  !!persona && card.type === 'Upgrade' && (
+    nameKey(card.name.split(',')[0]) === nameKey(persona.name) ||
+    (card.playOnly?.persona && nameKey(card.playOnly.persona) === nameKey(persona.name))
+  );
 
 // A main deck card must share the persona's type (Genre) or color (Style). Platforms have neither, so they are exempt.
 const key = (s) => String(s || '').toLowerCase().replace(/[^a-z]/g, ''); // "⬤︎ Purple" -> "purple", "💬 Zatsudan" -> "zatsudan"

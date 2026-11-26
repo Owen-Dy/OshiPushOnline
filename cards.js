@@ -5656,6 +5656,9 @@ export const CARDS = [
     "cost": 3,
     "inf": 5,
     "gems": 4,
+    "playOnly": {
+      "persona": "LineChu"
+    },
     "text": "While you have a face-up Premium Content card: LineChu gains +2 ⭐.\r\n\r\nYour Premium Content cards on LineChu's Platform can't be deleted by opposing effects.\r\n\r\nDISCARD Move your Persona to this Platform. Use only during a clash.",
     "art": "art/gen2/The Bottom Line.png",
     "class": "Sugoi",
@@ -5692,6 +5695,9 @@ export const CARDS = [
     "cost": 7,
     "inf": 6,
     "gems": 6,
+    "playOnly": {
+      "persona": "LineChu"
+    },
     "text": "While you have a face-up Premium Content card: LineChu gains +4 ⭐.\r\n\r\nYour Premium Content cards on LineChu's Platform can't be deleted by opposing effects.\r\n\r\nDISCARD Move your Persona to this Platform. Use only during a clash.",
     "art": "art/gen2/Femboy Princess.png",
     "class": "Yabai",
@@ -5864,6 +5870,9 @@ export const CARDS = [
     "cost": 6,
     "inf": 6,
     "gems": 5,
+    "playOnly": {
+      "persona": "LineChu"
+    },
     "text": "While you have a face-up Premium Content card on this Platform: LineChu gains +3 ⭐.\r\n\r\nYour Premium Content cards on LineChu's Platform can't be deleted by opposing effects.\r\n\r\nDISCARD Move your Persona to this Platform. Use only during a clash.",
     "art": "art/gen2/Bepis Addict.png",
     "class": "Yabai",

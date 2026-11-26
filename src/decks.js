@@ -68,7 +68,7 @@ function add(id) {
     if (countName(deck.platforms, c.name) >= RULES.MAX_PLATFORM_COPIES) return say(`Only ${RULES.MAX_PLATFORM_COPIES} copy of a Platform card.`);
     deck.platforms.push(id);
   } else {
-    if (!mayAdd(c) && c.type === 'Upgrade') return say(`${c.name} is an Upgrade for ${c.name.split(',')[0]} and can only be used with that persona.`);
+    if (!mayAdd(c) && c.type === 'Upgrade') return say(`${c.name} is an Upgrade for ${personaOnlyName(c)} and can only be used with that persona.`);
     if (personaOnly(c, byId.get(deck.persona))) return say(`${c.name} can only be used in a deck with ${personaOnlyName(c)}.`);
     if (!mayAdd(c)) { const per = byId.get(deck.persona); return say(`${c.name} is not ${per.name}'s type (${per.genre || '-'}) or color (${per.style || '-'}).`); }
     if (deck.main.length >= RULES.MAIN) return say(`Main deck is full (${RULES.MAIN}).`);
