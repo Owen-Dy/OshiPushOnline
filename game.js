@@ -169,7 +169,8 @@ const passiveBonus = (G, id, idx) => {
     else if (ps.kind === 'perContentPlatform') total += ps.amount * G.platforms.filter((pl) => pl.cards[id].length > 0).length;
   }
   for (const fx of fxOf(activePersona(G, id), 'personaBonus')) {
-    if (!fx.when?.faceUpPremiumHere || (locOfPersona(G, id) != null && hasFaceUpPremium(G, id, locOfPersona(G, id)))) total += fx.amount;
+    const w = fx.when || {};
+    if ((!w.faceUpPremium || hasFaceUpPremium(G, id)) && (!w.faceUpPremiumHere || (locOfPersona(G, id) != null && hasFaceUpPremium(G, id, locOfPersona(G, id))))) total += fx.amount;
   }
   for (const fx of fxOf(activePersona(G, id), 'personaWhile')) {
     const condition = fx.condition;
