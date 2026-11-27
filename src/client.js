@@ -364,7 +364,9 @@ function startGame() {
       return `<div class="cardwrap">${cardBtn(c, 'data-card', c.id === selected && selectedZone === 'hand', need > 0 || canPlay(c), need > 0 ? ' discard' : '')}${abBtn}</div>`;
     }).join('');
     // Show the entire Trash, not just cards that have an effect allowing them to be replayed.
-    $('trashrow').hidden = !me.trash.length;
+    const trashRow = $('trashrow');
+    trashRow.hidden = false;
+    if (me.trash.length > 0) trashRow.open = true;
     $('trashcount').textContent = `(${me.trash.length} card${me.trash.length === 1 ? '' : 's'})`;
     $('trashplay').innerHTML = me.trash.map((c) => {
       const playable = canPlayFromTrash(c) && canPlay(c, 'trash');

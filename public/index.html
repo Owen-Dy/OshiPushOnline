@@ -61,8 +61,9 @@
   .chip img { width:28px; height:20px; object-fit:cover; border-radius:3px; background:#4c3f7a; }
   #hand, #trashplay { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; margin:10px 0 16px; }
   #trashrow { margin:0 0 14px; padding:10px 12px; background:var(--panel); border:1px solid var(--line); border-radius:8px; }
-  #trashrow[hidden] { display:none; }
-  #trashrow h2 { margin:0; font-size:17px; }
+  #trashrow summary { cursor:pointer; list-style:none; display:flex; align-items:center; justify-content:space-between; gap:8px; }
+  #trashrow summary::after { content:'＋'; float:right; color:var(--dim); }
+  #trashrow[open] summary::after { content:'−'; }
   #trashplay { display:grid; grid-template-columns:repeat(auto-fit,minmax(105px,1fr)); justify-content:stretch; gap:8px; margin:10px 0 0; }
   #trashplay .cardwrap { width:100%; min-width:0; }
   #trashplay .card { width:100%; font-size:11px; padding:4px; }
@@ -179,7 +180,7 @@
   <p id="botbox" class="meta" hidden><span id="botmsg">Nobody here yet?</span> <button id="addbot">Play against the bot instead</button></p>
   </div>
   <aside id="game-sidebar">
-    <div id="trashrow" hidden><h2>Your Trash <small id="trashcount" class="meta"></small></h2><p class="meta">All discarded cards are shown here. Playable cards can be selected, then placed on a platform.</p><div id="trashplay"></div></div>
+    <details id="trashrow"><summary class="trash-head"><b>Your Trash</b> <small id="trashcount" class="meta">(0 cards)</small></summary><p class="meta">All discarded cards are shown here. Playable cards can be selected, then placed on a platform.</p><div id="trashplay"></div></details>
     <details id="history">
       <summary class="history-head"><b>Game history</b><span id="history-count" class="meta">0 actions</span></summary>
       <ol id="history-list"><li class="history-empty">Public actions will appear here.</li></ol>
